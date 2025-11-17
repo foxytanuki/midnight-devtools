@@ -22,3 +22,11 @@ const localStorageMock = {
 
 global.localStorage = localStorageMock as unknown as Storage;
 
+// Define global for TypeScript
+declare global {
+	var global: typeof globalThis;
+	var fetch: typeof window.fetch;
+}
+
+global.global = globalThis;
+

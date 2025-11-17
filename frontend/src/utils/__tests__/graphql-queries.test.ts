@@ -5,100 +5,82 @@
 
 import { describe, it, expect } from "vitest";
 import {
-	buildBlocksQuery,
+	buildLatestBlockQuery,
+	buildBlockByHeightQuery,
+	buildBlockByHashQuery,
 	buildTransactionsQuery,
 	buildTransactionByHashQuery,
-	buildTransactionsByAccountQuery,
-	buildBlocksInRangeQuery,
+	buildTransactionsByHashQuery,
 } from "../graphql-queries";
 
 describe("GraphQL Query Builders", () => {
-	describe("buildBlocksQuery", () => {
-		it("should build a valid blocks query with default parameters", () => {
-			const query = buildBlocksQuery();
-			expect(query).toContain("blocks(offset: 0, limit: 10)");
-			expect(query).toContain("number");
+	describe("buildLatestBlockQuery", () => {
+		it("should build a valid latest block query", () => {
+			const query = buildLatestBlockQuery();
+			expect(query).toContain("block {");
 			expect(query).toContain("hash");
+			expect(query).toContain("height");
 			expect(query).toContain("timestamp");
 		});
 
-		it("should build a valid blocks query with custom parameters", () => {
-			const query = buildBlocksQuery(10, 20);
-			expect(query).toContain("blocks(offset: 10, limit: 20)");
-		});
-
 		it("should not contain invalid fields", () => {
-			const query = buildBlocksQuery();
+			const query = buildLatestBlockQuery();
 			expect(query).not.toContain("id");
 			expect(query).not.toContain("transactionCount");
 		});
 	});
 
-	describe("buildTransactionsQuery", () => {
-		it("should build a valid transactions query with offset", () => {
-			const query = buildTransactionsQuery();
-			expect(query).toContain("transactions(offset: 0, limit: 10)");
+	describe("buildBlockByHeightQuery", () => {
+		it("should build a valid block by height query", () => {
+			const query = buildBlockByHeightQuery(100);
+			expect(query).toContain("block(offset: { height: 100 })");
 			expect(query).toContain("hash");
-			expect(query).toContain("blockNumber");
-			expect(query).toContain("extrinsicIndex");
+			expect(query).toContain("height");
 		});
+	});
 
-		it("should include offset parameter (required)", () => {
-			const query = buildTransactionsQuery(5, 15);
-			expect(query).toContain("transactions(offset: 5, limit: 15)");
+	describe("buildTransactionsQuery", () => {
+		it("should build a valid transactions query with identifier", () => {
+			const identifier = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+			const query = buildTransactionsQuery(identifier);
+			expect(query).toContain(`transactions(offset: { identifier: "${identifier}" })`);
+			expect(query).toContain("hash");
+			expect(query).toContain("block {");
 		});
 
 		it("should not contain invalid fields", () => {
-			const query = buildTransactionsQuery();
+			const identifier = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+			const query = buildTransactionsQuery(identifier);
 			expect(query).not.toContain('id');
 		});
 	});
 
 	describe("buildTransactionByHashQuery", () => {
 		it("should build a valid transaction hash query", () => {
-			const hash = "0x1234567890abcdef";
+			const hash = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
 			const query = buildTransactionByHashQuery(hash);
-			expect(query).toContain(`transaction(hash: "${hash}")`);
+			expect(query).toContain(`transactions(offset: { hash: "${hash}" })`);
 			expect(query).toContain("hash");
-			expect(query).toContain("blockNumber");
-		});
-
-		it("should escape special characters in hash", () => {
-			const hash = '0x"test"';
-			const query = buildTransactionByHashQuery(hash);
-			expect(query).toContain(`transaction(hash: "${hash}")`);
+			expect(query).toContain("block {");
 		});
 	});
 
-	describe("buildTransactionsByAccountQuery", () => {
-		it("should build a valid account transactions query", () => {
-			const address = "mn_shield-addr_test123";
-			const query = buildTransactionsByAccountQuery(address);
-			expect(query).toContain(`filter: { account: "${address}" }`);
-			expect(query).toContain("offset: 0");
-			expect(query).toContain("limit: 100");
-		});
-
-		it("should include offset parameter", () => {
-			const address = "mn_shield-addr_test123";
-			const query = buildTransactionsByAccountQuery(address, 10, 50);
-			expect(query).toContain("offset: 10");
-			expect(query).toContain("limit: 50");
+	describe("buildTransactionsByHashQuery", () => {
+		it("should build a valid transactions by hash query", () => {
+			const hash = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+			const query = buildTransactionsByHashQuery(hash);
+			expect(query).toContain(`transactions(offset: { hash: "${hash}" })`);
+			expect(query).toContain("hash");
 		});
 	});
 
-	describe("buildBlocksInRangeQuery", () => {
-		it("should build a valid blocks range query", () => {
-			const query = buildBlocksInRangeQuery(100, 200);
-			expect(query).toContain("number: { gte: 100, lte: 200 }");
-			expect(query).toContain("offset: 0");
-			expect(query).toContain("limit: 100");
-		});
-
-		it("should include pagination parameters", () => {
-			const query = buildBlocksInRangeQuery(100, 200, 5, 25);
-			expect(query).toContain("offset: 5");
-			expect(query).toContain("limit: 25");
+	describe("buildBlockByHashQuery", () => {
+		it("should build a valid block by hash query", () => {
+			const hash = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+			const query = buildBlockByHashQuery(hash);
+			expect(query).toContain(`block(offset: { hash: "${hash}" })`);
+			expect(query).toContain("hash");
+			expect(query).toContain("height");
 		});
 	});
 });

@@ -45,6 +45,6 @@ export function browserPrivateStateProvider<T extends string>(
 				throw error;
 			}
 		},
-	};
+	} as unknown as PrivateStateProvider<T>;
 }
 

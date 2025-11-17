@@ -5,8 +5,8 @@ import "./index.css";
 import App from "./App.tsx";
 
 // Make Buffer available globally for @midnight-ntwrk/wallet-sdk-address-format
-window.Buffer = Buffer;
-globalThis.Buffer = Buffer;
+(window as unknown as Window & { Buffer: typeof Buffer }).Buffer = Buffer;
+(globalThis as unknown as typeof globalThis & { Buffer: typeof Buffer }).Buffer = Buffer;
 
 const rootElement = document.getElementById("root");
 if (rootElement) {

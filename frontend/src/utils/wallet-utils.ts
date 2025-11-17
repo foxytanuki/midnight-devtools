@@ -364,7 +364,7 @@ function createMidnightLaceAdapter(api: any): Cip30WalletApi {
 			console.warn("[Wallet Debug] Midnight Lace Wallet API does not provide balance directly. Returning '0'.");
 			return "0";
 		},
-		signData: api.sign ? async (address: string, payload: string) => {
+		signData: api.sign ? async (_address: string, payload: string) => {
 			// Midnight Lace Walletのsign()メソッドを使用
 			// ただし、sign()のシグネチャがCIP-30のsignDataと異なる可能性がある
 			if (typeof api.sign === "function") {

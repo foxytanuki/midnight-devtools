@@ -40,16 +40,20 @@ export function getBlockNumberExplorerUrl(blockNumber: number | string): string 
  * Extract block hash from JSON response and generate explorer URL
  */
 export function extractBlockHashFromResult(result: unknown): string | null {
-	if (!result || typeof result !== "object") {
+	if (!result) {
+		return null;
+	}
+
+	// Direct block hash returned (if result is a string)
+	if (typeof result === "string" && result.startsWith("0x")) {
+		return result;
+	}
+
+	if (typeof result !== "object") {
 		return null;
 	}
 
 	const obj = result as Record<string, unknown>;
-
-	// Direct block hash returned
-	if (typeof obj === "string" && obj.startsWith("0x")) {
-		return obj as string;
-	}
 
 	// block.block.header.hash or block.header.hash
 	if (obj.block) {
