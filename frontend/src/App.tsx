@@ -37,15 +37,28 @@ function App() {
 		window.location.hash = tool.id;
 	};
 
+	const handleTitleClick = () => {
+		window.location.hash = "";
+		setCurrentTool(getDefaultTool());
+	};
+
 	const CurrentToolComponent = currentTool.component;
 
 	return (
 		<div className="app-router">
 			<nav className="app-nav">
-				<div className="app-nav-title">
+				<a 
+					href="#"
+					onClick={(e) => {
+						e.preventDefault();
+						handleTitleClick();
+					}}
+					className="app-nav-title"
+					style={{ textDecoration: "none" }}
+				>
 					<img src="/midnight.png" alt="Midnight" className="app-nav-logo" />
 					Midnight DevTools
-				</div>
+				</a>
 				<div className="app-nav-buttons">
 					{TOOLS.map((tool) => (
 						<button
