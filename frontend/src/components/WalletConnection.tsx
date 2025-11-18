@@ -268,11 +268,49 @@ export function WalletConnection({
 								</button>
 							</div>
 						</div>
-						<div className="info-item">
-							<label>Balance:</label>
-							<span className="balance-display">
-								{status.balance || "Loading..."}
-							</span>
+						<div className="info-box" style={{ marginTop: "1rem" }}>
+							<strong>Why Balance is Not Displayed</strong>
+							<br />
+							<br />
+							Balance information is not displayed because retrieving balance
+							through DApp Connector API is{" "}
+							<strong>not possible by design</strong> due to Midnight Network's
+							privacy protection mechanisms.
+							<br />
+							<br />
+							<strong>Why balance cannot be retrieved:</strong>
+							<ul>
+								<li>
+									<strong>Zswap privacy protection:</strong> Midnight Network uses
+									Zswap, a shielded transaction protocol. Shielded address
+									balances are only visible to wallets with the corresponding
+									viewing key.
+								</li>
+								<li>
+									<strong>DApp Connector API limitations:</strong> The DApp
+									Connector API's <code>state()</code> method returns{" "}
+									<code>DAppConnectorWalletState</code>, which includes address
+									and public keys but{" "}
+									<strong>does not include balance information</strong>.
+								</li>
+								<li>
+									<strong>No viewing key access:</strong> DApp Connector API does
+									not provide access to viewing keys, which are required to query
+									balance information through the Indexer API's wallet
+									subscription.
+								</li>
+								<li>
+									<strong>RPC API limitations:</strong> The RPC API does not
+									provide methods to directly query address balances for
+									shielded addresses.
+								</li>
+							</ul>
+							<br />
+							This is an intentional privacy protection design. Balance
+							information is only accessible within the wallet SDK itself (
+							<code>wallet.state().balances</code>), not through external APIs
+							or DApp connections. This ensures that third parties cannot query
+							shielded address balances, maintaining user privacy.
 						</div>
 						<div className="connection-actions">
 							<button

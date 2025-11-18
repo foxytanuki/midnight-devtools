@@ -117,12 +117,6 @@ export function WalletApp() {
 								</div>
 							</div>
 						)}
-						<div className="info-item">
-							<label>Balance:</label>
-							<span className="balance-display">
-								{balance || "Loading..."}
-							</span>
-						</div>
 						<button
 							type="button"
 							onClick={handleRefresh}
