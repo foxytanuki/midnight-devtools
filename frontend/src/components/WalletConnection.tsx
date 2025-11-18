@@ -361,11 +361,16 @@ export function WalletConnection({
 						Click the "Connect" button on this page to connect your wallet
 					</li>
 					<li>
-						After connection, your address and balance will be displayed
+						After connection, your address will be displayed
 					</li>
 				</ol>
 				<div className="info-box">
-					<strong>Note:</strong> Proof Server must be running.
+					<strong>Note:</strong> Proof Server is required for sending transactions or
+					interacting with contracts (e.g., Counter Contract operations). It is not
+					required for wallet connection only.
+					<br />
+					<br />
+					To start the Proof Server:
 					<br />
 					<code>
 						docker run -p 6300:6300 midnightnetwork/proof-server:latest
