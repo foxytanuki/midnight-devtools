@@ -116,6 +116,21 @@ export function About() {
 									Midnight Testnet Faucet
 								</a>
 							</li>
+							<li>
+								<a
+									href="https://www.midnighttransaction.us/"
+									target="_blank"
+									rel="noopener noreferrer"
+									style={{
+										color: "var(--color-primary)",
+										textDecoration: "underline",
+									}}
+								>
+									Midnight Transactions Viewer
+								</a>{" "}
+								- An excellent resource. Some parts of this project were
+								inspired by its functionality.
+							</li>
 						</ul>
 					</div>
 				</div>
