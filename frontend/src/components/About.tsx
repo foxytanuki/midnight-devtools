@@ -44,6 +44,22 @@ export function About() {
 									</a>
 								</span>
 							</div>
+							<div className="info-item">
+								<label>GitHub:</label>
+								<span>
+									<a
+										href="https://github.com/foxytanuki/midnight-devtools"
+										target="_blank"
+										rel="noopener noreferrer"
+										style={{
+											color: "var(--color-primary)",
+											textDecoration: "underline",
+										}}
+									>
+										foxytanuki/midnight-devtools
+									</a>
+								</span>
+							</div>
 						</div>
 					</div>
 
