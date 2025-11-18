@@ -25,11 +25,11 @@ export function About() {
 						<h3>Author</h3>
 						<div className="connection-info">
 							<div className="info-item">
-								<label>Developer:</label>
+								<span>Developer:</span>
 								<span>foxytanuki</span>
 							</div>
 							<div className="info-item">
-								<label>Twitter:</label>
+								<span>Twitter:</span>
 								<span>
 									<a
 										href="https://twitter.com/foxytanuki"
@@ -45,7 +45,7 @@ export function About() {
 								</span>
 							</div>
 							<div className="info-item">
-								<label>GitHub:</label>
+								<span>GitHub:</span>
 								<span>
 									<a
 										href="https://github.com/foxytanuki/midnight-devtools"

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { Cip30WalletApi } from "../types/wallet-types";
 import { formatAddress } from "../utils/wallet-utils";
 import "../App.css";
@@ -15,11 +15,7 @@ export function AddressesPanel({ walletApi }: AddressesPanelProps) {
 	const [error, setError] = useState<string>("");
 	const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
 
-	useEffect(() => {
-		loadAddresses();
-	}, [walletApi]);
-
-	const loadAddresses = async () => {
+	const loadAddresses = useCallback(async () => {
 		setLoading(true);
 		setError("");
 
@@ -38,10 +34,18 @@ export function AddressesPanel({ walletApi }: AddressesPanelProps) {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [walletApi]);
+
+	useEffect(() => {
+		loadAddresses();
+	}, [loadAddresses]);
 
 	const copyToClipboard = (address: string) => {
 		navigator.clipboard.writeText(address);
+	};
+
+	const handleAddressClick = (address: string) => {
+		setSelectedAddress(address);
 	};
 
 	return (
@@ -110,13 +114,14 @@ export function AddressesPanel({ walletApi }: AddressesPanelProps) {
 					<p className="no-addresses">No used addresses found</p>
 				) : (
 					<div className="address-list">
-						{usedAddresses.map((address, index) => (
-							<div
-								key={index}
+						{usedAddresses.map((address) => (
+							<button
+								key={address}
+								type="button"
 								className={`address-item ${
 									selectedAddress === address ? "selected" : ""
 								}`}
-								onClick={() => setSelectedAddress(address)}
+								onClick={() => handleAddressClick(address)}
 							>
 								<div className="address-display">
 									<span className="address-full">{address}</span>
@@ -135,7 +140,7 @@ export function AddressesPanel({ walletApi }: AddressesPanelProps) {
 										Copy
 									</button>
 								</div>
-							</div>
+							</button>
 						))}
 					</div>
 				)}
@@ -147,13 +152,14 @@ export function AddressesPanel({ walletApi }: AddressesPanelProps) {
 					<p className="no-addresses">No unused addresses found</p>
 				) : (
 					<div className="address-list">
-						{unusedAddresses.map((address, index) => (
-							<div
-								key={index}
+						{unusedAddresses.map((address) => (
+							<button
+								key={address}
+								type="button"
 								className={`address-item ${
 									selectedAddress === address ? "selected" : ""
 								}`}
-								onClick={() => setSelectedAddress(address)}
+								onClick={() => handleAddressClick(address)}
 							>
 								<div className="address-display">
 									<span className="address-full">{address}</span>
@@ -172,7 +178,7 @@ export function AddressesPanel({ walletApi }: AddressesPanelProps) {
 										Copy
 									</button>
 								</div>
-							</div>
+							</button>
 						))}
 					</div>
 				)}
