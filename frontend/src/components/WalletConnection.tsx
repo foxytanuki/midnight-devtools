@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
-import type {
-	WalletName,
-	Cip30WalletApi,
-} from "../types/wallet-types";
+import type { WalletName, Cip30WalletApi } from "../types/wallet-types";
 import { WalletError } from "../types/wallet-types";
 import {
 	getAvailableWallets,
@@ -26,7 +23,11 @@ interface WalletStatus {
 }
 
 interface WalletConnectionProps {
-	onConnected?: (api: Cip30WalletApi, name: WalletName, address: string) => void;
+	onConnected?: (
+		api: Cip30WalletApi,
+		name: WalletName,
+		address: string,
+	) => void;
 	onDisconnected?: () => void;
 	onBalanceUpdate?: (balance: string) => void;
 }
@@ -137,9 +138,7 @@ export function WalletConnection({
 			}));
 			onBalanceUpdate?.(balance);
 		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "Failed to refresh",
-			);
+			setError(err instanceof Error ? err.message : "Failed to refresh");
 		} finally {
 			setRefreshing(false);
 		}
@@ -149,19 +148,23 @@ export function WalletConnection({
 		<div className="method-panel">
 			<h2>Wallet Connection</h2>
 			<p className="method-description-text">
-				Connect to a Midnight Network compatible wallet to verify address and balance.
+				Connect to a Midnight Network compatible wallet to verify address and
+				balance.
 			</p>
 
 			<div className="params-section">
 				<h3>Available Wallets</h3>
 				<div className="wallet-list">
 					{wallets.map((wallet) => (
-						<div 
-							key={wallet.name} 
+						<div
+							key={wallet.name}
 							className="wallet-item"
 							style={{
 								opacity: wallet.installed && !wallet.isMidnightNative ? 0.7 : 1,
-								filter: wallet.installed && !wallet.isMidnightNative ? "grayscale(0.15)" : "none",
+								filter:
+									wallet.installed && !wallet.isMidnightNative
+										? "grayscale(0.15)"
+										: "none",
 							}}
 						>
 							<div className="wallet-info">
@@ -173,9 +176,7 @@ export function WalletConnection({
 											className="wallet-icon-small"
 										/>
 									)}
-									<div className="wallet-name">
-										{wallet.displayName}
-									</div>
+									<div className="wallet-name">{wallet.displayName}</div>
 								</div>
 								<div
 									className={`wallet-status ${
@@ -185,18 +186,22 @@ export function WalletConnection({
 									{wallet.installed ? "Installed" : "Not Installed"}
 								</div>
 								{wallet.installed && !wallet.isMidnightNative && (
-									<div className="wallet-warning" style={{
-										marginTop: "0.5rem",
-										padding: "0.5rem",
-										backgroundColor: "rgba(255, 165, 0, 0.1)",
-										border: "1px solid rgba(255, 165, 0, 0.3)",
-										borderRadius: "4px",
-										fontSize: "0.75rem",
-										color: "var(--color-text-secondary, #666)",
-										width: "fit-content",
-										display: "inline-block",
-									}}>
-										Not yet supported on Midnight Network. Cardano connection pattern kept for future compatibility.
+									<div
+										className="wallet-warning"
+										style={{
+											marginTop: "0.5rem",
+											padding: "0.5rem",
+											backgroundColor: "rgba(255, 165, 0, 0.1)",
+											border: "1px solid rgba(255, 165, 0, 0.3)",
+											borderRadius: "4px",
+											fontSize: "0.75rem",
+											color: "var(--color-text-secondary, #666)",
+											width: "fit-content",
+											display: "inline-block",
+										}}
+									>
+										Not yet supported on Midnight Network. Cardano connection
+										pattern kept for future compatibility.
 									</div>
 								)}
 							</div>
@@ -206,13 +211,11 @@ export function WalletConnection({
 									onClick={() => handleConnect(wallet.name)}
 									disabled={
 										loading ||
-										(status.connected &&
-											status.walletName === wallet.name)
+										(status.connected && status.walletName === wallet.name)
 									}
 									className="wallet-connect-button"
 								>
-									{status.connected &&
-									status.walletName === wallet.name
+									{status.connected && status.walletName === wallet.name
 										? "Connected"
 										: "Connect"}
 								</button>
@@ -250,9 +253,7 @@ export function WalletConnection({
 							<div className="address-display">
 								<span className="address-full">{status.address}</span>
 								<span className="address-short">
-									{status.address
-										? formatAddress(status.address)
-										: ""}
+									{status.address ? formatAddress(status.address) : ""}
 								</span>
 								<button
 									type="button"
@@ -281,8 +282,8 @@ export function WalletConnection({
 							<strong>Why balance cannot be retrieved:</strong>
 							<ul>
 								<li>
-									<strong>Zswap privacy protection:</strong> Midnight Network uses
-									Zswap, a shielded transaction protocol. Shielded address
+									<strong>Zswap privacy protection:</strong> Midnight Network
+									uses Zswap, a shielded transaction protocol. Shielded address
 									balances are only visible to wallets with the corresponding
 									viewing key.
 								</li>
@@ -294,9 +295,9 @@ export function WalletConnection({
 									<strong>does not include balance information</strong>.
 								</li>
 								<li>
-									<strong>No viewing key access:</strong> DApp Connector API does
-									not provide access to viewing keys, which are required to query
-									balance information through the Indexer API's wallet
+									<strong>No viewing key access:</strong> DApp Connector API
+									does not provide access to viewing keys, which are required to
+									query balance information through the Indexer API's wallet
 									subscription.
 								</li>
 								<li>
@@ -344,7 +345,8 @@ export function WalletConnection({
 				<h3>Usage</h3>
 				<ol className="usage-list">
 					<li>
-						Install a wallet extension (Lace, Yoroi, Eternl, etc.) in your browser
+						Install a wallet extension (Lace, Yoroi, Eternl, etc.) in your
+						browser
 					</li>
 					<li>
 						Create or import a wallet and obtain testnet tokens (tDUST) from the{" "}
@@ -352,7 +354,10 @@ export function WalletConnection({
 							href="https://midnight.network/test-faucet"
 							target="_blank"
 							rel="noopener noreferrer"
-							style={{ color: "var(--color-primary)", textDecoration: "underline" }}
+							style={{
+								color: "var(--color-primary)",
+								textDecoration: "underline",
+							}}
 						>
 							Midnight Testnet Faucet
 						</a>
@@ -360,17 +365,26 @@ export function WalletConnection({
 					<li>
 						Click the "Connect" button on this page to connect your wallet
 					</li>
-					<li>
-						After connection, your address will be displayed
-					</li>
+					<li>After connection, your address will be displayed</li>
 				</ol>
 				<div className="info-box">
-					<strong>Note:</strong> Proof Server is required for sending transactions or
-					interacting with contracts (e.g., Counter Contract operations). It is not
-					required for wallet connection only.
+					<strong>Note about Proof Server:</strong>
 					<br />
 					<br />
-					To start the Proof Server:
+					Midnight Network uses <strong>proof-based transactions</strong>{" "}
+					instead of signatures. When using DApp Connector API's{" "}
+					<code>balanceAndProveTransaction()</code> method, the wallet handles
+					proof generation internally.
+					<br />
+					<br />
+					Whether the Lace Wallet uses a local Proof Server or handles proof
+					generation differently depends on the wallet's implementation. The
+					wallet may use its own proof generation service or require a local
+					Proof Server.
+					<br />
+					<br />
+					For direct contract interactions using Midnight.js (outside DApp
+					Connector API), a local Proof Server is required:
 					<br />
 					<code>
 						docker run -p 6300:6300 midnightnetwork/proof-server:latest
