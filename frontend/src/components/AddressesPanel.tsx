@@ -34,9 +34,7 @@ export function AddressesPanel({ walletApi }: AddressesPanelProps) {
 			setUnusedAddresses(unused || []);
 			setChangeAddress(change);
 		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "Failed to load addresses",
-			);
+			setError(err instanceof Error ? err.message : "Failed to load addresses");
 		} finally {
 			setLoading(false);
 		}
@@ -52,6 +50,24 @@ export function AddressesPanel({ walletApi }: AddressesPanelProps) {
 			<p className="method-description-text">
 				View and manage all addresses associated with your wallet.
 			</p>
+			<div className="info-box" style={{ marginTop: "1rem" }}>
+				<strong>Note about address display:</strong>
+				<br />
+				<br />
+				The Midnight Lace Wallet API does not provide separate methods for used
+				and unused addresses like traditional CIP-30 wallets. The DApp Connector
+				API only exposes a single address through the <code>state()</code>{" "}
+				method.
+				<br />
+				<br />
+				To maintain compatibility with CIP-30 interfaces, the adapter returns
+				the same address for both <code>getUsedAddresses()</code> and{" "}
+				<code>getUnusedAddresses()</code>. This is why the same address appears
+				in both sections - it reflects a limitation of the current API
+				implementation, not a fundamental characteristic of Midnight Network's
+				shielded address system.
+			</div>
+			<br />
 
 			<div className="params-section">
 				<div className="address-actions">
@@ -171,4 +187,3 @@ export function AddressesPanel({ walletApi }: AddressesPanelProps) {
 		</div>
 	);
 }
-
