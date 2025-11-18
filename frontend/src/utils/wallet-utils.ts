@@ -80,6 +80,7 @@ export function isWalletInstalled(walletName: WalletName): boolean {
 export function getAvailableWallets(): WalletInfo[] {
 	const windowObj = window as CardanoWindow;
 	const cardano = windowObj.cardano;
+	// Laceを最初に、YoroiとEternlを後ろに配置
 	const walletNames: WalletName[] = ["lace", "yoroi", "eternl"];
 
 	// デバッグ: windowオブジェクトの状態を確認

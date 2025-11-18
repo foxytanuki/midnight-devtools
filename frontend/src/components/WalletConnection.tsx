@@ -155,88 +155,138 @@ export function WalletConnection({
 			<div className="params-section">
 				<h3>Available Wallets</h3>
 				<div className="wallet-list">
-					{wallets.map((wallet) => (
-						<div
-							key={wallet.name}
-							className="wallet-item"
-							style={{
-								opacity: wallet.installed && !wallet.isMidnightNative ? 0.7 : 1,
-								filter:
-									wallet.installed && !wallet.isMidnightNative
-										? "grayscale(0.15)"
-										: "none",
-							}}
-						>
-							<div className="wallet-info">
-								<div className="wallet-header">
-									{wallet.icon && (
-										<img
-											src={wallet.icon}
-											alt={wallet.displayName}
-											className="wallet-icon-small"
-										/>
-									)}
-									<div className="wallet-name">{wallet.displayName}</div>
-								</div>
-								<div
-									className={`wallet-status ${
-										wallet.installed ? "installed" : "not-installed"
-									}`}
-								>
-									{wallet.installed ? "Installed" : "Not Installed"}
-								</div>
-								{wallet.installed && !wallet.isMidnightNative && (
-									<div
-										className="wallet-warning"
-										style={{
-											marginTop: "0.5rem",
-											padding: "0.5rem",
-											backgroundColor: "rgba(255, 165, 0, 0.1)",
-											border: "1px solid rgba(255, 165, 0, 0.3)",
-											borderRadius: "4px",
-											fontSize: "0.75rem",
-											color: "var(--color-text-secondary, #666)",
-											width: "fit-content",
-											display: "inline-block",
-										}}
-									>
-										Not yet supported on Midnight Network. Cardano connection
-										pattern kept for future compatibility.
+					{/* Laceを最初に表示 */}
+					{wallets
+						.filter((wallet) => wallet.name === "lace")
+						.map((wallet) => (
+							<div key={wallet.name} className="wallet-item">
+								<div className="wallet-info">
+									<div className="wallet-header">
+										{wallet.icon && (
+											<img
+												src={wallet.icon}
+												alt={wallet.displayName}
+												className="wallet-icon-small"
+											/>
+										)}
+										<div className="wallet-name">{wallet.displayName}</div>
 									</div>
+									<div
+										className={`wallet-status ${
+											wallet.installed ? "installed" : "not-installed"
+										}`}
+									>
+										{wallet.installed ? "Installed" : "Not Installed"}
+									</div>
+								</div>
+								{wallet.installed ? (
+									<button
+										type="button"
+										onClick={() => handleConnect(wallet.name)}
+										disabled={
+											loading ||
+											(status.connected && status.walletName === wallet.name)
+										}
+										className="wallet-connect-button"
+									>
+										{status.connected && status.walletName === wallet.name
+											? "Connected"
+											: "Connect"}
+									</button>
+								) : (
+									<button
+										type="button"
+										onClick={() => {
+											window.open("https://www.lace.io/", "_blank");
+										}}
+										className="wallet-install-button"
+									>
+										Install
+									</button>
 								)}
 							</div>
-							{wallet.installed ? (
-								<button
-									type="button"
-									onClick={() => handleConnect(wallet.name)}
-									disabled={
-										loading ||
-										(status.connected && status.walletName === wallet.name)
-									}
-									className="wallet-connect-button"
-								>
-									{status.connected && status.walletName === wallet.name
-										? "Connected"
-										: "Connect"}
-								</button>
-							) : (
-								<button
-									type="button"
-									onClick={() => {
-										const urls: Record<WalletName, string> = {
-											lace: "https://www.lace.io/",
-											yoroi: "https://yoroi-wallet.com/",
-											eternl: "https://eternl.io/",
-										};
-										window.open(urls[wallet.name], "_blank");
-									}}
-									className="wallet-install-button"
-								>
-									Install
-								</button>
-							)}
-						</div>
-					))}
+						))}
+					{/* YoroiとEternlを薄く表示 */}
+					{wallets
+						.filter((wallet) => wallet.name === "yoroi" || wallet.name === "eternl")
+						.map((wallet) => (
+							<div
+								key={wallet.name}
+								className="wallet-item"
+								style={{
+									opacity: 0.6,
+									filter: "grayscale(0.6)",
+								}}
+							>
+								<div className="wallet-info">
+									<div className="wallet-header">
+										{wallet.icon && (
+											<img
+												src={wallet.icon}
+												alt={wallet.displayName}
+												className="wallet-icon-small"
+											/>
+										)}
+										<div className="wallet-name">{wallet.displayName}</div>
+									</div>
+									<div
+										className={`wallet-status ${
+											wallet.installed ? "installed" : "not-installed"
+										}`}
+									>
+										{wallet.installed ? "Installed" : "Not Installed"}
+									</div>
+									{!wallet.isMidnightNative && (
+										<div
+											className="wallet-warning"
+											style={{
+												marginTop: "0.5rem",
+												padding: "0.5rem",
+												backgroundColor: "rgba(255, 165, 0, 0.1)",
+												border: "1px solid rgba(255, 165, 0, 0.3)",
+												borderRadius: "4px",
+												fontSize: "0.75rem",
+												color: "var(--color-text-secondary, #666)",
+												width: "fit-content",
+												display: "inline-block",
+											}}
+										>
+											Not yet supported on Midnight Network.
+										</div>
+									)}
+								</div>
+								{wallet.installed ? (
+									<button
+										type="button"
+										onClick={() => handleConnect(wallet.name)}
+										disabled={
+											loading ||
+											(status.connected && status.walletName === wallet.name)
+										}
+										className="wallet-connect-button"
+									>
+										{status.connected && status.walletName === wallet.name
+											? "Connected"
+											: "Connect"}
+									</button>
+								) : (
+									<button
+										type="button"
+										onClick={() => {
+											const urls: Record<WalletName, string> = {
+												lace: "https://www.lace.io/",
+												yoroi: "https://yoroi-wallet.com/",
+												eternl: "https://eternl.io/",
+											};
+											window.open(urls[wallet.name], "_blank");
+										}}
+										className="wallet-install-button"
+									>
+										Install
+									</button>
+								)}
+							</div>
+						))}
 				</div>
 			</div>
 
