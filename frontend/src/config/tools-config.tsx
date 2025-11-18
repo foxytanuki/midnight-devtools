@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import { RpcExplorer } from "../components/RpcExplorer";
 import { WalletApp } from "../components/WalletApp";
 import { IndexerExplorer } from "../components/IndexerExplorer";
+import { About } from "../components/About";
 
 export interface ToolConfig {
 	/**
@@ -44,22 +45,23 @@ export const TOOLS: ToolConfig[] = [
 	{
 		id: "indexer",
 		name: "Indexer Explorer",
-		description: "Query and explore blockchain data using the public indexer GraphQL API",
+		description:
+			"Query and explore blockchain data using the public indexer GraphQL API",
 		component: IndexerExplorer,
 	},
 	{
 		id: "wallet",
 		name: "Wallet Connection",
-		description: "Test and verify Midnight Network compatible wallet connections",
+		description:
+			"Test and verify Midnight Network compatible wallet connections",
 		component: WalletApp,
 	},
-	// To add a new tool, add its configuration here
-	// {
-	//   id: "new-tool",
-	//   name: "New Tool",
-	//   description: "Description of the new tool",
-	//   component: NewToolComponent,
-	// },
+	{
+		id: "about",
+		name: "About",
+		description: "About Midnight DevTools and author information",
+		component: About,
+	},
 ];
 
 /**
@@ -80,4 +82,3 @@ export function getToolById(id: string): ToolConfig | undefined {
 export function getDefaultTool(): ToolConfig {
 	return getToolById(DEFAULT_TOOL_ID) ?? TOOLS[0];
 }
-
