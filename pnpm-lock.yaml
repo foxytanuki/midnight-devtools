@@ -11,31 +11,31 @@ importers:
   frontend:
     dependencies:
       '@midnight-ntwrk/midnight-js-contracts':
-        specifier: 2.0.2
-        version: 2.0.2
+        specifier: 2.1.0
+        version: 2.1.0
       '@midnight-ntwrk/midnight-js-fetch-zk-config-provider':
-        specifier: 2.0.2
-        version: 2.0.2
+        specifier: 2.1.0
+        version: 2.1.0
       '@midnight-ntwrk/midnight-js-http-client-proof-provider':
-        specifier: 2.0.2
-        version: 2.0.2
+        specifier: 2.1.0
+        version: 2.1.0
       '@midnight-ntwrk/midnight-js-indexer-public-data-provider':
-        specifier: 2.0.2
-        version: 2.0.2(@types/react@19.2.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        specifier: 2.1.0
+        version: 2.1.0(@types/react@19.2.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@midnight-ntwrk/midnight-js-network-id':
-        specifier: 2.0.2
-        version: 2.0.2
+        specifier: 2.1.0
+        version: 2.1.0
       '@midnight-ntwrk/midnight-js-types':
-        specifier: 2.0.2
-        version: 2.0.2
+        specifier: 2.1.0
+        version: 2.1.0
       '@midnight-ntwrk/midnight-js-utils':
-        specifier: 2.0.2
-        version: 2.0.2
+        specifier: 2.1.0
+        version: 2.1.0
       '@midnight-ntwrk/wallet-sdk-address-format':
-        specifier: ^2.0.0
+        specifier: 2.0.0
         version: 2.0.0(@midnight-ntwrk/zswap@4.0.0)
       '@midnight-ntwrk/zswap':
-        specifier: ^4.0.0
+        specifier: 4.0.0
         version: 4.0.0
       bech32:
         specifier: ^2.0.0
@@ -639,26 +639,26 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@midnight-ntwrk/midnight-js-contracts@2.0.2':
-    resolution: {integrity: sha512-L1MPw5cmMq4bA5MQrnq9SWMl2wfmwOS2oK+lLwvtiYGtvd1/JrIXxBZk1759Sf9xTtVxmMdDS4yFLd3US0en2A==}
+  '@midnight-ntwrk/midnight-js-contracts@2.1.0':
+    resolution: {integrity: sha512-pw4LwNUBG7nZvt1QeCi5dCfBhkz+jsskXsLzsdrkFiJuptJACYvFtLFm0yWQ3oEyxIhuqDYedIsI4sqgq2cIhg==}
 
-  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@2.0.2':
-    resolution: {integrity: sha512-+7zrFkKh6AsxRHXeD0o4Nnhv/SCAnIadwoG+pT1XfD0knaMLu7rjHM/yFtwj6168dJF+McaPdkWaa+TGipRHtQ==}
+  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@2.1.0':
+    resolution: {integrity: sha512-oWztVa4A+/trjSFjEFID6pCYYip/r3JoMfjtoboby17Um/wncUTxu35dZybgmhQzM0BiGKuyq7zVVodI5bbl/Q==}
 
-  '@midnight-ntwrk/midnight-js-http-client-proof-provider@2.0.2':
-    resolution: {integrity: sha512-zhSZA2zjo+ynzan28JJePReMhyLBVaRgf7hEUj1thVG/1bRuYWDQv/cMqr+x/ZocCDTqbbWdb/6gpHOkO9aWXg==}
+  '@midnight-ntwrk/midnight-js-http-client-proof-provider@2.1.0':
+    resolution: {integrity: sha512-SubdHm4bP7syyQ1UEqsmfPoYkHhVRDlCuXS8RqR4p4ivIVeN6pE7oh0dLOM+oJtcPIM646lI8dJnuHZEfxjsAw==}
 
-  '@midnight-ntwrk/midnight-js-indexer-public-data-provider@2.0.2':
-    resolution: {integrity: sha512-yn2EriaclSNUwZqZNsgJv//6vPkW2NrA84e9S6zs7KEDDoCobtiFBlOHR54IXM2fNs3DnAojsVZiQaTY0Lq4vQ==}
+  '@midnight-ntwrk/midnight-js-indexer-public-data-provider@2.1.0':
+    resolution: {integrity: sha512-Hmj4wcF7WmGvLrRjz9xvMu0GPop/FxbwNumsuR+mnw7EYf3Y/6JRQeIZ0Ga+eD1VM5JaUJ8A+I8iGZMcpQ36TA==}
 
-  '@midnight-ntwrk/midnight-js-network-id@2.0.2':
-    resolution: {integrity: sha512-ogBBC5Ox2B2QZo4XxXYr3AxwgUeC4LEmLasLInjMk0p0m//8iI6NmH4/5f0pEOxDtGSuA+piuSonxuQMLM6GUg==}
+  '@midnight-ntwrk/midnight-js-network-id@2.1.0':
+    resolution: {integrity: sha512-uYIxvYNbrjCQW4ntJz/kKWZUeoBX4ahYaI9k37GrX02EJRPs7wJ+3iIJstTiL36JUxJUyTkePufL+lFgTadP8A==}
 
-  '@midnight-ntwrk/midnight-js-types@2.0.2':
-    resolution: {integrity: sha512-ewHBQRCvY8u0+JAGdjQ86KsyoTA3dbNBLkuZ1o5U6vU/1jFjnFA1FL9skTgdXzSKjjfwA930i+OvbaUaUzFEHQ==}
+  '@midnight-ntwrk/midnight-js-types@2.1.0':
+    resolution: {integrity: sha512-bU7f2gdXt1/BR2XatKNPx9o6FDq1exYcWLQg4kn78d1SX39OVD33PVOavg2mFMoeC00YpcG2T1xH0eD/CMwXgA==}
 
-  '@midnight-ntwrk/midnight-js-utils@2.0.2':
-    resolution: {integrity: sha512-c01Nh9BfwxwijItgrieeXtdwfOZuQd9gWMX+294rT8Pq+vydIt61+0V89TLIT7nh/1d7Z2Bu9X5+9rFzfzwylA==}
+  '@midnight-ntwrk/midnight-js-utils@2.1.0':
+    resolution: {integrity: sha512-AKtpmqY82NyM/wOzTT3vVjfXH7NKWcMeXHIxFeNracvszgr5z7tQsFqrGTws6M7CHZ+/Gn1FGP+Goi/DluE9SA==}
 
   '@midnight-ntwrk/wallet-sdk-address-format@2.0.0':
     resolution: {integrity: sha512-S/3uIfXXUcklYocO0UPey+15uI095CFuCyJRYgxnTmkIXrgjOn8IfSHnReHDtE6JKkvdN2EXlYVt4ufRdCMuPA==}
@@ -2174,35 +2174,35 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@midnight-ntwrk/midnight-js-contracts@2.0.2':
+  '@midnight-ntwrk/midnight-js-contracts@2.1.0':
     dependencies:
-      '@midnight-ntwrk/midnight-js-network-id': 2.0.2
-      '@midnight-ntwrk/midnight-js-types': 2.0.2
-      '@midnight-ntwrk/midnight-js-utils': 2.0.2
+      '@midnight-ntwrk/midnight-js-network-id': 2.1.0
+      '@midnight-ntwrk/midnight-js-types': 2.1.0
+      '@midnight-ntwrk/midnight-js-utils': 2.1.0
 
-  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@2.0.2':
+  '@midnight-ntwrk/midnight-js-fetch-zk-config-provider@2.1.0':
     dependencies:
-      '@midnight-ntwrk/midnight-js-types': 2.0.2
+      '@midnight-ntwrk/midnight-js-types': 2.1.0
       cross-fetch: 4.1.0
     transitivePeerDependencies:
       - encoding
 
-  '@midnight-ntwrk/midnight-js-http-client-proof-provider@2.0.2':
+  '@midnight-ntwrk/midnight-js-http-client-proof-provider@2.1.0':
     dependencies:
       '@dao-xyz/borsh': 5.2.4
-      '@midnight-ntwrk/midnight-js-network-id': 2.0.2
-      '@midnight-ntwrk/midnight-js-types': 2.0.2
+      '@midnight-ntwrk/midnight-js-network-id': 2.1.0
+      '@midnight-ntwrk/midnight-js-types': 2.1.0
       cross-fetch: 4.1.0
       fetch-retry: 6.0.0
       lodash: 4.17.21
     transitivePeerDependencies:
       - encoding
 
-  '@midnight-ntwrk/midnight-js-indexer-public-data-provider@2.0.2(@types/react@19.2.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+  '@midnight-ntwrk/midnight-js-indexer-public-data-provider@2.1.0(@types/react@19.2.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
       '@apollo/client': 3.14.0(@types/react@19.2.5)(graphql-ws@6.0.6(graphql@16.12.0)(ws@8.18.3))(graphql@16.12.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@midnight-ntwrk/midnight-js-network-id': 2.0.2
-      '@midnight-ntwrk/midnight-js-types': 2.0.2
+      '@midnight-ntwrk/midnight-js-network-id': 2.1.0
+      '@midnight-ntwrk/midnight-js-types': 2.1.0
       buffer: 6.0.3
       cross-fetch: 4.1.0
       graphql: 16.12.0
@@ -2223,13 +2223,13 @@ snapshots:
       - uWebSockets.js
       - utf-8-validate
 
-  '@midnight-ntwrk/midnight-js-network-id@2.0.2': {}
+  '@midnight-ntwrk/midnight-js-network-id@2.1.0': {}
 
-  '@midnight-ntwrk/midnight-js-types@2.0.2':
+  '@midnight-ntwrk/midnight-js-types@2.1.0':
     dependencies:
       rxjs: 7.8.2
 
-  '@midnight-ntwrk/midnight-js-utils@2.0.2': {}
+  '@midnight-ntwrk/midnight-js-utils@2.1.0': {}
 
   '@midnight-ntwrk/wallet-sdk-address-format@2.0.0(@midnight-ntwrk/zswap@4.0.0)':
     dependencies:
