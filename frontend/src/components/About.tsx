@@ -1,5 +1,15 @@
 import "../App.css";
 
+const linkStyle = {
+	color: "var(--color-primary)",
+	textDecoration: "underline",
+} as const;
+
+const listStyle = {
+	listStyle: "disc",
+	paddingLeft: "1.5rem",
+} as const;
+
 export function About() {
 	return (
 		<div className="app">
@@ -35,10 +45,7 @@ export function About() {
 										href="https://twitter.com/foxytanuki"
 										target="_blank"
 										rel="noopener noreferrer"
-										style={{
-											color: "var(--color-primary)",
-											textDecoration: "underline",
-										}}
+										style={linkStyle}
 									>
 										@foxytanuki
 									</a>
@@ -51,10 +58,7 @@ export function About() {
 										href="https://github.com/foxytanuki/midnight-devtools"
 										target="_blank"
 										rel="noopener noreferrer"
-										style={{
-											color: "var(--color-primary)",
-											textDecoration: "underline",
-										}}
+										style={linkStyle}
 									>
 										foxytanuki/midnight-devtools
 									</a>
@@ -65,10 +69,7 @@ export function About() {
 
 					<div className="params-section">
 						<h3>Tools</h3>
-						<ul
-							className="usage-list"
-							style={{ listStyle: "disc", paddingLeft: "1.5rem" }}
-						>
+						<ul className="usage-list" style={listStyle}>
 							<li>
 								<strong>RPC Explorer:</strong> Explore and execute Midnight
 								Network RPC methods
@@ -86,19 +87,13 @@ export function About() {
 
 					<div className="params-section">
 						<h3>Resources</h3>
-						<ul
-							className="usage-list"
-							style={{ listStyle: "disc", paddingLeft: "1.5rem" }}
-						>
+						<ul className="usage-list" style={listStyle}>
 							<li>
 								<a
 									href="https://midnight.network"
 									target="_blank"
 									rel="noopener noreferrer"
-									style={{
-										color: "var(--color-primary)",
-										textDecoration: "underline",
-									}}
+									style={linkStyle}
 								>
 									Midnight Network
 								</a>
@@ -108,12 +103,19 @@ export function About() {
 									href="https://midnight.network/test-faucet"
 									target="_blank"
 									rel="noopener noreferrer"
-									style={{
-										color: "var(--color-primary)",
-										textDecoration: "underline",
-									}}
+									style={linkStyle}
 								>
-									Midnight Testnet Faucet
+									Midnight Testnet Faucet (testnet-02)
+								</a>
+							</li>
+							<li>
+								<a
+									href="https://faucet.preview.midnight.network/"
+									target="_blank"
+									rel="noopener noreferrer"
+									style={linkStyle}
+								>
+									Midnight Preview Faucet (midnight-preview)
 								</a>
 							</li>
 							<li>
@@ -121,12 +123,9 @@ export function About() {
 									href="https://www.midnighttransaction.us/"
 									target="_blank"
 									rel="noopener noreferrer"
-									style={{
-										color: "var(--color-primary)",
-										textDecoration: "underline",
-									}}
+									style={linkStyle}
 								>
-									Midnight Transactions Viewer
+									Midnight Transactions Viewer (testnet-02)
 								</a>{" "}
 								- An excellent resource. Some parts of this project were
 								inspired by its functionality.
