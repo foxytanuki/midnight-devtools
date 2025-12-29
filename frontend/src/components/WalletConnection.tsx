@@ -133,7 +133,12 @@ export function WalletConnection({
 	// トークンバランスをフォーマット
 	const formatTokenBalances = (
 		balances: Record<string, bigint> | undefined,
-	): Array<{ tokenType: string; displayName: string; balance: string; balanceNight: string }> => {
+	): Array<{
+		tokenType: string;
+		displayName: string;
+		balance: string;
+		balanceNight: string;
+	}> => {
 		if (!balances) return [];
 		return Object.entries(balances).map(([tokenType, balance]) => ({
 			tokenType,
@@ -370,20 +375,40 @@ export function WalletConnection({
 								<>
 									<div className="info-item">
 										<label>Dust Balance</label>
-										<div style={{ fontSize: "0.9375rem", color: "var(--color-text)" }}>
+										<div
+											style={{
+												fontSize: "0.9375rem",
+												color: "var(--color-text)",
+											}}
+										>
 											{formatSpeckToTDustWithCommas(dustBalance.balance)} tDUST
 											<br />
-											<span style={{ color: "var(--color-text-secondary)", fontSize: "0.75rem" }}>
+											<span
+												style={{
+													color: "var(--color-text-secondary)",
+													fontSize: "0.75rem",
+												}}
+											>
 												({formatBigInt(dustBalance.balance)} SPECK)
 											</span>
 										</div>
 									</div>
 									<div className="info-item">
 										<label>Dust Cap</label>
-										<div style={{ fontSize: "0.9375rem", color: "var(--color-text)" }}>
+										<div
+											style={{
+												fontSize: "0.9375rem",
+												color: "var(--color-text)",
+											}}
+										>
 											{formatSpeckToTDustWithCommas(dustBalance.cap)} tDUST
 											<br />
-											<span style={{ color: "var(--color-text-secondary)", fontSize: "0.75rem" }}>
+											<span
+												style={{
+													color: "var(--color-text-secondary)",
+													fontSize: "0.75rem",
+												}}
+											>
 												({formatBigInt(dustBalance.cap)} SPECK)
 											</span>
 										</div>
@@ -420,7 +445,12 @@ export function WalletConnection({
 													Unshielded
 												</div>
 												{formatTokenBalances(unshieldedBalances).map(
-													({ tokenType, displayName, balance, balanceNight }) => (
+													({
+														tokenType,
+														displayName,
+														balance,
+														balanceNight,
+													}) => (
 														<div
 															key={tokenType}
 															style={{
@@ -428,10 +458,20 @@ export function WalletConnection({
 																color: "var(--color-text)",
 															}}
 														>
-															{displayName}: {balanceNight} {getNativeTokenName()}
+															{displayName}: {balanceNight}{" "}
+															{getNativeTokenName()}
 															<br />
-															<span style={{ color: "var(--color-text-secondary)", fontSize: "0.75rem" }}>
-																({balance} <span style={{ fontSize: "0.6875rem" }}>{MIN_UNIT_NAME}</span>)
+															<span
+																style={{
+																	color: "var(--color-text-secondary)",
+																	fontSize: "0.75rem",
+																}}
+															>
+																({balance}{" "}
+																<span style={{ fontSize: "0.6875rem" }}>
+																	{MIN_UNIT_NAME}
+																</span>
+																)
 															</span>
 														</div>
 													),
@@ -456,7 +496,12 @@ export function WalletConnection({
 													Shielded
 												</div>
 												{formatTokenBalances(shieldedBalances).map(
-													({ tokenType, displayName, balance, balanceNight }) => (
+													({
+														tokenType,
+														displayName,
+														balance,
+														balanceNight,
+													}) => (
 														<div
 															key={tokenType}
 															style={{
@@ -464,10 +509,20 @@ export function WalletConnection({
 																color: "var(--color-text)",
 															}}
 														>
-															{displayName}: {balanceNight} {getNativeTokenName()}
+															{displayName}: {balanceNight}{" "}
+															{getNativeTokenName()}
 															<br />
-															<span style={{ color: "var(--color-text-secondary)", fontSize: "0.75rem" }}>
-																({balance} <span style={{ fontSize: "0.6875rem" }}>{MIN_UNIT_NAME}</span>)
+															<span
+																style={{
+																	color: "var(--color-text-secondary)",
+																	fontSize: "0.75rem",
+																}}
+															>
+																({balance}{" "}
+																<span style={{ fontSize: "0.6875rem" }}>
+																	{MIN_UNIT_NAME}
+																</span>
+																)
 															</span>
 														</div>
 													),
