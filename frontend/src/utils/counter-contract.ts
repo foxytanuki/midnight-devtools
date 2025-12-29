@@ -27,7 +27,6 @@ const TESTNET_CONFIG = {
 setNetworkId(NetworkId.TestNet);
 
 // Contract instance
-// @ts-expect-error - Counter.Contract type may not be fully defined
 const counterContractInstance = new Counter.Contract(witnesses);
 
 // Private state ID
