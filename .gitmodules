@@ -1,0 +1,10 @@
+[submodule "submodules/midnight-starter-template"]
+	path = submodules/midnight-starter-template
+	url = https://github.com/MeshJS/midnight-starter-template.git
+	branch = main
+[submodule "submodules/midnight-indexer"]
+	path = submodules/midnight-indexer
+	url = https://github.com/midnightntwrk/midnight-indexer.git
+[submodule "submodules/midnight-node"]
+	path = submodules/midnight-node
+	url = https://github.com/midnightntwrk/midnight-node.git
