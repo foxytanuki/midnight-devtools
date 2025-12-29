@@ -3,8 +3,8 @@
  * Supports both HTTP queries/mutations and WebSocket subscriptions
  */
 
-import { createClient } from "graphql-ws";
 import type { Client, ClientOptions } from "graphql-ws";
+import { createClient } from "graphql-ws";
 
 export interface GraphQLRequest {
 	query: string;
@@ -110,7 +110,7 @@ export class GraphQLClient {
 
 	/**
 	 * Subscribe to a GraphQL subscription via WebSocket
-	 * 
+	 *
 	 * @returns A function that can be called to unsubscribe
 	 */
 	subscribe(options: SubscriptionOptions): () => void {
@@ -137,7 +137,9 @@ export class GraphQLClient {
 				next: (data) => {
 					if (data.errors && data.errors.length > 0) {
 						const errorMessages = data.errors.map((e) => e.message).join(", ");
-						const error = new Error(`GraphQL subscription error: ${errorMessages}`);
+						const error = new Error(
+							`GraphQL subscription error: ${errorMessages}`,
+						);
 						if (options.onError) {
 							options.onError(error);
 						} else {
@@ -150,10 +152,12 @@ export class GraphQLClient {
 					}
 				},
 				error: (error) => {
+					const errorObj =
+						error instanceof Error ? error : new Error(String(error));
 					if (options.onError) {
-						options.onError(error);
+						options.onError(errorObj);
 					} else {
-						console.error("GraphQL subscription error:", error);
+						console.error("GraphQL subscription error:", errorObj);
 					}
 				},
 				complete: () => {

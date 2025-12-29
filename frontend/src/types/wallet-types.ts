@@ -3,15 +3,13 @@
  * DApp Connector APIを使用
  */
 
-import type {
-	InitialAPI,
-	ConnectedAPI,
-	Configuration,
-	ConnectionStatus,
-} from "@midnight-ntwrk/dapp-connector-api";
-
 // DApp Connector APIの型を再エクスポート
-export type { InitialAPI, ConnectedAPI, Configuration, ConnectionStatus };
+export type {
+	Configuration,
+	ConnectedAPI,
+	ConnectionStatus,
+	InitialAPI,
+} from "@midnight-ntwrk/dapp-connector-api";
 
 // ウォレット関連の型定義
 export type DustAddress = {
@@ -187,10 +185,7 @@ export interface SystemTransaction {
 /**
  * Contract Action (union type)
  */
-export type ContractAction =
-	| ContractDeploy
-	| ContractCall
-	| ContractUpdate;
+export type ContractAction = ContractDeploy | ContractCall | ContractUpdate;
 
 /**
  * Contract Deploy

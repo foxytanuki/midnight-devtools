@@ -3,12 +3,7 @@
  * DApp Connector APIを使用したウォレット接続管理
  */
 
-import type {
-	ConnectedAPI,
-	InitialAPI,
-	Configuration,
-	ConnectionStatus,
-} from "../types/wallet-types";
+import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { pipe as fnPipe } from "fp-ts/lib/function.js";
 import {
 	catchError,
@@ -22,10 +17,13 @@ import {
 	throwError,
 	timeout,
 } from "rxjs";
-import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import type {
+	Configuration,
+	ConnectedAPI,
+	ConnectionStatus,
 	DustAddress,
 	DustBalance,
+	InitialAPI,
 	ShieldedAddress,
 	ShieldedBalance,
 	UnshieldedAddress,
@@ -195,12 +193,12 @@ export class MidnightBrowserWallet {
 							console.error("Network ID mismatch:", error);
 							throw new Error(
 								"Network ID mismatch detected.\n\n" +
-								"Lace Wallet's network setting cannot be changed automatically. " +
-								"You need to manually change it in Lace Wallet settings:\n\n" +
-								"1. Open Lace Wallet extension\n" +
-								"2. Go to Settings > Wallet > Midnight\n" +
-								"3. Select the network that matches the selected network in this app\n" +
-								"4. Disconnect and reconnect your wallet here",
+									"Lace Wallet's network setting cannot be changed automatically. " +
+									"You need to manually change it in Lace Wallet settings:\n\n" +
+									"1. Open Lace Wallet extension\n" +
+									"2. Go to Settings > Wallet > Midnight\n" +
+									"3. Select the network that matches the selected network in this app\n" +
+									"4. Disconnect and reconnect your wallet here",
 							);
 						}
 						// その他のエラーは通常のエラーハンドリングに委譲

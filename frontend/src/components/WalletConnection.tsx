@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { useWallet } from "../hooks/useWallet";
-import { MidnightBrowserWallet } from "../utils/wallet-controller";
 import { useNetwork } from "../contexts/NetworkContext";
+import { useWallet } from "../hooks/useWallet";
 import { mapToWalletNetworkId } from "../utils/network-config";
+import { MidnightBrowserWallet } from "../utils/wallet-controller";
 import "../App.css";
 
 interface WalletConnectionProps {

@@ -807,7 +807,9 @@ pre {
 	border-radius: 2px;
 	padding: 1rem;
 	background-color: var(--color-surface);
-	transition: border-color 0.15s, box-shadow 0.15s;
+	transition:
+		border-color 0.15s,
+		box-shadow 0.15s;
 }
 
 .unshielded-transaction-card:hover {

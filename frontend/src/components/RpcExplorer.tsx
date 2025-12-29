@@ -1,6 +1,7 @@
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RpcClient } from "../clients/rpc-client";
 import { CATEGORY_NAMES, RPC_METHODS } from "../config/rpc-methods";
+import { useNetwork } from "../contexts/NetworkContext";
 import {
 	extractBlockHashFromResult,
 	extractBlockNumberFromResult,
@@ -11,7 +12,6 @@ import {
 	searchTransactionsByAccount,
 	type TransactionSearchResult,
 } from "../utils/tx-search";
-import { useNetwork } from "../contexts/NetworkContext";
 import "../App.css";
 
 type TabType = "rpc" | "search-tx" | "search-account";

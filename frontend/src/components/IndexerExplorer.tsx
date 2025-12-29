@@ -1,6 +1,7 @@
 import { type ReactElement, useEffect, useMemo, useState } from "react";
 import { GraphQLClient } from "../clients/graphql-client";
 import { RpcClient } from "../clients/rpc-client";
+import { useNetwork } from "../contexts/NetworkContext";
 import {
 	buildBlockWithTransactionsQuery,
 	buildLatestBlockQuery,
@@ -8,7 +9,6 @@ import {
 	buildTransactionsByIdentifierQuery,
 } from "../utils/graphql-queries";
 import { introspectSchema } from "../utils/indexer-schema";
-import { useNetwork } from "../contexts/NetworkContext";
 import "../App.css";
 
 type TabType = "blocks" | "transactions" | "search" | "custom" | "schema";

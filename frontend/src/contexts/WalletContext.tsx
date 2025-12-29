@@ -1,19 +1,19 @@
 import { createContext, useCallback, useEffect, useState } from "react";
-import { MidnightBrowserWallet } from "../utils/wallet-controller";
 import type {
 	Configuration,
 	ConnectedAPI,
 	ConnectionStatus,
-	InitialAPI,
 	DustAddress,
 	DustBalance,
+	InitialAPI,
 	ShieldedAddress,
 	ShieldedBalance,
 	UnshieldedAddress,
 	UnshieldedBalanceDappConnector,
 } from "../types/wallet-types";
-import { useNetwork } from "./NetworkContext";
 import { mapToWalletNetworkId } from "../utils/network-config";
+import { MidnightBrowserWallet } from "../utils/wallet-controller";
+import { useNetwork } from "./NetworkContext";
 
 interface MidnightMeshProviderProps {
 	children: React.ReactNode;

@@ -1,9 +1,9 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, type ReactNode, useContext, useState } from "react";
 import {
-	type NetworkId,
-	type NetworkConfig,
-	NETWORKS,
 	getStoredNetworkId,
+	NETWORKS,
+	type NetworkConfig,
+	type NetworkId,
 	setStoredNetworkId,
 } from "../utils/network-config";
 

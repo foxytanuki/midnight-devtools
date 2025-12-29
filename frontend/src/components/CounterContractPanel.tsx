@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { checkProofServer, getCounterValue } from "../utils/counter-contract";
 import { useNetwork } from "../contexts/NetworkContext";
 import { useWallet } from "../hooks/useWallet";
+import { checkProofServer, getCounterValue } from "../utils/counter-contract";
 import "../App.css";
 
 export function CounterContractPanel() {

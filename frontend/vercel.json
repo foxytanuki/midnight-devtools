@@ -3,4 +3,3 @@
 	"buildCommand": "bun run build",
 	"framework": "vite"
 }
-

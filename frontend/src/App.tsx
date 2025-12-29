@@ -6,7 +6,7 @@ import {
 	type ToolConfig,
 } from "./config/tools-config";
 import { useNetwork } from "./contexts/NetworkContext";
-import { type NetworkId, NETWORKS } from "./utils/network-config";
+import { NETWORKS, type NetworkId } from "./utils/network-config";
 import "./App.css";
 
 function App() {
