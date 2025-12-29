@@ -2,7 +2,7 @@
  * ネットワーク設定の管理
  */
 
-export type NetworkId = "testnet-02" | "0.18-undeployed1-kitsunesh" | "midnight-preview";
+export type NetworkId = "testnet-02" | "0.18-undeployed1-kitsunesh" | "midnight-preview" | "localhost";
 
 export interface NetworkConfig {
 	id: NetworkId;
@@ -40,6 +40,15 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
 		indexerWS: "wss://indexer.preview.midnight.network/api/v3/graphql/ws",
 		explorerUrl:
 			"https://polkadot.js.org/apps/?rpc=wss://rpc.preview.midnight.network#/explorer",
+	},
+	"localhost": {
+		id: "localhost",
+		name: "localhost",
+		rpcUrl: "ws://localhost:9944",
+		indexerUrl: "http://localhost:8088/api/v1/graphql",
+		indexerWS: "ws://localhost:8088/api/v1/graphql/ws",
+		explorerUrl:
+			"https://polkadot.js.org/apps/?rpc=ws://localhost:9944#/explorer",
 	},
 };
 
@@ -87,6 +96,7 @@ export function mapToWalletNetworkId(networkId: NetworkId): string {
 		"testnet-02": "preview", // testnet-02はpreviewにマッピング
 		"0.18-undeployed1-kitsunesh": "undeployed", // undeployed1はundeployedにマッピング
 		"midnight-preview": "preview", // midnight-previewはpreviewにマッピング
+		"localhost": "undeployed", // localhostはundeployedにマッピング（Lace Walletがlocalhostアクセスを許可するため）
 	};
 	return mapping[networkId] || networkId;
 }
