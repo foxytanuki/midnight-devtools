@@ -15,15 +15,9 @@ import { assertIsContractAddress } from "@midnight-ntwrk/midnight-js-utils";
 import { Counter, witnesses } from "../lib/contract";
 import type { Cip30WalletApi } from "../types/wallet-types";
 import { browserPrivateStateProvider } from "./browser-private-state-provider";
+import { getCurrentNetworkConfig, type NetworkConfig } from "./network-config";
 
-// Testnet設定
-const TESTNET_CONFIG = {
-	indexer: "https://indexer.testnet-02.midnight.network/api/v1/graphql",
-	indexerWS: "wss://indexer.testnet-02.midnight.network/api/v1/graphql/ws",
-	proofServer: "http://localhost:6300",
-};
-
-// Network IDを設定
+// Network IDを設定（デフォルトはTestNet）
 setNetworkId(NetworkId.TestNet);
 
 // Contract instance
@@ -65,7 +59,13 @@ export async function checkProofServer(
 /**
  * Providersを設定
  */
-async function configureProviders(walletApi: Cip30WalletApi) {
+async function configureProviders(
+	walletApi: Cip30WalletApi,
+	networkConfig?: NetworkConfig,
+) {
+	// ネットワーク設定を取得（引数がなければ現在の設定を使用）
+	const config = networkConfig || getCurrentNetworkConfig();
+
 	// ZK config providerのパスを設定
 	// ブラウザ環境では、managed/counterディレクトリから読み込む
 	const zkConfigBaseUrl = "/lib/contract/managed/counter";
@@ -77,12 +77,12 @@ async function configureProviders(walletApi: Cip30WalletApi) {
 			privateStateStoreName: "counter-private-state",
 		}),
 		publicDataProvider: indexerPublicDataProvider(
-			TESTNET_CONFIG.indexer,
-			TESTNET_CONFIG.indexerWS,
+			config.indexerUrl,
+			config.indexerWS || config.indexerUrl.replace("/api/v1/graphql", "/api/v1/graphql/ws").replace("https://", "wss://").replace("http://", "ws://"),
 		),
 		// @ts-expect-error - FetchZkConfigProvider constructor signature may vary
 		zkConfigProvider: new FetchZkConfigProvider("increment", zkConfigBaseUrl),
-		proofProvider: httpClientProofProvider(TESTNET_CONFIG.proofServer),
+		proofProvider: httpClientProofProvider("http://localhost:6300"),
 		walletProvider: walletApi as any, // TODO: 適切な型変換
 		midnightProvider: walletApi as any, // TODO: 適切な型変換
 	};
@@ -115,14 +115,16 @@ export async function deployCounterContract(
  * 既存のCounterコントラクトに参加
  * @param walletApi CIP-30ウォレットAPI
  * @param contractAddress コントラクトアドレス
+ * @param networkConfig ネットワーク設定（省略時は現在の設定を使用）
  */
 export async function joinCounterContract(
 	walletApi: Cip30WalletApi,
 	contractAddress: string,
+	networkConfig?: NetworkConfig,
 ): Promise<void> {
 	try {
 		assertIsContractAddress(contractAddress);
-		const providers = await configureProviders(walletApi);
+		const providers = await configureProviders(walletApi, networkConfig);
 
 		const counterContract = await findDeployedContract(providers, {
 			contractAddress,
@@ -145,14 +147,16 @@ export async function joinCounterContract(
  * Counterをインクリメント
  * @param walletApi CIP-30ウォレットAPI
  * @param contractAddress コントラクトアドレス
+ * @param networkConfig ネットワーク設定（省略時は現在の設定を使用）
  */
 export async function incrementCounter(
 	walletApi: Cip30WalletApi,
 	contractAddress: string,
+	networkConfig?: NetworkConfig,
 ): Promise<void> {
 	try {
 		assertIsContractAddress(contractAddress);
-		const providers = await configureProviders(walletApi);
+		const providers = await configureProviders(walletApi, networkConfig);
 
 		await findDeployedContract(providers, {
 			contractAddress,
@@ -173,13 +177,18 @@ export async function incrementCounter(
 /**
  * Counterの現在の値を取得
  * @param contractAddress コントラクトアドレス
+ * @param networkConfig ネットワーク設定（省略時は現在の設定を使用）
  * @returns Counterの値
  */
 export async function getCounterValue(
 	contractAddress: string,
+	networkConfig?: NetworkConfig,
 ): Promise<bigint> {
 	try {
 		assertIsContractAddress(contractAddress);
+
+		// ネットワーク設定を取得（引数がなければ現在の設定を使用）
+		const config = networkConfig || getCurrentNetworkConfig();
 
 		// Indexer APIを使用してcontract stateを取得
 		const query = `
@@ -191,7 +200,7 @@ export async function getCounterValue(
 			}
 		`;
 
-		const response = await fetch(TESTNET_CONFIG.indexer, {
+		const response = await fetch(config.indexerUrl, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

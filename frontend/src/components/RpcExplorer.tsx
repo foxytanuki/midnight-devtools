@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { RpcClient } from "../clients/rpc-client";
 import { CATEGORY_NAMES, RPC_METHODS } from "../config/rpc-methods";
 import {
@@ -11,14 +11,19 @@ import {
 	searchTransactionsByAccount,
 	type TransactionSearchResult,
 } from "../utils/tx-search";
+import { useNetwork } from "../contexts/NetworkContext";
 import "../App.css";
-
-const DEFAULT_ENDPOINT = "https://rpc.testnet-02.midnight.network/";
 
 type TabType = "rpc" | "search-tx" | "search-account";
 
 export function RpcExplorer() {
-	const [endpoint, setEndpoint] = useState(DEFAULT_ENDPOINT);
+	const { currentNetwork } = useNetwork();
+	const [endpoint, setEndpoint] = useState(currentNetwork.rpcUrl);
+
+	// ネットワークが変更されたらエンドポイントを更新
+	useEffect(() => {
+		setEndpoint(currentNetwork.rpcUrl);
+	}, [currentNetwork.rpcUrl]);
 	const [activeTab, setActiveTab] = useState<TabType>("rpc");
 	const [selectedMethod, setSelectedMethod] = useState<string>("system_chain");
 	const [selectedCategory, setSelectedCategory] = useState<string>("all");

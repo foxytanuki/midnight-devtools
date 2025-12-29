@@ -6,6 +6,7 @@ import {
 	incrementCounter,
 	joinCounterContract,
 } from "../utils/counter-contract";
+import { useNetwork } from "../contexts/NetworkContext";
 import "../App.css";
 
 interface CounterContractPanelProps {
@@ -15,6 +16,7 @@ interface CounterContractPanelProps {
 }
 
 export function CounterContractPanel({ walletApi }: CounterContractPanelProps) {
+	const { currentNetwork } = useNetwork();
 	// Default contract address for testing (deployed via CLI)
 	const [contractAddress, setContractAddress] = useState<string>(
 		"0200ea62067fe8bac97e8f8caaee6413c8ed7f42e0a960335f1b1aeb43fa37999315",
@@ -55,7 +57,7 @@ export function CounterContractPanel({ walletApi }: CounterContractPanelProps) {
 		setError("");
 
 		try {
-			await joinCounterContract(walletApi, contractAddress.trim());
+			await joinCounterContract(walletApi, contractAddress.trim(), currentNetwork);
 			// Success - contract is now joined
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Failed to join contract");
@@ -74,7 +76,7 @@ export function CounterContractPanel({ walletApi }: CounterContractPanelProps) {
 		setError("");
 
 		try {
-			await incrementCounter(walletApi, contractAddress.trim());
+			await incrementCounter(walletApi, contractAddress.trim(), currentNetwork);
 			// Refresh counter value after increment
 			setTimeout(() => {
 				handleViewState();
@@ -99,7 +101,7 @@ export function CounterContractPanel({ walletApi }: CounterContractPanelProps) {
 		setCounterValue(null);
 
 		try {
-			const value = await getCounterValue(contractAddress.trim());
+			const value = await getCounterValue(contractAddress.trim(), currentNetwork);
 			setCounterValue(value);
 		} catch (err) {
 			setError(

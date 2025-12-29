@@ -8,11 +8,8 @@ import {
 	buildTransactionsByIdentifierQuery,
 } from "../utils/graphql-queries";
 import { introspectSchema } from "../utils/indexer-schema";
+import { useNetwork } from "../contexts/NetworkContext";
 import "../App.css";
-
-const DEFAULT_INDEXER_URL =
-	"https://indexer.testnet-02.midnight.network/api/v1/graphql";
-const DEFAULT_RPC_URL = "https://rpc.testnet-02.midnight.network/";
 
 type TabType = "blocks" | "transactions" | "search" | "custom" | "schema";
 
@@ -60,8 +57,15 @@ interface Transaction {
 }
 
 export function IndexerExplorer() {
-	const [indexerUrl, setIndexerUrl] = useState(DEFAULT_INDEXER_URL);
-	const [rpcUrl, setRpcUrl] = useState(DEFAULT_RPC_URL);
+	const { currentNetwork } = useNetwork();
+	const [indexerUrl, setIndexerUrl] = useState(currentNetwork.indexerUrl);
+	const [rpcUrl, setRpcUrl] = useState(currentNetwork.rpcUrl);
+
+	// ネットワークが変更されたらURLを更新
+	useEffect(() => {
+		setIndexerUrl(currentNetwork.indexerUrl);
+		setRpcUrl(currentNetwork.rpcUrl);
+	}, [currentNetwork.indexerUrl, currentNetwork.rpcUrl]);
 
 	// Get initial tab from URL search params, default to "blocks"
 	const getInitialTab = (): TabType => {
@@ -1175,7 +1179,7 @@ export function IndexerExplorer() {
 							value={rpcUrl}
 							onChange={(e) => setRpcUrl(e.target.value)}
 							className="endpoint-input"
-							placeholder={DEFAULT_RPC_URL}
+							placeholder={currentNetwork.rpcUrl}
 						/>
 					</label>
 				</div>
