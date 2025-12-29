@@ -3,11 +3,11 @@
  */
 
 import type {
-	WalletName,
-	Cip30WalletApi,
 	CardanoWindow,
+	Cip30WalletApi,
 	WalletConnection,
 	WalletInfo,
+	WalletName,
 } from "../types/wallet-types";
 import { WalletError } from "../types/wallet-types";
 
@@ -59,18 +59,18 @@ export function detectWallets(): WalletName[] {
  */
 export function isWalletInstalled(walletName: WalletName): boolean {
 	const windowObj = window as CardanoWindow;
-	
+
 	// CIP-30ウォレットをチェック（通常のLace Walletを含む）
 	const cardano = windowObj.cardano;
 	if (cardano?.[walletName]) {
 		return true;
 	}
-	
+
 	// Midnight Network用のLace Walletをチェック（フォールバック）
 	if (walletName === "lace" && windowObj.midnight?.mnLace) {
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -94,11 +94,23 @@ export function getAvailableWallets(): WalletInfo[] {
 			console.log("[Wallet Debug] cardano.eternl:", cardano.eternl);
 		}
 		if (windowObj.midnight) {
-			console.log("[Wallet Debug] window.midnight keys:", Object.keys(windowObj.midnight));
-			console.log("[Wallet Debug] window.midnight.mnLace:", windowObj.midnight.mnLace);
+			console.log(
+				"[Wallet Debug] window.midnight keys:",
+				Object.keys(windowObj.midnight),
+			);
+			console.log(
+				"[Wallet Debug] window.midnight.mnLace:",
+				windowObj.midnight.mnLace,
+			);
 			// Midnight専用APIの可能性をチェック
-			console.log("[Wallet Debug] window.midnight.mnYoroi:", (windowObj.midnight as any).mnYoroi);
-			console.log("[Wallet Debug] window.midnight.mnEternl:", (windowObj.midnight as any).mnEternl);
+			console.log(
+				"[Wallet Debug] window.midnight.mnYoroi:",
+				(windowObj.midnight as any).mnYoroi,
+			);
+			console.log(
+				"[Wallet Debug] window.midnight.mnEternl:",
+				(windowObj.midnight as any).mnEternl,
+			);
 		}
 	}
 
@@ -106,9 +118,10 @@ export function getAvailableWallets(): WalletInfo[] {
 		let installed = false;
 		let provider: WalletInfo["provider"];
 		let isMidnightNative = false;
-		
+
 		// まずMidnight Network専用APIをチェック
-		const midnightKey = `mn${name.charAt(0).toUpperCase() + name.slice(1)}` as keyof typeof windowObj.midnight;
+		const midnightKey =
+			`mn${name.charAt(0).toUpperCase() + name.slice(1)}` as keyof typeof windowObj.midnight;
 		if (windowObj.midnight && (windowObj.midnight as any)[midnightKey]) {
 			installed = true;
 			isMidnightNative = true;
@@ -119,12 +132,17 @@ export function getAvailableWallets(): WalletInfo[] {
 					// Midnight専用APIの場合はアダプターを使用
 					return createMidnightLaceAdapter(api);
 				},
-				isEnabled: () => midnightApi.isEnabled ? midnightApi.isEnabled() : Promise.resolve(false),
+				isEnabled: () =>
+					midnightApi.isEnabled
+						? midnightApi.isEnabled()
+						: Promise.resolve(false),
 				apiVersion: "1.0.0",
 				name: `${getWalletDisplayName(name)} (Midnight)`,
 				icon: getWalletIconPath(name),
 			};
-			console.log(`[Wallet Debug] Found ${name} via window.midnight.${midnightKey} (Midnight Native)`);
+			console.log(
+				`[Wallet Debug] Found ${name} via window.midnight.${midnightKey} (Midnight Native)`,
+			);
 		} else if (name === "lace" && windowObj.midnight?.mnLace) {
 			// Midnight Network用のLace Walletをフォールバックとしてチェック
 			installed = true;
@@ -145,14 +163,18 @@ export function getAvailableWallets(): WalletInfo[] {
 			// 通常のCIP-30ウォレットをチェック（Cardano用）
 			installed = true;
 			provider = cardano[name];
-			console.log(`[Wallet Debug] Found ${name} via cardano.${name} (Cardano only - may not support Midnight)`);
+			console.log(
+				`[Wallet Debug] Found ${name} via cardano.${name} (Cardano only - may not support Midnight)`,
+			);
 		} else {
 			console.log(`[Wallet Debug] ${name} not found`);
 		}
-		
+
 		return {
 			name,
-			displayName: getWalletDisplayName(name) + (isMidnightNative ? " (Midnight)" : " (Cardano)"),
+			displayName:
+				getWalletDisplayName(name) +
+				(isMidnightNative ? " (Midnight)" : " (Cardano)"),
 			installed,
 			provider,
 			icon: getWalletIconPath(name),
@@ -173,19 +195,28 @@ export async function connectWallet(
 	console.log(`[Wallet Debug] Attempting to connect to ${walletName}`);
 	console.log("[Wallet Debug] window.cardano:", cardano);
 	console.log("[Wallet Debug] cardano?.[walletName]:", cardano?.[walletName]);
-	console.log("[Wallet Debug] window.midnight?.mnLace:", windowObj.midnight?.mnLace);
-	
+	console.log(
+		"[Wallet Debug] window.midnight?.mnLace:",
+		windowObj.midnight?.mnLace,
+	);
+
 	// まずMidnight Network専用APIをチェック
-	const midnightKey = `mn${walletName.charAt(0).toUpperCase() + walletName.slice(1)}` as keyof typeof windowObj.midnight;
+	const midnightKey =
+		`mn${walletName.charAt(0).toUpperCase() + walletName.slice(1)}` as keyof typeof windowObj.midnight;
 	if (windowObj.midnight && (windowObj.midnight as any)[midnightKey]) {
-		console.log(`[Wallet Debug] Found Midnight native API: window.midnight.${midnightKey}`);
+		console.log(
+			`[Wallet Debug] Found Midnight native API: window.midnight.${midnightKey}`,
+		);
 		const midnightApi = (windowObj.midnight as any)[midnightKey];
 		try {
 			const api = await midnightApi.enable();
 			console.log("[Wallet Debug] Successfully enabled Midnight native wallet");
 			return createMidnightLaceAdapter(api);
 		} catch (error) {
-			console.error(`[Wallet Debug] Error enabling Midnight native ${walletName}:`, error);
+			console.error(
+				`[Wallet Debug] Error enabling Midnight native ${walletName}:`,
+				error,
+			);
 			if (error instanceof WalletError) {
 				throw error;
 			}
@@ -212,8 +243,10 @@ export async function connectWallet(
 	// まず通常のCIP-30ウォレットをチェック（通常のLace Walletを含む）
 	if (cardano?.[walletName]) {
 		const provider = cardano[walletName];
-		console.log(`[Wallet Debug] Found provider for ${walletName}, attempting to enable...`);
-		
+		console.log(
+			`[Wallet Debug] Found provider for ${walletName}, attempting to enable...`,
+		);
+
 		try {
 			// ウォレットを有効化
 			const api = await provider.enable();
@@ -248,33 +281,40 @@ export async function connectWallet(
 
 			throw new WalletError(
 				"CONNECTION_FAILED",
-				error instanceof Error
-					? error.message
-					: "Failed to connect to wallet",
+				error instanceof Error ? error.message : "Failed to connect to wallet",
 			);
 		}
 	}
 
 	// Midnight Network用のLace Walletの場合（フォールバック）
 	if (walletName === "lace" && windowObj.midnight?.mnLace) {
-		console.log("[Wallet Debug] Attempting to connect via window.midnight.mnLace");
+		console.log(
+			"[Wallet Debug] Attempting to connect via window.midnight.mnLace",
+		);
 		try {
 			const api = await windowObj.midnight.mnLace.enable();
-			console.log("[Wallet Debug] Successfully enabled Midnight Network Lace Wallet");
+			console.log(
+				"[Wallet Debug] Successfully enabled Midnight Network Lace Wallet",
+			);
 			console.log("[Wallet Debug] API object:", api);
 			console.log("[Wallet Debug] API keys:", api ? Object.keys(api) : "null");
-			
+
 			// APIがCIP-30互換かどうかを確認
 			if (api && typeof api.getUsedAddresses === "function") {
 				console.log("[Wallet Debug] API is CIP-30 compatible");
 				return api as Cip30WalletApi;
 			}
-			
+
 			// CIP-30互換でない場合、アダプターを作成
-			console.log("[Wallet Debug] API is not CIP-30 compatible, creating adapter");
+			console.log(
+				"[Wallet Debug] API is not CIP-30 compatible, creating adapter",
+			);
 			return createMidnightLaceAdapter(api);
 		} catch (error) {
-			console.error("[Wallet Debug] Error enabling Midnight Network Lace Wallet:", error);
+			console.error(
+				"[Wallet Debug] Error enabling Midnight Network Lace Wallet:",
+				error,
+			);
 			if (error instanceof WalletError) {
 				throw error;
 			}
@@ -315,12 +355,11 @@ export async function connectWallet(
 		"WALLET_NOT_INSTALLED",
 		`${getWalletDisplayName(walletName)} wallet is not installed`,
 	);
-
 }
 
 /**
  * Midnight Network Lace Wallet APIをCIP-30互換のAPIに変換するアダプター
- * 
+ *
  * Midnight NetworkのLace Walletは独自のDApp Connector APIを使用しており、
  * CIP-30とは異なる構造を持っています。
  * - state()メソッドでアドレスを取得（state.address）
@@ -329,7 +368,7 @@ export async function connectWallet(
 function createMidnightLaceAdapter(api: any): Cip30WalletApi {
 	console.log("[Wallet Debug] Creating adapter for Midnight Lace Wallet API");
 	console.log("[Wallet Debug] Available methods:", Object.keys(api));
-	
+
 	// state()メソッドでアドレスを取得するヘルパー関数
 	const getAddressFromState = async (): Promise<string> => {
 		if (typeof api.state === "function") {
@@ -338,9 +377,11 @@ function createMidnightLaceAdapter(api: any): Cip30WalletApi {
 				return state.address;
 			}
 		}
-		throw new Error("Could not get address from Midnight Lace Wallet API state");
+		throw new Error(
+			"Could not get address from Midnight Lace Wallet API state",
+		);
 	};
-	
+
 	// CIP-30互換のAPIを作成
 	return {
 		getUsedAddresses: async () => {
@@ -362,31 +403,33 @@ function createMidnightLaceAdapter(api: any): Cip30WalletApi {
 			// Midnight Lace Wallet APIには残高取得メソッドが直接存在しない
 			// state()から残高情報を取得できる可能性があるが、ドキュメントでは未確認
 			// とりあえず"0"を返す（実際の実装では、indexer APIなどから取得する必要がある可能性）
-			console.warn("[Wallet Debug] Midnight Lace Wallet API does not provide balance directly. Returning '0'.");
+			console.warn(
+				"[Wallet Debug] Midnight Lace Wallet API does not provide balance directly. Returning '0'.",
+			);
 			return "0";
 		},
-		signData: api.sign ? async (_address: string, payload: string) => {
-			// Midnight Lace Walletのsign()メソッドを使用
-			// ただし、sign()のシグネチャがCIP-30のsignDataと異なる可能性がある
-			if (typeof api.sign === "function") {
-				try {
-					return await api.sign(payload);
-				} catch (error) {
-					console.error("[Wallet Debug] Error signing data:", error);
-					throw error;
+		signData: api.sign
+			? async (_address: string, payload: string) => {
+					// Midnight Lace Walletのsign()メソッドを使用
+					// ただし、sign()のシグネチャがCIP-30のsignDataと異なる可能性がある
+					if (typeof api.sign === "function") {
+						try {
+							return await api.sign(payload);
+						} catch (error) {
+							console.error("[Wallet Debug] Error signing data:", error);
+							throw error;
+						}
+					}
+					return undefined;
 				}
-			}
-			return undefined;
-		} : undefined,
+			: undefined,
 	};
 }
 
 /**
  * アドレスを取得（複数の方法を試行）
  */
-export async function getAddress(
-	api: Cip30WalletApi,
-): Promise<string> {
+export async function getAddress(api: Cip30WalletApi): Promise<string> {
 	// 方法1: 使用済みアドレスを取得
 	try {
 		const usedAddresses = await api.getUsedAddresses();
@@ -404,10 +447,7 @@ export async function getAddress(
 			return unusedAddresses[0];
 		}
 	} catch (error) {
-		console.warn(
-			"getUnusedAddresses failed, trying change address",
-			error,
-		);
+		console.warn("getUnusedAddresses failed, trying change address", error);
 	}
 
 	// 方法3: お釣りアドレスを取得
@@ -485,10 +525,7 @@ export function formatAddress(
 /**
  * 接続情報を保存
  */
-export function saveConnection(
-	walletName: WalletName,
-	address: string,
-): void {
+export function saveConnection(walletName: WalletName, address: string): void {
 	const connection: WalletConnection = {
 		walletName,
 		address,
@@ -530,4 +567,3 @@ export function getErrorMessage(code: string): string {
 
 	return messages[code] || messages.UNKNOWN_ERROR;
 }
-

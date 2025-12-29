@@ -3,7 +3,7 @@
  * Schema introspection and validation
  */
 
-import { GraphQLClient } from "../clients/graphql-client";
+import type { GraphQLClient } from "../clients/graphql-client";
 
 /**
  * Introspect the GraphQL schema to understand available fields
@@ -91,9 +91,7 @@ export function getTypeFields(schema: any, typeName: string): string[] {
 		return [];
 	}
 
-	const type = schema.__schema.types.find(
-		(t: any) => t.name === typeName,
-	);
+	const type = schema.__schema.types.find((t: any) => t.name === typeName);
 
 	if (!type || !type.fields) {
 		return [];
@@ -101,4 +99,3 @@ export function getTypeFields(schema: any, typeName: string): string[] {
 
 	return type.fields.map((field: any) => field.name);
 }
-

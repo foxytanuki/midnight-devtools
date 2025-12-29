@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
-import { WalletConnection } from "./WalletConnection";
+import { useEffect, useState } from "react";
+import type { Cip30WalletApi, WalletName } from "../types/wallet-types";
+import { formatAddress, getBalance } from "../utils/wallet-utils";
 // Contract操作系は一旦無効化（WASM関連のビルドエラー回避のため）
 // import { CounterContractPanel } from "./CounterContractPanel";
 import { AddressesPanel } from "./AddressesPanel";
 import { SignDataPanel } from "./SignDataPanel";
 import { TransactionHistoryPanel } from "./TransactionHistoryPanel";
+import { WalletConnection } from "./WalletConnection";
 import { WalletInfoPanel } from "./WalletInfoPanel";
-import type { Cip30WalletApi, WalletName } from "../types/wallet-types";
-import { getBalance, formatAddress } from "../utils/wallet-utils";
 import "../App.css";
 
 type TabType =
@@ -18,7 +18,6 @@ type TabType =
 	| "tx-history"
 	| "wallet-info";
 
-
 export function WalletApp() {
 	const [activeTab, setActiveTab] = useState<TabType>("connection");
 	const [walletApi, setWalletApi] = useState<Cip30WalletApi | null>(null);
@@ -28,7 +27,12 @@ export function WalletApp() {
 	const [refreshing, setRefreshing] = useState(false);
 
 	useEffect(() => {
-		console.log("[WalletApp] State updated:", { walletApi: !!walletApi, walletName, address, balance });
+		console.log("[WalletApp] State updated:", {
+			walletApi: !!walletApi,
+			walletName,
+			address,
+			balance,
+		});
 	}, [walletApi, walletName, address, balance]);
 
 	const handleWalletConnected = async (
@@ -36,7 +40,10 @@ export function WalletApp() {
 		name: WalletName,
 		addr: string,
 	) => {
-		console.log("[WalletApp] handleWalletConnected called with:", { name, addr });
+		console.log("[WalletApp] handleWalletConnected called with:", {
+			name,
+			addr,
+		});
 		setWalletApi(api);
 		setWalletName(name);
 		setAddress(addr);
@@ -139,11 +146,7 @@ export function WalletApp() {
 								className={`tab-button ${activeTab === tab.id ? "active" : ""}`}
 								onClick={() => setActiveTab(tab.id)}
 								disabled={tab.disabled}
-								title={
-									tab.disabled
-										? "Please connect a wallet"
-										: undefined
-								}
+								title={tab.disabled ? "Please connect a wallet" : undefined}
 							>
 								{tab.label}
 							</button>
@@ -177,14 +180,10 @@ export function WalletApp() {
 						<TransactionHistoryPanel address={address} />
 					)}
 					{activeTab === "wallet-info" && walletApi && walletName && (
-						<WalletInfoPanel
-							walletApi={walletApi}
-							walletName={walletName}
-						/>
+						<WalletInfoPanel walletApi={walletApi} walletName={walletName} />
 					)}
 				</div>
 			</main>
 		</div>
 	);
 }
-

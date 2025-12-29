@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { TOOLS, getToolById, getDefaultTool, type ToolConfig } from "./config/tools-config";
+import {
+	getDefaultTool,
+	getToolById,
+	TOOLS,
+	type ToolConfig,
+} from "./config/tools-config";
 import "./App.css";
 
 function App() {
@@ -9,7 +14,7 @@ function App() {
 		// Determine tool from URL hash
 		const hash = window.location.hash.slice(1);
 		const tool = hash ? getToolById(hash) : null;
-		
+
 		if (tool) {
 			setCurrentTool(tool);
 		} else {
@@ -20,7 +25,7 @@ function App() {
 		const handleHashChange = () => {
 			const newHash = window.location.hash.slice(1);
 			const newTool = newHash ? getToolById(newHash) : null;
-			
+
 			if (newTool) {
 				setCurrentTool(newTool);
 			} else {
@@ -47,7 +52,7 @@ function App() {
 	return (
 		<div className="app-router">
 			<nav className="app-nav">
-				<a 
+				<a
 					href="#"
 					onClick={(e) => {
 						e.preventDefault();

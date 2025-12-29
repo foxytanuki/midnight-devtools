@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { Cip30WalletApi, WalletName } from "../types/wallet-types";
 import { getAvailableWallets } from "../utils/wallet-utils";
 import "../App.css";
@@ -104,11 +104,10 @@ export function WalletInfoPanel({
 				<p className="method-description-text">
 					CIP-30 (Cardano Improvement Proposal 30) is a standard for DApp
 					connector APIs that allows DApps to interact with wallets in a
-					standardized way. Midnight Network wallets implement this standard
-					to provide a consistent interface for DApp developers.
+					standardized way. Midnight Network wallets implement this standard to
+					provide a consistent interface for DApp developers.
 				</p>
 			</div>
 		</div>
 	);
 }
-

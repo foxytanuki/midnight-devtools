@@ -8,9 +8,9 @@ import type { PrivateStateProvider } from "@midnight-ntwrk/midnight-js-types";
 /**
  * localStorageベースのPrivate State Providerを作成
  */
-export function browserPrivateStateProvider<T extends string>(
-	options: { privateStateStoreName: string },
-): PrivateStateProvider<T> {
+export function browserPrivateStateProvider<T extends string>(options: {
+	privateStateStoreName: string;
+}): PrivateStateProvider<T> {
 	const storageKey = `midnight_private_state_${options.privateStateStoreName}`;
 
 	return {
@@ -47,4 +47,3 @@ export function browserPrivateStateProvider<T extends string>(
 		},
 	} as unknown as PrivateStateProvider<T>;
 }
-

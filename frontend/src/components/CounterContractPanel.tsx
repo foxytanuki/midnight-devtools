@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { Cip30WalletApi, WalletName } from "../types/wallet-types";
 import {
-	joinCounterContract,
-	incrementCounter,
-	getCounterValue,
 	checkProofServer,
+	getCounterValue,
+	incrementCounter,
+	joinCounterContract,
 } from "../utils/counter-contract";
 import "../App.css";
 
@@ -14,9 +14,7 @@ interface CounterContractPanelProps {
 	address: string | null;
 }
 
-export function CounterContractPanel({
-	walletApi,
-}: CounterContractPanelProps) {
+export function CounterContractPanel({ walletApi }: CounterContractPanelProps) {
 	// Default contract address for testing (deployed via CLI)
 	const [contractAddress, setContractAddress] = useState<string>(
 		"0200ea62067fe8bac97e8f8caaee6413c8ed7f42e0a960335f1b1aeb43fa37999315",
@@ -60,9 +58,7 @@ export function CounterContractPanel({
 			await joinCounterContract(walletApi, contractAddress.trim());
 			// Success - contract is now joined
 		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "Failed to join contract",
-			);
+			setError(err instanceof Error ? err.message : "Failed to join contract");
 		} finally {
 			setJoining(false);
 		}
@@ -77,12 +73,9 @@ export function CounterContractPanel({
 		setIncrementing(true);
 		setError("");
 
-			try {
-				await incrementCounter(
-					walletApi,
-					contractAddress.trim(),
-				);
-				// Refresh counter value after increment
+		try {
+			await incrementCounter(walletApi, contractAddress.trim());
+			// Refresh counter value after increment
 			setTimeout(() => {
 				handleViewState();
 			}, 2000);
@@ -124,9 +117,13 @@ export function CounterContractPanel({
 				Join and interact with existing Counter contracts on Midnight Network.
 				This contract maintains a public counter that can be incremented.
 			</p>
-			<div className="info-box" style={{ marginTop: "1rem", marginBottom: "1rem" }}>
-				<strong>Note:</strong> Contract deployment is not yet available in the browser environment.
-				Please use a deployed contract address to interact with existing contracts.
+			<div
+				className="info-box"
+				style={{ marginTop: "1rem", marginBottom: "1rem" }}
+			>
+				<strong>Note:</strong> Contract deployment is not yet available in the
+				browser environment. Please use a deployed contract address to interact
+				with existing contracts.
 			</div>
 
 			<div className="params-section">
@@ -139,13 +136,9 @@ export function CounterContractPanel({
 						) : proofServerStatus === null ? (
 							"Unknown"
 						) : proofServerStatus ? (
-							<span style={{ color: "var(--color-success)" }}>
-								Running
-							</span>
+							<span style={{ color: "var(--color-success)" }}>Running</span>
 						) : (
-							<span style={{ color: "var(--color-error)" }}>
-								Not Running
-							</span>
+							<span style={{ color: "var(--color-error)" }}>Not Running</span>
 						)}
 					</span>
 					<button
@@ -250,8 +243,8 @@ export function CounterContractPanel({
 						the blockchain
 					</li>
 					<li>
-						<strong>Increment:</strong> Call the increment() function to increase
-						the counter by 1
+						<strong>Increment:</strong> Call the increment() function to
+						increase the counter by 1
 					</li>
 				</ol>
 				<div className="info-box">
@@ -270,4 +263,3 @@ export function CounterContractPanel({
 		</div>
 	);
 }
-

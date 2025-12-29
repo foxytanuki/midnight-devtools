@@ -22,7 +22,9 @@ export function getBlockExplorerUrl(blockHash: string): string {
  * Generate explorer URL from block number
  * Note: For block numbers, you need to get the block hash first
  */
-export function getBlockNumberExplorerUrl(blockNumber: number | string): string {
+export function getBlockNumberExplorerUrl(
+	blockNumber: number | string,
+): string {
 	if (blockNumber === undefined || blockNumber === null) {
 		return "";
 	}
@@ -99,7 +101,9 @@ export function extractBlockNumberFromResult(result: unknown): number | null {
 			const header = block.header as Record<string, unknown>;
 			if (header.number) {
 				const numberStr =
-					typeof header.number === "string" ? header.number : String(header.number);
+					typeof header.number === "string"
+						? header.number
+						: String(header.number);
 				// Convert from hexadecimal if needed
 				if (numberStr.startsWith("0x")) {
 					return parseInt(numberStr, 16);
@@ -114,7 +118,9 @@ export function extractBlockNumberFromResult(result: unknown): number | null {
 		const header = obj.header as Record<string, unknown>;
 		if (header.number) {
 			const numberStr =
-				typeof header.number === "string" ? header.number : String(header.number);
+				typeof header.number === "string"
+					? header.number
+					: String(header.number);
 			if (numberStr.startsWith("0x")) {
 				return parseInt(numberStr, 16);
 			}
@@ -124,7 +130,8 @@ export function extractBlockNumberFromResult(result: unknown): number | null {
 
 	// Direct number property
 	if (obj.number !== undefined) {
-		const numberStr = typeof obj.number === "string" ? obj.number : String(obj.number);
+		const numberStr =
+			typeof obj.number === "string" ? obj.number : String(obj.number);
 		if (numberStr.startsWith("0x")) {
 			return parseInt(numberStr, 16);
 		}
@@ -133,4 +140,3 @@ export function extractBlockNumberFromResult(result: unknown): number | null {
 
 	return null;
 }
-

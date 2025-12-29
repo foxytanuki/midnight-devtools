@@ -43,9 +43,7 @@ export function SignDataPanel({ walletApi, address }: SignDataPanelProps) {
 			const result = await walletApi.signData(address, hexPayload);
 			setSignature(result.signature);
 		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "Failed to sign data",
-			);
+			setError(err instanceof Error ? err.message : "Failed to sign data");
 		} finally {
 			setSigning(false);
 		}
@@ -150,4 +148,3 @@ export function SignDataPanel({ walletApi, address }: SignDataPanelProps) {
 		</div>
 	);
 }
-

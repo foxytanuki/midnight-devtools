@@ -7,7 +7,12 @@ export interface RpcMethod {
 	name: string;
 	description: string;
 	category: string;
-	params?: Array<{ name: string; type: string; required: boolean; description?: string }>;
+	params?: Array<{
+		name: string;
+		type: string;
+		required: boolean;
+		description?: string;
+	}>;
 }
 
 export const RPC_METHODS: RpcMethod[] = [
@@ -884,4 +889,3 @@ export const CATEGORY_NAMES: Record<string, string> = {
 	grandpa: "Grandpa",
 	other: "Other",
 };
-

@@ -1,8 +1,8 @@
 import type { ComponentType } from "react";
+import { About } from "../components/About";
+import { IndexerExplorer } from "../components/IndexerExplorer";
 import { RpcExplorer } from "../components/RpcExplorer";
 import { WalletApp } from "../components/WalletApp";
-import { IndexerExplorer } from "../components/IndexerExplorer";
-import { About } from "../components/About";
 
 export interface ToolConfig {
 	/**

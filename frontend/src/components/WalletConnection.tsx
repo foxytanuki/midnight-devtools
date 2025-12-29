@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
-import type { WalletName, Cip30WalletApi } from "../types/wallet-types";
+import { useEffect, useState } from "react";
+import type { Cip30WalletApi, WalletName } from "../types/wallet-types";
 import { WalletError } from "../types/wallet-types";
 import {
-	getAvailableWallets,
-	connectWallet,
-	getAddress,
-	getBalance,
-	formatAddress,
-	saveConnection,
-	loadConnection,
 	clearConnection,
+	connectWallet,
+	formatAddress,
+	getAddress,
+	getAvailableWallets,
+	getBalance,
 	getErrorMessage,
+	loadConnection,
+	saveConnection,
 } from "../utils/wallet-utils";
 import "../App.css";
 
@@ -208,7 +208,9 @@ export function WalletConnection({
 						))}
 					{/* YoroiとEternlを薄く表示 */}
 					{wallets
-						.filter((wallet) => wallet.name === "yoroi" || wallet.name === "eternl")
+						.filter(
+							(wallet) => wallet.name === "yoroi" || wallet.name === "eternl",
+						)
 						.map((wallet) => (
 							<div
 								key={wallet.name}

@@ -3,14 +3,14 @@
  * TDD: Test-driven development for query validation
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-	buildLatestBlockQuery,
-	buildBlockByHeightQuery,
 	buildBlockByHashQuery,
-	buildTransactionsQuery,
+	buildBlockByHeightQuery,
+	buildLatestBlockQuery,
 	buildTransactionByHashQuery,
 	buildTransactionsByHashQuery,
+	buildTransactionsQuery,
 } from "../graphql-queries";
 
 describe("GraphQL Query Builders", () => {
@@ -41,23 +41,30 @@ describe("GraphQL Query Builders", () => {
 
 	describe("buildTransactionsQuery", () => {
 		it("should build a valid transactions query with identifier", () => {
-			const identifier = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+			const identifier =
+				"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
 			const query = buildTransactionsQuery(identifier);
-			expect(query).toContain(`transactions(offset: { identifier: "${identifier}" })`);
+			expect(query).toContain(
+				`transactions(offset: { identifier: "${identifier}" })`,
+			);
 			expect(query).toContain("hash");
 			expect(query).toContain("block {");
 		});
 
 		it("should not contain invalid fields", () => {
-			const identifier = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+			const identifier =
+				"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
 			const query = buildTransactionsQuery(identifier);
-			expect(query).not.toContain('id');
+			// identifiers is a valid field, so we check for standalone 'id' field
+			// Use word boundary to avoid matching 'id' in 'identifiers'
+			expect(query).not.toMatch(/\bid\b/);
 		});
 	});
 
 	describe("buildTransactionByHashQuery", () => {
 		it("should build a valid transaction hash query", () => {
-			const hash = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+			const hash =
+				"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
 			const query = buildTransactionByHashQuery(hash);
 			expect(query).toContain(`transactions(offset: { hash: "${hash}" })`);
 			expect(query).toContain("hash");
@@ -67,7 +74,8 @@ describe("GraphQL Query Builders", () => {
 
 	describe("buildTransactionsByHashQuery", () => {
 		it("should build a valid transactions by hash query", () => {
-			const hash = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+			const hash =
+				"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
 			const query = buildTransactionsByHashQuery(hash);
 			expect(query).toContain(`transactions(offset: { hash: "${hash}" })`);
 			expect(query).toContain("hash");
@@ -76,7 +84,8 @@ describe("GraphQL Query Builders", () => {
 
 	describe("buildBlockByHashQuery", () => {
 		it("should build a valid block by hash query", () => {
-			const hash = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+			const hash =
+				"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
 			const query = buildBlockByHashQuery(hash);
 			expect(query).toContain(`block(offset: { hash: "${hash}" })`);
 			expect(query).toContain("hash");
@@ -84,4 +93,3 @@ describe("GraphQL Query Builders", () => {
 		});
 	});
 });
-

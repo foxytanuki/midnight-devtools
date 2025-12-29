@@ -3,15 +3,18 @@
  * ブラウザ環境でMidnight.jsを使用してCounterコントラクトを操作します
  */
 
-import type { Cip30WalletApi } from "../types/wallet-types";
 import { findDeployedContract } from "@midnight-ntwrk/midnight-js-contracts";
+import { FetchZkConfigProvider } from "@midnight-ntwrk/midnight-js-fetch-zk-config-provider";
 import { httpClientProofProvider } from "@midnight-ntwrk/midnight-js-http-client-proof-provider";
 import { indexerPublicDataProvider } from "@midnight-ntwrk/midnight-js-indexer-public-data-provider";
-import { FetchZkConfigProvider } from "@midnight-ntwrk/midnight-js-fetch-zk-config-provider";
-import { NetworkId, setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
-import { browserPrivateStateProvider } from "./browser-private-state-provider";
-import { Counter, witnesses } from "../lib/contract";
+import {
+	NetworkId,
+	setNetworkId,
+} from "@midnight-ntwrk/midnight-js-network-id";
 import { assertIsContractAddress } from "@midnight-ntwrk/midnight-js-utils";
+import { Counter, witnesses } from "../lib/contract";
+import type { Cip30WalletApi } from "../types/wallet-types";
+import { browserPrivateStateProvider } from "./browser-private-state-provider";
 
 // Testnet設定
 const TESTNET_CONFIG = {
@@ -24,7 +27,7 @@ const TESTNET_CONFIG = {
 setNetworkId(NetworkId.TestNet);
 
 // Contract instance
-// @ts-ignore - Counter.Contract type may not be fully defined
+// @ts-expect-error - Counter.Contract type may not be fully defined
 const counterContractInstance = new Counter.Contract(witnesses);
 
 // Private state ID
@@ -69,7 +72,9 @@ async function configureProviders(walletApi: Cip30WalletApi) {
 	const zkConfigBaseUrl = "/lib/contract/managed/counter";
 
 	return {
-		privateStateProvider: browserPrivateStateProvider<typeof COUNTER_PRIVATE_STATE_ID>({
+		privateStateProvider: browserPrivateStateProvider<
+			typeof COUNTER_PRIVATE_STATE_ID
+		>({
 			privateStateStoreName: "counter-private-state",
 		}),
 		publicDataProvider: indexerPublicDataProvider(

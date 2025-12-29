@@ -93,10 +93,7 @@ export type WalletErrorCode =
 
 export class WalletError extends Error {
 	public code: WalletErrorCode;
-	constructor(
-		code: WalletErrorCode,
-		message: string,
-	) {
+	constructor(code: WalletErrorCode, message: string) {
 		super(message);
 		this.code = code;
 		this.name = "WalletError";
@@ -117,4 +114,3 @@ export interface WalletInfo {
 	icon?: string;
 	isMidnightNative?: boolean; // Midnight Network専用APIを使用しているかどうか
 }
-

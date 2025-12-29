@@ -1,13 +1,13 @@
 /**
  * GraphQL Query Builders for Midnight Network Indexer
  * Based on actual schema introspection from the public indexer
- * 
+ *
  * Schema Summary:
  * - Query.block(offset: BlockOffset): Block - Get a single block (or latest if offset omitted)
  * - Query.transactions(offset: TransactionOffset!): [Transaction!]! - Get transactions (offset is required)
  * - BlockOffset: { hash?: HexEncoded, height?: Int }
  * - TransactionOffset: { hash?: HexEncoded, identifier?: HexEncoded }
- * 
+ *
  * Note: identifier is HexEncoded type (32-byte hex string, 64 hex characters with 0x prefix)
  */
 
@@ -181,7 +181,7 @@ export function buildBlockWithTransactionsQuery(height?: number): string {
       }
     `;
 	}
-	
+
 	return `
     query {
       block {
@@ -238,17 +238,17 @@ export const MAX_PARENT_CHAIN_DEPTH = 13;
 export function buildLatestBlockWithParentsQuery(depth: number = 10): string {
 	// Cap depth at maximum allowed
 	const safeDepth = Math.min(depth, MAX_PARENT_CHAIN_DEPTH);
-	
+
 	// Build recursive parent query structure
 	const buildParentQuery = (currentDepth: number, maxDepth: number): string => {
 		if (currentDepth >= maxDepth) {
 			return "";
 		}
-		
+
 		const indent = "  ".repeat(currentDepth + 1);
 		const nextDepth = currentDepth + 1;
 		const parentContent = buildParentQuery(nextDepth, maxDepth);
-		
+
 		return `
 ${indent}parent {
 ${indent}  hash
@@ -258,9 +258,9 @@ ${indent}  protocolVersion
 ${indent}  author${parentContent}
 ${indent}}`;
 	};
-	
+
 	const parentChain = buildParentQuery(0, safeDepth);
-	
+
 	return `
     query {
       block {
@@ -307,9 +307,7 @@ export function buildLatestBlockWithTransactionsQuery(): string {
  * TransactionOffset: { hash?: HexEncoded, identifier?: HexEncoded }
  * identifier must be a hex-encoded 32-byte value (64 hex chars with 0x prefix)
  */
-export function buildTransactionsQuery(
-	identifierHex: string,
-): string {
+export function buildTransactionsQuery(identifierHex: string): string {
 	return `
     query {
       transactions(offset: { identifier: "${identifierHex}" }) {
@@ -335,17 +333,17 @@ export function buildTransactionsQuery(
 export function buildTransactionsByHashQuery(txHash: string): string {
 	// Normalize hash: ensure it has 0x prefix and is valid hex
 	let normalizedHash = txHash.trim();
-	
+
 	// Remove 0x prefix if present for validation
-	let cleanHash = normalizedHash.startsWith("0x") 
-		? normalizedHash.slice(2) 
+	let cleanHash = normalizedHash.startsWith("0x")
+		? normalizedHash.slice(2)
 		: normalizedHash;
-	
+
 	// Validate hex format
 	if (!/^[0-9a-fA-F]+$/.test(cleanHash)) {
 		throw new Error(`Invalid hash format: ${txHash}`);
 	}
-	
+
 	// Transaction hash should be exactly 64 hex characters (32 bytes)
 	// If longer, truncate to 64 characters (take first 64)
 	// If shorter, pad with zeros (though this is unusual)
@@ -354,10 +352,10 @@ export function buildTransactionsByHashQuery(txHash: string): string {
 	} else if (cleanHash.length < 64) {
 		cleanHash = cleanHash.padStart(64, "0");
 	}
-	
+
 	// Add 0x prefix
 	normalizedHash = `0x${cleanHash}`;
-	
+
 	return `
     query {
       transactions(offset: { hash: "${normalizedHash}" }) {
@@ -405,7 +403,7 @@ export function buildTransactionsByIdentifierQuery(identifier: string): string {
 	// If it's a 72-character identifier, use it as-is
 	// Otherwise, assume it's already formatted correctly (with or without 0x)
 	const identifierValue = identifier.length === 72 ? identifier : identifier;
-	
+
 	return `
     query {
       transactions(offset: { identifier: "${identifierValue}" }) {
@@ -450,22 +448,22 @@ export function buildTransactionsByIdentifierQuery(identifier: string): string {
 export function buildContractActionQuery(address: string): string {
 	// Normalize address: ensure it has 0x prefix and is valid hex
 	let normalizedAddress = address.trim();
-	
+
 	// Remove 0x prefix if present for validation
-	const cleanAddress = normalizedAddress.startsWith("0x") 
-		? normalizedAddress.slice(2) 
+	const cleanAddress = normalizedAddress.startsWith("0x")
+		? normalizedAddress.slice(2)
 		: normalizedAddress;
-	
+
 	// Validate hex format
 	if (!/^[0-9a-fA-F]+$/.test(cleanAddress)) {
 		throw new Error(`Invalid address format: ${address}`);
 	}
-	
+
 	// Add 0x prefix if not present
 	if (!normalizedAddress.startsWith("0x")) {
 		normalizedAddress = `0x${normalizedAddress}`;
 	}
-	
+
 	return `
     query {
       contractAction(address: "${normalizedAddress}") {

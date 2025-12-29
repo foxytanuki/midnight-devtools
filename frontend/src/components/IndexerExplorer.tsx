@@ -1,9 +1,9 @@
-import { useState, useMemo, useEffect, type ReactElement } from "react";
+import { type ReactElement, useEffect, useMemo, useState } from "react";
 import { GraphQLClient } from "../clients/graphql-client";
 import { RpcClient } from "../clients/rpc-client";
 import {
-	buildLatestBlockQuery,
 	buildBlockWithTransactionsQuery,
+	buildLatestBlockQuery,
 	buildTransactionsByHashQuery,
 	buildTransactionsByIdentifierQuery,
 } from "../utils/graphql-queries";
@@ -62,19 +62,22 @@ interface Transaction {
 export function IndexerExplorer() {
 	const [indexerUrl, setIndexerUrl] = useState(DEFAULT_INDEXER_URL);
 	const [rpcUrl, setRpcUrl] = useState(DEFAULT_RPC_URL);
-	
+
 	// Get initial tab from URL search params, default to "blocks"
 	const getInitialTab = (): TabType => {
 		const params = new URLSearchParams(window.location.search);
 		const tab = params.get("tab") as TabType | null;
-		if (tab && ["blocks", "transactions", "search", "custom", "schema"].includes(tab)) {
+		if (
+			tab &&
+			["blocks", "transactions", "search", "custom", "schema"].includes(tab)
+		) {
 			return tab;
 		}
 		return "blocks";
 	};
-	
+
 	const [activeTab, setActiveTab] = useState<TabType>(getInitialTab());
-	
+
 	// Update URL search params when tab changes
 	const handleTabChange = (tab: TabType) => {
 		setActiveTab(tab);
@@ -82,7 +85,7 @@ export function IndexerExplorer() {
 		url.searchParams.set("tab", tab);
 		window.history.replaceState({}, "", url.toString());
 	};
-	
+
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string>("");
 	const [result, setResult] = useState<string>("");
@@ -98,9 +101,11 @@ export function IndexerExplorer() {
 	// Search states
 	const [searchTxHash, setSearchTxHash] = useState<string>("");
 	const [searchResult, setSearchResult] = useState<Transaction | null>(null);
-	
+
 	// Toggle states for raw JSON display
-	const [showRawJson, setShowRawJson] = useState<{ [key: string]: boolean }>({});
+	const [showRawJson, setShowRawJson] = useState<{ [key: string]: boolean }>(
+		{},
+	);
 
 	// Custom query states
 	const [customQuery, setCustomQuery] = useState<string>(
@@ -117,7 +122,9 @@ export function IndexerExplorer() {
 	const [schemaLoading, setSchemaLoading] = useState(false);
 
 	// Decoded state cache: key is "address:state" or "address:chainState"
-	const [decodedStates, setDecodedStates] = useState<Record<string, string>>({});
+	const [decodedStates, setDecodedStates] = useState<Record<string, string>>(
+		{},
+	);
 	const [decodingStates, setDecodingStates] = useState<Set<string>>(new Set());
 	// Show raw data mode: key is "address:state" or "address:chainState", default is false (show decoded)
 	const [showRawData, setShowRawData] = useState<Record<string, boolean>>({});
@@ -133,8 +140,12 @@ export function IndexerExplorer() {
 
 	// Auto-decode states when txResult or searchResult changes
 	useEffect(() => {
-		const allContractActions: Array<{ address?: string; state?: string; chainState?: string }> = [];
-		
+		const allContractActions: Array<{
+			address?: string;
+			state?: string;
+			chainState?: string;
+		}> = [];
+
 		if (txResult) {
 			txResult.forEach((tx) => {
 				if (tx.contractActions) {
@@ -142,7 +153,7 @@ export function IndexerExplorer() {
 				}
 			});
 		}
-		
+
 		if (searchResult && searchResult.contractActions) {
 			allContractActions.push(...searchResult.contractActions);
 		}
@@ -156,7 +167,7 @@ export function IndexerExplorer() {
 			// Decode state if present
 			if (action.state) {
 				const stateCacheKey = `${address}:state`;
-				
+
 				// Skip if already decoded or decoding
 				if (decodedStates[stateCacheKey] || decodingStates.has(stateCacheKey)) {
 					return;
@@ -164,62 +175,70 @@ export function IndexerExplorer() {
 
 				setDecodingStates((prev) => new Set(prev).add(stateCacheKey));
 
-				rpcClient.call<string>(
-					"midnight_jsonContractState",
-					[address],
-				).then((decodedState) => {
-					setDecodedStates((prev) => ({
-						...prev,
-						[stateCacheKey]: decodedState,
-					}));
-				}).catch((err) => {
-					// Silently fail - we'll show raw data if decode fails
-					console.warn(`Failed to decode state for ${address}:`, err);
-				}).finally(() => {
-					setDecodingStates((prev) => {
-						const next = new Set(prev);
-						next.delete(stateCacheKey);
-						return next;
+				rpcClient
+					.call<string>("midnight_jsonContractState", [address])
+					.then((decodedState) => {
+						setDecodedStates((prev) => ({
+							...prev,
+							[stateCacheKey]: decodedState,
+						}));
+					})
+					.catch((err) => {
+						// Silently fail - we'll show raw data if decode fails
+						console.warn(`Failed to decode state for ${address}:`, err);
+					})
+					.finally(() => {
+						setDecodingStates((prev) => {
+							const next = new Set(prev);
+							next.delete(stateCacheKey);
+							return next;
+						});
 					});
-				});
 			}
 
 			// Decode chainState if present
 			if (action.chainState) {
 				const chainStateCacheKey = `${address}:chainState`;
-				
+
 				// Skip if already decoded or decoding
-				if (decodedStates[chainStateCacheKey] || decodingStates.has(chainStateCacheKey)) {
+				if (
+					decodedStates[chainStateCacheKey] ||
+					decodingStates.has(chainStateCacheKey)
+				) {
 					return;
 				}
 
 				setDecodingStates((prev) => new Set(prev).add(chainStateCacheKey));
 
-				rpcClient.call<string>(
-					"midnight_jsonContractState",
-					[address],
-				).then((decodedState) => {
-					setDecodedStates((prev) => ({
-						...prev,
-						[chainStateCacheKey]: decodedState,
-					}));
-				}).catch((err) => {
-					// Silently fail - we'll show raw data if decode fails
-					console.warn(`Failed to decode chainState for ${address}:`, err);
-				}).finally(() => {
-					setDecodingStates((prev) => {
-						const next = new Set(prev);
-						next.delete(chainStateCacheKey);
-						return next;
+				rpcClient
+					.call<string>("midnight_jsonContractState", [address])
+					.then((decodedState) => {
+						setDecodedStates((prev) => ({
+							...prev,
+							[chainStateCacheKey]: decodedState,
+						}));
+					})
+					.catch((err) => {
+						// Silently fail - we'll show raw data if decode fails
+						console.warn(`Failed to decode chainState for ${address}:`, err);
+					})
+					.finally(() => {
+						setDecodingStates((prev) => {
+							const next = new Set(prev);
+							next.delete(chainStateCacheKey);
+							return next;
+						});
 					});
-				});
 			}
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [txResult, searchResult, rpcUrl]);
 
 	// Toggle between raw and decoded data
-	const toggleRawData = (address: string, stateType: "state" | "chainState") => {
+	const toggleRawData = (
+		address: string,
+		stateType: "state" | "chainState",
+	) => {
 		const cacheKey = `${address}:${stateType}`;
 		setShowRawData((prev) => ({
 			...prev,
@@ -228,7 +247,7 @@ export function IndexerExplorer() {
 	};
 
 	// Format decoded JSON for human-readable display with syntax highlighting
-	// 
+	//
 	// Contract State Structure:
 	// The decoded contract state from midnight_jsonContractState has the following structure:
 	// {
@@ -255,57 +274,62 @@ export function IndexerExplorer() {
 
 	// Recursively format object with syntax highlighting, truncating long hex strings
 	// Long hex strings (like verifier keys in "v2" fields) are truncated for readability
-	const formatDecodedObject = (obj: unknown, indent: number = 0): ReactElement => {
+	const formatDecodedObject = (
+		obj: unknown,
+		indent: number = 0,
+	): ReactElement => {
 		const indentStr = "  ".repeat(indent);
-		
+
 		// Muted dark color theme for better readability
 		const colors = {
-			key: "#5a9fd4",        // Muted blue - for object keys
-			string: "#6a9a3f",     // Muted green - for strings
-			number: "#c98a5a",     // Muted orange - for numbers
-			boolean: "#8b7fd8",    // Muted purple - for booleans
-			null: "#777777",       // Gray - for null
+			key: "#5a9fd4", // Muted blue - for object keys
+			string: "#6a9a3f", // Muted green - for strings
+			number: "#c98a5a", // Muted orange - for numbers
+			boolean: "#8b7fd8", // Muted purple - for booleans
+			null: "#777777", // Gray - for null
 			punctuation: "#777777", // Gray - for brackets, commas, colons
 		};
-		
+
 		if (obj === null) {
 			return <span style={{ color: colors.null }}>null</span>;
 		}
-		
+
 		if (typeof obj === "string") {
 			// Check if it's a hex string (starts with 0x or contains only hex characters)
 			const isHexString = obj.startsWith("0x") || /^[0-9a-fA-F]+$/.test(obj);
-			
+
 			let displayString = obj;
 			// Truncate long hex strings (likely witness/proof data)
 			if (isHexString && obj.length > 100) {
-				const preview = obj.startsWith("0x") ? obj.substring(0, 22) : obj.substring(0, 20);
+				const preview = obj.startsWith("0x")
+					? obj.substring(0, 22)
+					: obj.substring(0, 20);
 				const suffix = obj.substring(obj.length - 20);
 				displayString = `${preview}...${suffix}`;
 			}
-			
+
 			// Truncate very long non-hex strings
 			if (!isHexString && obj.length > 200) {
 				const preview = obj.substring(0, 50);
 				const suffix = obj.substring(obj.length - 50);
 				displayString = `${preview}...${suffix}`;
 			}
-			
+
 			return (
 				<span>
 					<span style={{ color: colors.string }}>"{displayString}"</span>
 				</span>
 			);
 		}
-		
+
 		if (typeof obj === "number") {
 			return <span style={{ color: colors.number }}>{String(obj)}</span>;
 		}
-		
+
 		if (typeof obj === "boolean") {
 			return <span style={{ color: colors.boolean }}>{String(obj)}</span>;
 		}
-		
+
 		if (Array.isArray(obj)) {
 			if (obj.length === 0) {
 				return (
@@ -321,8 +345,12 @@ export function IndexerExplorer() {
 					<br />
 					{obj.map((item, idx) => (
 						<span key={idx}>
-							{indentStr}  <span style={{ color: colors.punctuation }}>{idx}:</span> {formatDecodedObject(item, indent + 1)}
-							{idx < obj.length - 1 && <span style={{ color: colors.punctuation }}>,</span>}
+							{indentStr}{" "}
+							<span style={{ color: colors.punctuation }}>{idx}:</span>{" "}
+							{formatDecodedObject(item, indent + 1)}
+							{idx < obj.length - 1 && (
+								<span style={{ color: colors.punctuation }}>,</span>
+							)}
 							<br />
 						</span>
 					))}
@@ -331,7 +359,7 @@ export function IndexerExplorer() {
 				</span>
 			);
 		}
-		
+
 		if (typeof obj === "object") {
 			const entries = Object.entries(obj);
 			if (entries.length === 0) {
@@ -348,9 +376,12 @@ export function IndexerExplorer() {
 					<br />
 					{entries.map(([key, value], idx) => (
 						<span key={key}>
-							{indentStr}  <span style={{ color: colors.key }}>"{key}"</span><span style={{ color: colors.punctuation }}>: </span>
+							{indentStr} <span style={{ color: colors.key }}>"{key}"</span>
+							<span style={{ color: colors.punctuation }}>: </span>
 							{formatDecodedObject(value, indent + 1)}
-							{idx < entries.length - 1 && <span style={{ color: colors.punctuation }}>,</span>}
+							{idx < entries.length - 1 && (
+								<span style={{ color: colors.punctuation }}>,</span>
+							)}
 							<br />
 						</span>
 					))}
@@ -359,7 +390,7 @@ export function IndexerExplorer() {
 				</span>
 			);
 		}
-		
+
 		return <span>{String(obj)}</span>;
 	};
 
@@ -387,7 +418,7 @@ export function IndexerExplorer() {
 
 		try {
 			const limit = parseInt(blocksLimit, 10) || 10;
-			
+
 			// Get latest block height first
 			const latestBlockQuery = buildLatestBlockQuery();
 			const latestBlockData = await client.query<{
@@ -395,32 +426,34 @@ export function IndexerExplorer() {
 					height: number;
 				};
 			}>(latestBlockQuery);
-			
+
 			const latestHeight = latestBlockData.block.height;
 			const blocks: Block[] = [];
-			
+
 			// Fetch blocks in parallel batches for better performance
 			const batchSize = 20;
 			for (let start = 0; start < limit; start += batchSize) {
 				const promises = [];
-				for (let i = 0; i < batchSize && (start + i) < limit; i++) {
+				for (let i = 0; i < batchSize && start + i < limit; i++) {
 					const height = latestHeight - (start + i);
 					if (height < 0) break;
-					
+
 					const blockQuery = buildBlockWithTransactionsQuery(height);
 					promises.push(
-						client.query<{
-							block: {
-								height: number;
-								hash: string;
-								timestamp?: number;
-								protocolVersion?: number;
-								author?: string;
-							};
-						}>(blockQuery).catch(() => null)
+						client
+							.query<{
+								block: {
+									height: number;
+									hash: string;
+									timestamp?: number;
+									protocolVersion?: number;
+									author?: string;
+								};
+							}>(blockQuery)
+							.catch(() => null),
 					);
 				}
-				
+
 				const results = await Promise.all(promises);
 				for (const result of results) {
 					if (result && result.block) {
@@ -435,7 +468,7 @@ export function IndexerExplorer() {
 						});
 					}
 				}
-				
+
 				if (blocks.length >= limit) break;
 			}
 
@@ -462,7 +495,7 @@ export function IndexerExplorer() {
 
 		try {
 			const limit = parseInt(txLimit, 10) || 50;
-			
+
 			// Get latest block height first
 			const latestBlockQuery = buildLatestBlockQuery();
 			const latestBlockData = await client.query<{
@@ -470,36 +503,42 @@ export function IndexerExplorer() {
 					height: number;
 				};
 			}>(latestBlockQuery);
-			
+
 			const latestHeight = latestBlockData.block.height;
 			const allTransactions: Transaction[] = [];
-			
+
 			// Calculate search range based on limit
 			// Since transactions are sparse (~0.35 per block on average),
 			// we need to search roughly 3x the limit in blocks
 			// Cap at reasonable maximums to avoid performance issues
 			const estimatedBlocksNeeded = Math.min(limit * 3, 1000);
 			const searchRange = Math.min(estimatedBlocksNeeded, latestHeight);
-			
+
 			// Search blocks in parallel batches for better performance
 			const batchSize = 20;
-			for (let start = 0; start < searchRange && allTransactions.length < limit; start += batchSize) {
+			for (
+				let start = 0;
+				start < searchRange && allTransactions.length < limit;
+				start += batchSize
+			) {
 				const promises = [];
-				for (let i = 0; i < batchSize && (start + i) < searchRange; i++) {
+				for (let i = 0; i < batchSize && start + i < searchRange; i++) {
 					const height = latestHeight - (start + i);
 					if (height < 0) break;
-					
+
 					const blockQuery = buildBlockWithTransactionsQuery(height);
 					promises.push(
-						client.query<{
-							block: {
-								height: number;
-								transactions: Transaction[];
-							};
-						}>(blockQuery).catch(() => null)
+						client
+							.query<{
+								block: {
+									height: number;
+									transactions: Transaction[];
+								};
+							}>(blockQuery)
+							.catch(() => null),
 					);
 				}
-				
+
 				const results = await Promise.all(promises);
 				for (const result of results) {
 					if (result && result.block && result.block.transactions) {
@@ -507,7 +546,7 @@ export function IndexerExplorer() {
 						if (allTransactions.length >= limit) break;
 					}
 				}
-				
+
 				// Stop if we have enough transactions
 				if (allTransactions.length >= limit) break;
 			}
@@ -520,7 +559,7 @@ export function IndexerExplorer() {
 					return bHeight - aHeight;
 				})
 				.slice(0, limit);
-			
+
 			setTxResult(sortedTransactions);
 			setResult(JSON.stringify({ transactions: sortedTransactions }, null, 2));
 		} catch (err) {
@@ -531,7 +570,6 @@ export function IndexerExplorer() {
 			setLoading(false);
 		}
 	};
-
 
 	const handleSearchTransaction = async () => {
 		if (!searchTxHash.trim()) {
@@ -545,17 +583,17 @@ export function IndexerExplorer() {
 
 		try {
 			const searchValue = searchTxHash.trim();
-			const cleanValue = searchValue.startsWith("0x") 
-				? searchValue.slice(2) 
+			const cleanValue = searchValue.startsWith("0x")
+				? searchValue.slice(2)
 				: searchValue;
-			
+
 			// Check if it's a 72-character identifier (transaction identifier)
 			if (/^[0-9a-fA-F]{72}$/.test(cleanValue)) {
 				// Use the full 72-character identifier for GraphQL query
 				// The identifier should be passed as-is (without 0x prefix)
 				const query = buildTransactionsByIdentifierQuery(cleanValue);
 				const data = await client.query<{ transactions: Transaction[] }>(query);
-				
+
 				if (data.transactions && data.transactions.length > 0) {
 					setSearchResult(data.transactions[0]);
 					setResult(JSON.stringify(data, null, 2));
@@ -565,11 +603,11 @@ export function IndexerExplorer() {
 				}
 				return;
 			}
-			
+
 			// Otherwise, treat as transaction hash
 			let warningMessage = "";
 			let queryHash = searchValue;
-			
+
 			// If hash is longer than 64 characters, try multiple approaches
 			if (cleanValue.length > 64) {
 				warningMessage = `Note: Hash length is ${cleanValue.length} characters (expected 64). Trying first 64 characters.`;
@@ -578,13 +616,16 @@ export function IndexerExplorer() {
 			} else if (cleanValue.length < 64) {
 				warningMessage = `Note: Hash was padded from ${cleanValue.length} to 64 characters`;
 			}
-			
+
 			// Try searching with normalized hash
 			let query = buildTransactionsByHashQuery(queryHash);
 			let data = await client.query<{ transactions: Transaction[] }>(query);
 
 			// If not found and hash was longer than 64, try last 64 characters
-			if ((!data.transactions || data.transactions.length === 0) && cleanValue.length > 64) {
+			if (
+				(!data.transactions || data.transactions.length === 0) &&
+				cleanValue.length > 64
+			) {
 				const last64 = cleanValue.slice(-64);
 				warningMessage = `Note: Hash length is ${cleanValue.length} characters. Tried first 64, now trying last 64 characters.`;
 				query = buildTransactionsByHashQuery(last64);
@@ -599,8 +640,8 @@ export function IndexerExplorer() {
 					setError(warningMessage);
 				}
 			} else {
-				const notFoundMsg = warningMessage 
-					? `Transaction not found. ${warningMessage} The hash may not exist in the indexer or may be from a different network.` 
+				const notFoundMsg = warningMessage
+					? `Transaction not found. ${warningMessage} The hash may not exist in the indexer or may be from a different network.`
 					: "Transaction not found. The hash may not exist in the indexer or may be from a different network.";
 				setError(notFoundMsg);
 			}
@@ -612,7 +653,6 @@ export function IndexerExplorer() {
 			setLoading(false);
 		}
 	};
-
 
 	const handleCustomQuery = async () => {
 		if (!customQuery.trim()) {
@@ -638,22 +678,33 @@ export function IndexerExplorer() {
 	};
 
 	// Helper component to render contract actions with decode functionality
-	const renderContractActions = (contractActions?: Array<{
-		__typename?: string;
-		address?: string;
-		state?: string;
-		chainState?: string;
-		transaction?: {
-			hash: string;
-		};
-	}>): ReactElement | null => {
+	const renderContractActions = (
+		contractActions?: Array<{
+			__typename?: string;
+			address?: string;
+			state?: string;
+			chainState?: string;
+			transaction?: {
+				hash: string;
+			};
+		}>,
+	): ReactElement | null => {
 		if (!contractActions || contractActions.length === 0) {
 			return null;
 		}
 
 		return (
-			<div style={{ marginTop: "1rem", padding: "1rem", border: "1px solid var(--color-border)", borderRadius: "4px" }}>
-				<h4 style={{ marginTop: 0, marginBottom: "0.5rem" }}>Contract Actions ({contractActions.length})</h4>
+			<div
+				style={{
+					marginTop: "1rem",
+					padding: "1rem",
+					border: "1px solid var(--color-border)",
+					borderRadius: "4px",
+				}}
+			>
+				<h4 style={{ marginTop: 0, marginBottom: "0.5rem" }}>
+					Contract Actions ({contractActions.length})
+				</h4>
 				{contractActions.map((action, idx) => {
 					const address = action.address || "unknown";
 					const stateCacheKey = `${address}:state`;
@@ -666,22 +717,50 @@ export function IndexerExplorer() {
 					const showRawChainState = showRawData[chainStateCacheKey] ?? false;
 
 					return (
-						<div key={idx} style={{ marginBottom: "1rem", padding: "0.75rem", backgroundColor: "var(--color-bg-secondary)", borderRadius: "4px" }}>
+						<div
+							key={idx}
+							style={{
+								marginBottom: "1rem",
+								padding: "0.75rem",
+								backgroundColor: "var(--color-bg-secondary)",
+								borderRadius: "4px",
+							}}
+						>
 							<div style={{ marginBottom: "0.5rem" }}>
-								<strong>Address:</strong> <code style={{ fontSize: "0.875rem" }}>{address}</code>
+								<strong>Address:</strong>{" "}
+								<code style={{ fontSize: "0.875rem" }}>{address}</code>
 								{action.__typename && (
-									<span style={{ marginLeft: "0.5rem", color: "var(--color-text-secondary)" }}>
+									<span
+										style={{
+											marginLeft: "0.5rem",
+											color: "var(--color-text-secondary)",
+										}}
+									>
 										({action.__typename})
 									</span>
 								)}
 							</div>
-							
+
 							{action.state && (
 								<div style={{ marginBottom: "0.75rem" }}>
-									<div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											gap: "0.5rem",
+											marginBottom: "0.25rem",
+										}}
+									>
 										<strong>State:</strong>
 										{isDecodingState && (
-											<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Decoding...</span>
+											<span
+												style={{
+													fontSize: "0.75rem",
+													color: "var(--color-text-secondary)",
+												}}
+											>
+												Decoding...
+											</span>
 										)}
 										{decodedState && (
 											<button
@@ -700,37 +779,158 @@ export function IndexerExplorer() {
 											</button>
 										)}
 									</div>
-									{decodedState && !showRawState && (() => {
-										try {
-											const parsed = JSON.parse(decodedState);
-											const hasOperations = parsed && typeof parsed === "object" && "operations" in parsed;
-											return (
-												<>
-													{hasOperations && (
-														<div style={{ marginBottom: "0.5rem", padding: "0.75rem", backgroundColor: "#e8f0ff", border: "1px solid var(--color-primary)", borderRadius: "2px", fontSize: "0.8125rem", color: "#1a1a1a", lineHeight: "1.5" }}>
-															<strong style={{ color: "#0000FE", fontWeight: 600 }}>About "operations" and "v2" fields:</strong> The <code style={{ backgroundColor: "#d0e0ff", padding: "0.125rem 0.25rem", borderRadius: "2px", fontSize: "0.75rem", fontFamily: '"Monaco", "Menlo", "Ubuntu Mono", monospace', color: "#0000FE", fontWeight: 600 }}>operations</code> field contains entry points (functions) of the contract. Each operation has a <code style={{ backgroundColor: "#d0e0ff", padding: "0.125rem 0.25rem", borderRadius: "2px", fontSize: "0.75rem", fontFamily: '"Monaco", "Menlo", "Ubuntu Mono", monospace', color: "#0000FE", fontWeight: 600 }}>v2</code> field containing a <strong style={{ color: "#1a1a1a", fontWeight: 600 }}>verifier key</strong> - a cryptographic key used to verify zero-knowledge proofs for that operation. The "v2" indicates version 2 of the verifier key (multiple versions may exist, but typically only the latest is exposed). This is essential for Midnight Network's privacy features.
+									{decodedState &&
+										!showRawState &&
+										(() => {
+											try {
+												const parsed = JSON.parse(decodedState);
+												const hasOperations =
+													parsed &&
+													typeof parsed === "object" &&
+													"operations" in parsed;
+												return (
+													<>
+														{hasOperations && (
+															<div
+																style={{
+																	marginBottom: "0.5rem",
+																	padding: "0.75rem",
+																	backgroundColor: "#e8f0ff",
+																	border: "1px solid var(--color-primary)",
+																	borderRadius: "2px",
+																	fontSize: "0.8125rem",
+																	color: "#1a1a1a",
+																	lineHeight: "1.5",
+																}}
+															>
+																<strong
+																	style={{ color: "#0000FE", fontWeight: 600 }}
+																>
+																	About "operations" and "v2" fields:
+																</strong>{" "}
+																The{" "}
+																<code
+																	style={{
+																		backgroundColor: "#d0e0ff",
+																		padding: "0.125rem 0.25rem",
+																		borderRadius: "2px",
+																		fontSize: "0.75rem",
+																		fontFamily:
+																			'"Monaco", "Menlo", "Ubuntu Mono", monospace',
+																		color: "#0000FE",
+																		fontWeight: 600,
+																	}}
+																>
+																	operations
+																</code>{" "}
+																field contains entry points (functions) of the
+																contract. Each operation has a{" "}
+																<code
+																	style={{
+																		backgroundColor: "#d0e0ff",
+																		padding: "0.125rem 0.25rem",
+																		borderRadius: "2px",
+																		fontSize: "0.75rem",
+																		fontFamily:
+																			'"Monaco", "Menlo", "Ubuntu Mono", monospace',
+																		color: "#0000FE",
+																		fontWeight: 600,
+																	}}
+																>
+																	v2
+																</code>{" "}
+																field containing a{" "}
+																<strong
+																	style={{ color: "#1a1a1a", fontWeight: 600 }}
+																>
+																	verifier key
+																</strong>{" "}
+																- a cryptographic key used to verify
+																zero-knowledge proofs for that operation. The
+																"v2" indicates version 2 of the verifier key
+																(multiple versions may exist, but typically only
+																the latest is exposed). This is essential for
+																Midnight Network's privacy features.
+															</div>
+														)}
+														<div
+															style={{
+																margin: 0,
+																padding: "0.5rem",
+																backgroundColor: "var(--color-surface)",
+																color: "var(--color-text)",
+																borderRadius: "2px",
+																fontSize: "0.75rem",
+																overflow: "auto",
+																maxHeight: "400px",
+																border: "1px solid var(--color-border)",
+																whiteSpace: "pre-wrap",
+																wordBreak: "break-word",
+																fontFamily:
+																	'"Monaco", "Menlo", "Ubuntu Mono", monospace',
+															}}
+														>
+															{formatDecodedState(decodedState)}
 														</div>
-													)}
-													<div style={{ margin: 0, padding: "0.5rem", backgroundColor: "var(--color-surface)", color: "var(--color-text)", borderRadius: "2px", fontSize: "0.75rem", overflow: "auto", maxHeight: "400px", border: "1px solid var(--color-border)", whiteSpace: "pre-wrap", wordBreak: "break-word", fontFamily: '"Monaco", "Menlo", "Ubuntu Mono", monospace' }}>
+													</>
+												);
+											} catch {
+												return (
+													<div
+														style={{
+															margin: 0,
+															padding: "0.5rem",
+															backgroundColor: "var(--color-surface)",
+															color: "var(--color-text)",
+															borderRadius: "2px",
+															fontSize: "0.75rem",
+															overflow: "auto",
+															maxHeight: "400px",
+															border: "1px solid var(--color-border)",
+															whiteSpace: "pre-wrap",
+															wordBreak: "break-word",
+															fontFamily:
+																'"Monaco", "Menlo", "Ubuntu Mono", monospace',
+														}}
+													>
 														{formatDecodedState(decodedState)}
 													</div>
-												</>
-											);
-										} catch {
-											return (
-												<div style={{ margin: 0, padding: "0.5rem", backgroundColor: "var(--color-surface)", color: "var(--color-text)", borderRadius: "2px", fontSize: "0.75rem", overflow: "auto", maxHeight: "400px", border: "1px solid var(--color-border)", whiteSpace: "pre-wrap", wordBreak: "break-word", fontFamily: '"Monaco", "Menlo", "Ubuntu Mono", monospace' }}>
-													{formatDecodedState(decodedState)}
-												</div>
-											);
-										}
-									})()}
+												);
+											}
+										})()}
 									{decodedState && showRawState && (
-										<pre style={{ margin: 0, padding: "0.5rem", backgroundColor: "var(--color-surface)", color: "var(--color-text)", borderRadius: "2px", fontSize: "0.75rem", overflow: "auto", maxHeight: "150px", wordBreak: "break-all", border: "1px solid var(--color-border)" }}>
+										<pre
+											style={{
+												margin: 0,
+												padding: "0.5rem",
+												backgroundColor: "var(--color-surface)",
+												color: "var(--color-text)",
+												borderRadius: "2px",
+												fontSize: "0.75rem",
+												overflow: "auto",
+												maxHeight: "150px",
+												wordBreak: "break-all",
+												border: "1px solid var(--color-border)",
+											}}
+										>
 											{action.state}
 										</pre>
 									)}
 									{!decodedState && (
-										<pre style={{ margin: 0, padding: "0.5rem", backgroundColor: "var(--color-surface)", color: "var(--color-text)", borderRadius: "2px", fontSize: "0.75rem", overflow: "auto", maxHeight: "150px", wordBreak: "break-all", border: "1px solid var(--color-border)" }}>
+										<pre
+											style={{
+												margin: 0,
+												padding: "0.5rem",
+												backgroundColor: "var(--color-surface)",
+												color: "var(--color-text)",
+												borderRadius: "2px",
+												fontSize: "0.75rem",
+												overflow: "auto",
+												maxHeight: "150px",
+												wordBreak: "break-all",
+												border: "1px solid var(--color-border)",
+											}}
+										>
 											{action.state}
 										</pre>
 									)}
@@ -739,10 +939,24 @@ export function IndexerExplorer() {
 
 							{action.chainState && (
 								<div style={{ marginBottom: "0.75rem" }}>
-									<div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											gap: "0.5rem",
+											marginBottom: "0.25rem",
+										}}
+									>
 										<strong>Chain State:</strong>
 										{isDecodingChainState && (
-											<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Decoding...</span>
+											<span
+												style={{
+													fontSize: "0.75rem",
+													color: "var(--color-text-secondary)",
+												}}
+											>
+												Decoding...
+											</span>
 										)}
 										{decodedChainState && (
 											<button
@@ -761,37 +975,158 @@ export function IndexerExplorer() {
 											</button>
 										)}
 									</div>
-									{decodedChainState && !showRawChainState && (() => {
-										try {
-											const parsed = JSON.parse(decodedChainState);
-											const hasOperations = parsed && typeof parsed === "object" && "operations" in parsed;
-											return (
-												<>
-													{hasOperations && (
-														<div style={{ marginBottom: "0.5rem", padding: "0.75rem", backgroundColor: "#e8f0ff", border: "1px solid var(--color-primary)", borderRadius: "2px", fontSize: "0.8125rem", color: "#1a1a1a", lineHeight: "1.5" }}>
-															<strong style={{ color: "#0000FE", fontWeight: 600 }}>About "operations" and "v2" fields:</strong> The <code style={{ backgroundColor: "#d0e0ff", padding: "0.125rem 0.25rem", borderRadius: "2px", fontSize: "0.75rem", fontFamily: '"Monaco", "Menlo", "Ubuntu Mono", monospace', color: "#0000FE", fontWeight: 600 }}>operations</code> field contains entry points (functions) of the contract. Each operation has a <code style={{ backgroundColor: "#d0e0ff", padding: "0.125rem 0.25rem", borderRadius: "2px", fontSize: "0.75rem", fontFamily: '"Monaco", "Menlo", "Ubuntu Mono", monospace', color: "#0000FE", fontWeight: 600 }}>v2</code> field containing a <strong style={{ color: "#1a1a1a", fontWeight: 600 }}>verifier key</strong> - a cryptographic key used to verify zero-knowledge proofs for that operation. The "v2" indicates version 2 of the verifier key (multiple versions may exist, but typically only the latest is exposed). This is essential for Midnight Network's privacy features.
+									{decodedChainState &&
+										!showRawChainState &&
+										(() => {
+											try {
+												const parsed = JSON.parse(decodedChainState);
+												const hasOperations =
+													parsed &&
+													typeof parsed === "object" &&
+													"operations" in parsed;
+												return (
+													<>
+														{hasOperations && (
+															<div
+																style={{
+																	marginBottom: "0.5rem",
+																	padding: "0.75rem",
+																	backgroundColor: "#e8f0ff",
+																	border: "1px solid var(--color-primary)",
+																	borderRadius: "2px",
+																	fontSize: "0.8125rem",
+																	color: "#1a1a1a",
+																	lineHeight: "1.5",
+																}}
+															>
+																<strong
+																	style={{ color: "#0000FE", fontWeight: 600 }}
+																>
+																	About "operations" and "v2" fields:
+																</strong>{" "}
+																The{" "}
+																<code
+																	style={{
+																		backgroundColor: "#d0e0ff",
+																		padding: "0.125rem 0.25rem",
+																		borderRadius: "2px",
+																		fontSize: "0.75rem",
+																		fontFamily:
+																			'"Monaco", "Menlo", "Ubuntu Mono", monospace',
+																		color: "#0000FE",
+																		fontWeight: 600,
+																	}}
+																>
+																	operations
+																</code>{" "}
+																field contains entry points (functions) of the
+																contract. Each operation has a{" "}
+																<code
+																	style={{
+																		backgroundColor: "#d0e0ff",
+																		padding: "0.125rem 0.25rem",
+																		borderRadius: "2px",
+																		fontSize: "0.75rem",
+																		fontFamily:
+																			'"Monaco", "Menlo", "Ubuntu Mono", monospace',
+																		color: "#0000FE",
+																		fontWeight: 600,
+																	}}
+																>
+																	v2
+																</code>{" "}
+																field containing a{" "}
+																<strong
+																	style={{ color: "#1a1a1a", fontWeight: 600 }}
+																>
+																	verifier key
+																</strong>{" "}
+																- a cryptographic key used to verify
+																zero-knowledge proofs for that operation. The
+																"v2" indicates version 2 of the verifier key
+																(multiple versions may exist, but typically only
+																the latest is exposed). This is essential for
+																Midnight Network's privacy features.
+															</div>
+														)}
+														<div
+															style={{
+																margin: 0,
+																padding: "0.5rem",
+																backgroundColor: "var(--color-surface)",
+																color: "var(--color-text)",
+																borderRadius: "2px",
+																fontSize: "0.75rem",
+																overflow: "auto",
+																maxHeight: "400px",
+																border: "1px solid var(--color-border)",
+																whiteSpace: "pre-wrap",
+																wordBreak: "break-word",
+																fontFamily:
+																	'"Monaco", "Menlo", "Ubuntu Mono", monospace',
+															}}
+														>
+															{formatDecodedState(decodedChainState)}
 														</div>
-													)}
-													<div style={{ margin: 0, padding: "0.5rem", backgroundColor: "var(--color-surface)", color: "var(--color-text)", borderRadius: "2px", fontSize: "0.75rem", overflow: "auto", maxHeight: "400px", border: "1px solid var(--color-border)", whiteSpace: "pre-wrap", wordBreak: "break-word", fontFamily: '"Monaco", "Menlo", "Ubuntu Mono", monospace' }}>
+													</>
+												);
+											} catch {
+												return (
+													<div
+														style={{
+															margin: 0,
+															padding: "0.5rem",
+															backgroundColor: "var(--color-surface)",
+															color: "var(--color-text)",
+															borderRadius: "2px",
+															fontSize: "0.75rem",
+															overflow: "auto",
+															maxHeight: "400px",
+															border: "1px solid var(--color-border)",
+															whiteSpace: "pre-wrap",
+															wordBreak: "break-word",
+															fontFamily:
+																'"Monaco", "Menlo", "Ubuntu Mono", monospace',
+														}}
+													>
 														{formatDecodedState(decodedChainState)}
 													</div>
-												</>
-											);
-										} catch {
-											return (
-												<div style={{ margin: 0, padding: "0.5rem", backgroundColor: "var(--color-surface)", color: "var(--color-text)", borderRadius: "2px", fontSize: "0.75rem", overflow: "auto", maxHeight: "400px", border: "1px solid var(--color-border)", whiteSpace: "pre-wrap", wordBreak: "break-word", fontFamily: '"Monaco", "Menlo", "Ubuntu Mono", monospace' }}>
-													{formatDecodedState(decodedChainState)}
-												</div>
-											);
-										}
-									})()}
+												);
+											}
+										})()}
 									{decodedChainState && showRawChainState && (
-										<pre style={{ margin: 0, padding: "0.5rem", backgroundColor: "var(--color-surface)", color: "var(--color-text)", borderRadius: "2px", fontSize: "0.75rem", overflow: "auto", maxHeight: "150px", wordBreak: "break-all", border: "1px solid var(--color-border)" }}>
+										<pre
+											style={{
+												margin: 0,
+												padding: "0.5rem",
+												backgroundColor: "var(--color-surface)",
+												color: "var(--color-text)",
+												borderRadius: "2px",
+												fontSize: "0.75rem",
+												overflow: "auto",
+												maxHeight: "150px",
+												wordBreak: "break-all",
+												border: "1px solid var(--color-border)",
+											}}
+										>
 											{action.chainState}
 										</pre>
 									)}
 									{!decodedChainState && (
-										<pre style={{ margin: 0, padding: "0.5rem", backgroundColor: "var(--color-surface)", color: "var(--color-text)", borderRadius: "2px", fontSize: "0.75rem", overflow: "auto", maxHeight: "150px", wordBreak: "break-all", border: "1px solid var(--color-border)" }}>
+										<pre
+											style={{
+												margin: 0,
+												padding: "0.5rem",
+												backgroundColor: "var(--color-surface)",
+												color: "var(--color-text)",
+												borderRadius: "2px",
+												fontSize: "0.75rem",
+												overflow: "auto",
+												maxHeight: "150px",
+												wordBreak: "break-all",
+												border: "1px solid var(--color-border)",
+											}}
+										>
 											{action.chainState}
 										</pre>
 									)}
@@ -799,8 +1134,14 @@ export function IndexerExplorer() {
 							)}
 
 							{action.transaction?.hash && (
-								<div style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
-									<strong>Transaction:</strong> <code>{action.transaction.hash}</code>
+								<div
+									style={{
+										fontSize: "0.875rem",
+										color: "var(--color-text-secondary)",
+									}}
+								>
+									<strong>Transaction:</strong>{" "}
+									<code>{action.transaction.hash}</code>
 								</div>
 							)}
 						</div>
@@ -814,7 +1155,10 @@ export function IndexerExplorer() {
 		<div className="app">
 			<header className="header">
 				<h1>Midnight Network Indexer Explorer</h1>
-				<div className="endpoint-config" style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+				<div
+					className="endpoint-config"
+					style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}
+				>
 					<label>
 						Indexer URL:
 						<input
@@ -885,7 +1229,8 @@ export function IndexerExplorer() {
 						<div className="method-panel">
 							<h2>Query Blocks</h2>
 							<p className="method-description-text">
-								Query blocks from the indexer. Gets the latest blocks sequentially without recursion, so you can retrieve many blocks.
+								Query blocks from the indexer. Gets the latest blocks
+								sequentially without recursion, so you can retrieve many blocks.
 							</p>
 
 							<div className="params-section">
@@ -945,7 +1290,9 @@ export function IndexerExplorer() {
 						<div className="method-panel">
 							<h2>Query Transactions</h2>
 							<p className="method-description-text">
-								Query transactions from the indexer. Searches through multiple blocks (up to 1000) to find transactions. Can retrieve many more transactions than the Blocks tab.
+								Query transactions from the indexer. Searches through multiple
+								blocks (up to 1000) to find transactions. Can retrieve many more
+								transactions than the Blocks tab.
 							</p>
 
 							<div className="params-section">
@@ -960,7 +1307,10 @@ export function IndexerExplorer() {
 											min="1"
 											max="1000"
 										/>
-										<small>Number of transactions to return (searches through multiple blocks)</small>
+										<small>
+											Number of transactions to return (searches through
+											multiple blocks)
+										</small>
 									</label>
 								</div>
 							</div>
@@ -1000,7 +1350,15 @@ export function IndexerExplorer() {
 												</div>
 												<div className="result-item-content">
 													{renderContractActions(tx.contractActions)}
-													<div style={{ marginTop: tx.contractActions && tx.contractActions.length > 0 ? "1rem" : 0 }}>
+													<div
+														style={{
+															marginTop:
+																tx.contractActions &&
+																tx.contractActions.length > 0
+																	? "1rem"
+																	: 0,
+														}}
+													>
 														<button
 															type="button"
 															onClick={() => {
@@ -1020,14 +1378,44 @@ export function IndexerExplorer() {
 																borderRadius: "2px",
 															}}
 														>
-															{showRawJson[tx.hash] ? "Show Formatted JSON" : "Show Raw JSON"}
+															{showRawJson[tx.hash]
+																? "Show Formatted JSON"
+																: "Show Raw JSON"}
 														</button>
 														{showRawJson[tx.hash] ? (
-															<pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", minHeight: "400px", maxHeight: "800px", overflow: "auto", padding: "0.75rem", backgroundColor: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "2px" }}>
+															<pre
+																style={{
+																	whiteSpace: "pre-wrap",
+																	wordBreak: "break-word",
+																	minHeight: "400px",
+																	maxHeight: "800px",
+																	overflow: "auto",
+																	padding: "0.75rem",
+																	backgroundColor: "var(--color-surface)",
+																	border: "1px solid var(--color-border)",
+																	borderRadius: "2px",
+																}}
+															>
 																{JSON.stringify(tx, null, 2)}
 															</pre>
 														) : (
-															<div style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", fontFamily: '"Monaco", "Menlo", "Ubuntu Mono", monospace', fontSize: "0.875rem", lineHeight: "1.5", minHeight: "400px", maxHeight: "800px", overflow: "auto", padding: "0.75rem", backgroundColor: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "2px" }}>
+															<div
+																style={{
+																	whiteSpace: "pre-wrap",
+																	wordBreak: "break-word",
+																	fontFamily:
+																		'"Monaco", "Menlo", "Ubuntu Mono", monospace',
+																	fontSize: "0.875rem",
+																	lineHeight: "1.5",
+																	minHeight: "400px",
+																	maxHeight: "800px",
+																	overflow: "auto",
+																	padding: "0.75rem",
+																	backgroundColor: "var(--color-surface)",
+																	border: "1px solid var(--color-border)",
+																	borderRadius: "2px",
+																}}
+															>
 																{formatDecodedObject(tx)}
 															</div>
 														)}
@@ -1045,7 +1433,8 @@ export function IndexerExplorer() {
 						<div className="method-panel">
 							<h2>Search</h2>
 							<p className="method-description-text">
-								Search for transactions by hash or identifier. Identifiers are 72-character hex strings found in transaction.identifiers.
+								Search for transactions by hash or identifier. Identifiers are
+								72-character hex strings found in transaction.identifiers.
 							</p>
 
 							<div className="params-section">
@@ -1059,7 +1448,10 @@ export function IndexerExplorer() {
 											placeholder="0x... (64 hex chars) or 00000000... (72 hex chars)"
 										/>
 									</label>
-									<small>64-char hash or 72-char identifier from transaction.identifiers</small>
+									<small>
+										64-char hash or 72-char identifier from
+										transaction.identifiers
+									</small>
 								</div>
 								<button
 									type="button"
@@ -1081,10 +1473,21 @@ export function IndexerExplorer() {
 							{searchResult && (
 								<div className="result-panel">
 									<h3>Search Results</h3>
-									{searchResult.contractActions && renderContractActions(searchResult.contractActions) && (
-										<div>{renderContractActions(searchResult.contractActions)}</div>
-									)}
-									<div style={{ marginTop: searchResult.contractActions && searchResult.contractActions.length > 0 ? "1rem" : 0 }}>
+									{searchResult.contractActions &&
+										renderContractActions(searchResult.contractActions) && (
+											<div>
+												{renderContractActions(searchResult.contractActions)}
+											</div>
+										)}
+									<div
+										style={{
+											marginTop:
+												searchResult.contractActions &&
+												searchResult.contractActions.length > 0
+													? "1rem"
+													: 0,
+										}}
+									>
 										<button
 											type="button"
 											onClick={() => {
@@ -1104,14 +1507,44 @@ export function IndexerExplorer() {
 												borderRadius: "2px",
 											}}
 										>
-											{showRawJson.search ? "Show Formatted JSON" : "Show Raw JSON"}
+											{showRawJson.search
+												? "Show Formatted JSON"
+												: "Show Raw JSON"}
 										</button>
 										{showRawJson.search ? (
-											<pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", minHeight: "400px", maxHeight: "800px", overflow: "auto", padding: "0.75rem", backgroundColor: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "2px" }}>
+											<pre
+												style={{
+													whiteSpace: "pre-wrap",
+													wordBreak: "break-word",
+													minHeight: "400px",
+													maxHeight: "800px",
+													overflow: "auto",
+													padding: "0.75rem",
+													backgroundColor: "var(--color-surface)",
+													border: "1px solid var(--color-border)",
+													borderRadius: "2px",
+												}}
+											>
 												{JSON.stringify(searchResult, null, 2)}
 											</pre>
 										) : (
-											<div style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", fontFamily: '"Monaco", "Menlo", "Ubuntu Mono", monospace', fontSize: "0.875rem", lineHeight: "1.5", minHeight: "400px", maxHeight: "800px", overflow: "auto", padding: "0.75rem", backgroundColor: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: "2px" }}>
+											<div
+												style={{
+													whiteSpace: "pre-wrap",
+													wordBreak: "break-word",
+													fontFamily:
+														'"Monaco", "Menlo", "Ubuntu Mono", monospace',
+													fontSize: "0.875rem",
+													lineHeight: "1.5",
+													minHeight: "400px",
+													maxHeight: "800px",
+													overflow: "auto",
+													padding: "0.75rem",
+													backgroundColor: "var(--color-surface)",
+													border: "1px solid var(--color-border)",
+													borderRadius: "2px",
+												}}
+											>
 												{formatDecodedObject(searchResult)}
 											</div>
 										)}
@@ -1181,7 +1614,8 @@ export function IndexerExplorer() {
 						<div className="method-panel">
 							<h2>GraphQL Schema Introspection</h2>
 							<p className="method-description-text">
-								Introspect the GraphQL schema to understand available fields and types.
+								Introspect the GraphQL schema to understand available fields and
+								types.
 							</p>
 
 							<button

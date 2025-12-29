@@ -60,9 +60,7 @@ export class GraphQLClient {
 			const data = (await response.json()) as GraphQLResponse<T>;
 
 			if (data.errors && data.errors.length > 0) {
-				const errorMessages = data.errors
-					.map((e) => e.message)
-					.join(", ");
+				const errorMessages = data.errors.map((e) => e.message).join(", ");
 				throw new Error(`GraphQL error: ${errorMessages}`);
 			}
 
@@ -84,4 +82,3 @@ export class GraphQLClient {
 		}
 	}
 }
-

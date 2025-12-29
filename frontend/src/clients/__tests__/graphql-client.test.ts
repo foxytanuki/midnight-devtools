@@ -3,7 +3,7 @@
  * TDD: Test-driven development for GraphQL client validation
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { GraphQLClient } from "../graphql-client";
 
 // Mock fetch
@@ -64,9 +64,7 @@ describe("GraphQLClient", () => {
 
 		it("should handle GraphQL errors", async () => {
 			const mockResponse = {
-				errors: [
-					{ message: "Field 'id' doesn't exist on type 'Transaction'" },
-				],
+				errors: [{ message: "Field 'id' doesn't exist on type 'Transaction'" }],
 			};
 
 			(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
@@ -103,15 +101,13 @@ describe("GraphQLClient", () => {
 			const abortError = new Error("Aborted");
 			abortError.name = "AbortError";
 
-			(global.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(
-				() => {
-					return new Promise((_, reject) => {
-						setTimeout(() => {
-							reject(abortError);
-						}, 200);
-					});
-				},
-			);
+			(global.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(() => {
+				return new Promise((_, reject) => {
+					setTimeout(() => {
+						reject(abortError);
+					}, 200);
+				});
+			});
 
 			const query = `query { blocks(offset: 0, limit: 10) { number } }`;
 
@@ -145,4 +141,3 @@ describe("GraphQLClient", () => {
 		});
 	});
 });
-

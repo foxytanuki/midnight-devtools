@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Cip30WalletApi } from "../types/wallet-types";
 import { formatAddress } from "../utils/wallet-utils";
 import "../App.css";

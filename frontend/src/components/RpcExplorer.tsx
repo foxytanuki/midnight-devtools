@@ -1,16 +1,16 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { RpcClient } from "../clients/rpc-client";
+import { CATEGORY_NAMES, RPC_METHODS } from "../config/rpc-methods";
+import {
+	extractBlockHashFromResult,
+	extractBlockNumberFromResult,
+	getBlockExplorerUrl,
+} from "../utils/explorer-utils";
 import {
 	searchTransactionByHash,
 	searchTransactionsByAccount,
 	type TransactionSearchResult,
 } from "../utils/tx-search";
-import { RPC_METHODS, CATEGORY_NAMES } from "../config/rpc-methods";
-import {
-	getBlockExplorerUrl,
-	extractBlockHashFromResult,
-	extractBlockNumberFromResult,
-} from "../utils/explorer-utils";
 import "../App.css";
 
 const DEFAULT_ENDPOINT = "https://rpc.testnet-02.midnight.network/";
@@ -282,9 +282,7 @@ export function RpcExplorer() {
 
 							<div className="method-list">
 								{filteredMethods.length === 0 ? (
-									<div className="no-results">
-										No methods found
-									</div>
+									<div className="no-results">No methods found</div>
 								) : (
 									filteredMethods.map((method) => (
 										<button
@@ -581,4 +579,3 @@ export function RpcExplorer() {
 		</div>
 	);
 }
-

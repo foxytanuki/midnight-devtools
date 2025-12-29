@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { RpcClient } from "../clients/rpc-client";
-import { searchTransactionsByAccount } from "../utils/tx-search";
 import { getBlockExplorerUrl } from "../utils/explorer-utils";
 import type { TransactionSearchResult } from "../utils/tx-search";
+import { searchTransactionsByAccount } from "../utils/tx-search";
 import "../App.css";
 
 const DEFAULT_RPC_ENDPOINT = "https://rpc.testnet-02.midnight.network/";
@@ -36,9 +36,7 @@ export function TransactionHistoryPanel({
 			setTransactions(results);
 		} catch (err) {
 			setError(
-				err instanceof Error
-					? err.message
-					: "Failed to search transactions",
+				err instanceof Error ? err.message : "Failed to search transactions",
 			);
 		} finally {
 			setSearching(false);
@@ -141,7 +139,9 @@ export function TransactionHistoryPanel({
 					<li>Configure the RPC endpoint (default: testnet)</li>
 					<li>Set the maximum number of blocks to search</li>
 					<li>Click "Search Transactions" to find transactions</li>
-					<li>Click "Explorer" links to view transactions on the block explorer</li>
+					<li>
+						Click "Explorer" links to view transactions on the block explorer
+					</li>
 				</ol>
 				<div className="info-box">
 					<strong>Note:</strong> Transaction search may take some time depending
@@ -152,4 +152,3 @@ export function TransactionHistoryPanel({
 		</div>
 	);
 }
-
