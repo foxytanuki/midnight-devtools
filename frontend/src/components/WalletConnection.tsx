@@ -314,7 +314,7 @@ export function WalletConnection({
 						</a>
 					</li>
 					<li>
-						Select your network (testnet-02 or 0.18-undeployed1-kitsunesh)
+						Select your network from the dropdown in the top right corner
 					</li>
 					<li>Click the "Connect" button to connect your wallet</li>
 					<li>
