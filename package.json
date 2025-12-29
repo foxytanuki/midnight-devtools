@@ -1,0 +1,9 @@
+{
+  "name": "midnight-devtools",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "rpc"
+  ]
+}
+

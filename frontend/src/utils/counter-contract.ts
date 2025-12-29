@@ -10,7 +10,7 @@ import { indexerPublicDataProvider } from "@midnight-ntwrk/midnight-js-indexer-p
 import { FetchZkConfigProvider } from "@midnight-ntwrk/midnight-js-fetch-zk-config-provider";
 import { NetworkId, setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { browserPrivateStateProvider } from "./browser-private-state-provider";
-import { Counter, witnesses } from "contract";
+import { Counter, witnesses } from "../lib/contract";
 import { assertIsContractAddress } from "@midnight-ntwrk/midnight-js-utils";
 
 // Testnet設定

@@ -22,13 +22,13 @@ Midnight Network開発者向けのWebツール集です。
 
 ```bash
 cd frontend
-pnpm install
+bun install
 ```
 
 ### 開発サーバーの起動
 
 ```bash
-pnpm dev
+bun dev
 ```
 
 ブラウザで `http://localhost:5173` を開きます。
@@ -36,20 +36,20 @@ pnpm dev
 ### ビルド
 
 ```bash
-pnpm build
+bun build
 ```
 
 ### リントとフォーマット
 
 ```bash
 # リントチェック
-pnpm lint
+bun lint
 
 # リントとフォーマットの自動修正
-pnpm lint:fix
+bun lint:fix
 
 # フォーマットのみ
-pnpm format
+bun format
 ```
 
 ## 使用方法
