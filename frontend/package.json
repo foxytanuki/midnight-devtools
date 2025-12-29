@@ -29,6 +29,8 @@
 		"@midnight-ntwrk/zswap": "^4.0.0",
 		"bech32": "^2.0.0",
 		"fp-ts": "^2.16.11",
+		"graphql": "^16.12.0",
+		"graphql-ws": "^6.0.6",
 		"next": "^16.1.1",
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3",

@@ -3,39 +3,82 @@
  * Generate links to Polkadot.js.org explorer
  */
 
-const EXPLORER_BASE_URL =
-	"https://polkadot.js.org/apps/?rpc=wss://rpc.testnet-02.midnight.network#/explorer/query";
+import { getCurrentNetworkConfig } from "./network-config";
 
 /**
- * Generate explorer URL from block hash
+ * Generate explorer URL from block number (height)
+ * Uses the current network's RPC URL
  */
-export function getBlockExplorerUrl(blockHash: string): string {
-	if (!blockHash) {
+export function getBlockExplorerUrl(blockNumber: number | string): string {
+	if (blockNumber === undefined || blockNumber === null) {
 		return "";
 	}
-	// Add 0x prefix if block hash doesn't start with it
-	const hash = blockHash.startsWith("0x") ? blockHash : `0x${blockHash}`;
-	return `${EXPLORER_BASE_URL}/${hash}`;
+
+	const networkConfig = getCurrentNetworkConfig();
+	const rpcUrl = networkConfig.rpcUrl;
+
+	// Convert RPC URL to WebSocket URL if needed
+	let wsRpcUrl: string;
+	if (rpcUrl.startsWith("http://")) {
+		wsRpcUrl = rpcUrl.replace("http://", "ws://");
+	} else if (rpcUrl.startsWith("https://")) {
+		wsRpcUrl = rpcUrl.replace("https://", "wss://");
+	} else if (rpcUrl.startsWith("ws://") || rpcUrl.startsWith("wss://")) {
+		wsRpcUrl = rpcUrl;
+	} else {
+		// Default to wss:// if no protocol specified
+		wsRpcUrl = `wss://${rpcUrl}`;
+	}
+
+	// Remove trailing slash if present
+	wsRpcUrl = wsRpcUrl.replace(/\/$/, "");
+
+	// Convert block number to string (use decimal, not hex)
+	const blockNumberStr =
+		typeof blockNumber === "string"
+			? blockNumber.startsWith("0x")
+				? parseInt(blockNumber, 16).toString()
+				: blockNumber
+			: blockNumber.toString();
+
+	return `https://polkadot.js.org/apps/?rpc=${encodeURIComponent(wsRpcUrl)}#/explorer/query/${blockNumberStr}`;
 }
 
 /**
- * Generate explorer URL from block number
- * Note: For block numbers, you need to get the block hash first
+ * Generate explorer URL from block hash (deprecated, use block number instead)
+ * @deprecated Use getBlockExplorerUrl with block number instead
+ */
+export function getBlockHashExplorerUrl(blockHash: string): string {
+	if (!blockHash) {
+		return "";
+	}
+	// For backward compatibility, try to extract block number from hash
+	// But this is not reliable, so prefer using block number directly
+	const networkConfig = getCurrentNetworkConfig();
+	const rpcUrl = networkConfig.rpcUrl;
+	let wsRpcUrl: string;
+	if (rpcUrl.startsWith("http://")) {
+		wsRpcUrl = rpcUrl.replace("http://", "ws://");
+	} else if (rpcUrl.startsWith("https://")) {
+		wsRpcUrl = rpcUrl.replace("https://", "wss://");
+	} else if (rpcUrl.startsWith("ws://") || rpcUrl.startsWith("wss://")) {
+		wsRpcUrl = rpcUrl;
+	} else {
+		wsRpcUrl = `wss://${rpcUrl}`;
+	}
+	wsRpcUrl = wsRpcUrl.replace(/\/$/, "");
+	const hash = blockHash.startsWith("0x") ? blockHash : `0x${blockHash}`;
+	return `https://polkadot.js.org/apps/?rpc=${encodeURIComponent(wsRpcUrl)}#/explorer/query/${hash}`;
+}
+
+/**
+ * Generate explorer URL from block number (alias for getBlockExplorerUrl)
+ * @deprecated Use getBlockExplorerUrl instead
  */
 export function getBlockNumberExplorerUrl(
 	blockNumber: number | string,
 ): string {
-	if (blockNumber === undefined || blockNumber === null) {
-		return "";
-	}
-	// Convert block number to hexadecimal
-	const hexNumber =
-		typeof blockNumber === "string"
-			? blockNumber.startsWith("0x")
-				? blockNumber
-				: `0x${parseInt(blockNumber, 10).toString(16)}`
-			: `0x${blockNumber.toString(16)}`;
-	return `${EXPLORER_BASE_URL}/${hexNumber}`;
+	return getBlockExplorerUrl(blockNumber);
 }
 
 /**

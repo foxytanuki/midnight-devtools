@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { WalletConnection } from "./WalletConnection";
+import { WalletIndexedData } from "./WalletIndexedData";
 import "../App.css";
 
-type TabType = "connection";
+type TabType = "connection" | "indexed-data";
 
 export function WalletApp() {
 	const [activeTab, setActiveTab] = useState<TabType>("connection");
 
 	const tabs: Array<{ id: TabType; label: string }> = [
 		{ id: "connection", label: "Connection" },
+		{ id: "indexed-data", label: "Indexed Data" },
 	];
 
 	return (
@@ -35,6 +37,7 @@ export function WalletApp() {
 
 				<div className="content">
 					{activeTab === "connection" && <WalletConnection />}
+					{activeTab === "indexed-data" && <WalletIndexedData />}
 				</div>
 			</main>
 		</div>
