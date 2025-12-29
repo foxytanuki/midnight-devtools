@@ -6,8 +6,8 @@
 import {
 	MidnightBech32m,
 	ShieldedAddress,
+	type NetworkId,
 } from "@midnight-ntwrk/wallet-sdk-address-format";
-import { NetworkId } from "@midnight-ntwrk/zswap";
 
 /**
  * Decode a Bech32m address to ShieldedAddress
@@ -32,9 +32,10 @@ export function decodeBech32mAddress(address: string): ShieldedAddress | null {
 
 		// Determine network ID based on address prefix
 		// Testnet addresses start with "addr_test1" or "mn_shield-addr_test1"
+		// NetworkId from wallet-sdk-address-format is an enum-like type
 		const networkId = address.includes("test")
-			? NetworkId.TestNet
-			: NetworkId.MainNet;
+			? ("testnet-02" as unknown as NetworkId)
+			: ("mainnet" as unknown as NetworkId);
 
 		// Decode to ShieldedAddress
 		const decodedAddress = ShieldedAddress.codec.decode(

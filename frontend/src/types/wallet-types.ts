@@ -1,89 +1,46 @@
 /**
  * Midnight Wallet統合用の型定義
- * CIP-30プロトコルに準拠
+ * DApp Connector APIを使用
  */
 
-export type WalletName = "lace" | "yoroi" | "eternl";
+import type {
+	InitialAPI,
+	ConnectedAPI,
+	Configuration,
+	ConnectionStatus,
+} from "@midnight-ntwrk/dapp-connector-api";
 
-export interface Cip30WalletApi {
-	/**
-	 * 使用済みアドレスのリストを取得
-	 * @returns Bech32m形式のアドレス配列
-	 */
-	getUsedAddresses: () => Promise<string[]>;
+// DApp Connector APIの型を再エクスポート
+export type { InitialAPI, ConnectedAPI, Configuration, ConnectionStatus };
 
-	/**
-	 * 未使用アドレスのリストを取得
-	 * @returns Bech32m形式のアドレス配列
-	 */
-	getUnusedAddresses: () => Promise<string[]>;
+// ウォレット関連の型定義
+export type DustAddress = {
+	dustAddress: string;
+};
 
-	/**
-	 * お釣りアドレスを取得
-	 * @returns Bech32m形式のアドレス
-	 */
-	getChangeAddress: () => Promise<string>;
+export type DustBalance = {
+	cap: bigint;
+	balance: bigint;
+};
 
-	/**
-	 * ウォレットの残高を取得
-	 * @returns 残高（文字列形式）
-	 */
-	getBalance: () => Promise<string>;
+export type ShieldedAddress = {
+	shieldedAddress: string;
+	shieldedCoinPublicKey: string;
+	shieldedEncryptionPublicKey: string;
+};
 
-	/**
-	 * データに署名（オプション）
-	 * @param address 署名に使用するアドレス
-	 * @param payload 署名するデータ（HEX形式）
-	 * @returns 署名結果
-	 */
-	signData?: (
-		address: string,
-		payload: string,
-	) => Promise<{ signature: string }>;
-}
+export type ShieldedBalance = Record<string, bigint>;
 
-export interface CardanoWalletProvider {
-	/**
-	 * ウォレットを有効化してAPIを取得
-	 * @returns CIP-30 Wallet API
-	 */
-	enable: () => Promise<Cip30WalletApi>;
+export type UnshieldedAddress = {
+	unshieldedAddress: string;
+};
 
-	/**
-	 * ウォレットが既に有効化されているか確認
-	 * @returns 有効化状態
-	 */
-	isEnabled: () => Promise<boolean>;
+export type UnshieldedBalanceDappConnector = Record<string, bigint>;
 
-	/**
-	 * APIバージョン
-	 */
-	apiVersion: string;
+// window.midnightの型定義は@midnight-ntwrk/dapp-connector-apiのglobals.d.tsで既に定義されているため、
+// ここでは重複定義しない
 
-	/**
-	 * ウォレット名
-	 */
-	name: string;
-
-	/**
-	 * ウォレットアイコン（Data URL）
-	 */
-	icon: string;
-}
-
-export interface CardanoWindow extends Window {
-	cardano?: {
-		[key in WalletName]?: CardanoWalletProvider;
-	};
-	midnight?: {
-		mnLace?: {
-			enable: () => Promise<Cip30WalletApi>;
-			isEnabled: () => Promise<boolean>;
-			serviceUriConfig: () => Promise<any>;
-		};
-	};
-}
-
+// エラー関連の型定義
 export type WalletErrorCode =
 	| "WALLET_NOT_INSTALLED"
 	| "CONNECTION_REJECTED"
@@ -100,17 +57,16 @@ export class WalletError extends Error {
 	}
 }
 
-export interface WalletConnection {
-	walletName: WalletName;
-	address: string;
-	connectedAt: number;
-}
+// レガシーCIP-30互換型（後方互換性のため残す）
+export type WalletName = "lace";
 
-export interface WalletInfo {
-	name: WalletName;
-	displayName: string;
-	installed: boolean;
-	provider?: CardanoWalletProvider;
-	icon?: string;
-	isMidnightNative?: boolean; // Midnight Network専用APIを使用しているかどうか
+export interface Cip30WalletApi {
+	getUsedAddresses: () => Promise<string[]>;
+	getUnusedAddresses: () => Promise<string[]>;
+	getChangeAddress: () => Promise<string>;
+	getBalance: () => Promise<string>;
+	signData?: (
+		address: string,
+		payload: string,
+	) => Promise<{ signature: string }>;
 }

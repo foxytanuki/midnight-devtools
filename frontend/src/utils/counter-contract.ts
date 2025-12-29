@@ -7,10 +7,7 @@ import { findDeployedContract } from "@midnight-ntwrk/midnight-js-contracts";
 import { FetchZkConfigProvider } from "@midnight-ntwrk/midnight-js-fetch-zk-config-provider";
 import { httpClientProofProvider } from "@midnight-ntwrk/midnight-js-http-client-proof-provider";
 import { indexerPublicDataProvider } from "@midnight-ntwrk/midnight-js-indexer-public-data-provider";
-import {
-	NetworkId,
-	setNetworkId,
-} from "@midnight-ntwrk/midnight-js-network-id";
+import { setNetworkId } from "@midnight-ntwrk/midnight-js-network-id";
 import { assertIsContractAddress } from "@midnight-ntwrk/midnight-js-utils";
 import { Counter, witnesses } from "../lib/contract";
 import type { Cip30WalletApi } from "../types/wallet-types";
@@ -18,7 +15,7 @@ import { browserPrivateStateProvider } from "./browser-private-state-provider";
 import { getCurrentNetworkConfig, type NetworkConfig } from "./network-config";
 
 // Network IDを設定（デフォルトはTestNet）
-setNetworkId(NetworkId.TestNet);
+setNetworkId("testnet-02");
 
 // Contract instance
 const counterContractInstance = new Counter.Contract(witnesses);
@@ -78,7 +75,11 @@ async function configureProviders(
 		}),
 		publicDataProvider: indexerPublicDataProvider(
 			config.indexerUrl,
-			config.indexerWS || config.indexerUrl.replace("/api/v1/graphql", "/api/v1/graphql/ws").replace("https://", "wss://").replace("http://", "ws://"),
+			config.indexerWS ||
+				config.indexerUrl
+					.replace("/api/v1/graphql", "/api/v1/graphql/ws")
+					.replace("https://", "wss://")
+					.replace("http://", "ws://"),
 		),
 		// @ts-expect-error - FetchZkConfigProvider constructor signature may vary
 		zkConfigProvider: new FetchZkConfigProvider("increment", zkConfigBaseUrl),

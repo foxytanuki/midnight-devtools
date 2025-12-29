@@ -1,22 +1,12 @@
 import { useEffect, useState } from "react";
-import type { Cip30WalletApi, WalletName } from "../types/wallet-types";
-import {
-	checkProofServer,
-	getCounterValue,
-	incrementCounter,
-	joinCounterContract,
-} from "../utils/counter-contract";
+import { checkProofServer, getCounterValue } from "../utils/counter-contract";
 import { useNetwork } from "../contexts/NetworkContext";
+import { useWallet } from "../hooks/useWallet";
 import "../App.css";
 
-interface CounterContractPanelProps {
-	walletApi: Cip30WalletApi;
-	walletName: WalletName | null;
-	address: string | null;
-}
-
-export function CounterContractPanel({ walletApi }: CounterContractPanelProps) {
+export function CounterContractPanel() {
 	const { currentNetwork } = useNetwork();
+	const { connectedAPI } = useWallet();
 	// Default contract address for testing (deployed via CLI)
 	const [contractAddress, setContractAddress] = useState<string>(
 		"0200ea62067fe8bac97e8f8caaee6413c8ed7f42e0a960335f1b1aeb43fa37999315",
@@ -47,9 +37,29 @@ export function CounterContractPanel({ walletApi }: CounterContractPanelProps) {
 		}
 	};
 
+	// ウォレットが接続されていない場合はエラーを表示
+	if (!connectedAPI) {
+		return (
+			<div className="method-panel">
+				<h2>Counter Contract</h2>
+				<div className="error-panel">
+					<h3>Wallet Not Connected</h3>
+					<p>
+						Please connect your wallet first to interact with Counter contracts.
+					</p>
+				</div>
+			</div>
+		);
+	}
+
 	const handleJoin = async () => {
 		if (!contractAddress.trim()) {
 			setError("Please enter a contract address");
+			return;
+		}
+
+		if (!connectedAPI) {
+			setError("Wallet not connected");
 			return;
 		}
 
@@ -57,8 +67,13 @@ export function CounterContractPanel({ walletApi }: CounterContractPanelProps) {
 		setError("");
 
 		try {
-			await joinCounterContract(walletApi, contractAddress.trim(), currentNetwork);
-			// Success - contract is now joined
+			// Note: Counter contract functionality requires migration from CIP-30 API to DApp Connector API.
+			// The current counter-contract.ts utilities expect CIP-30 API, but we're using DApp Connector API.
+			// This feature is not yet implemented. See counter-contract.ts for the legacy implementation.
+			setError(
+				"Counter contract join is not yet implemented with DApp Connector API. " +
+					"The legacy CIP-30 implementation exists in counter-contract.ts but requires migration.",
+			);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Failed to join contract");
 		} finally {
@@ -72,15 +87,22 @@ export function CounterContractPanel({ walletApi }: CounterContractPanelProps) {
 			return;
 		}
 
+		if (!connectedAPI) {
+			setError("Wallet not connected");
+			return;
+		}
+
 		setIncrementing(true);
 		setError("");
 
 		try {
-			await incrementCounter(walletApi, contractAddress.trim(), currentNetwork);
-			// Refresh counter value after increment
-			setTimeout(() => {
-				handleViewState();
-			}, 2000);
+			// Note: Counter contract functionality requires migration from CIP-30 API to DApp Connector API.
+			// The current counter-contract.ts utilities expect CIP-30 API, but we're using DApp Connector API.
+			// This feature is not yet implemented. See counter-contract.ts for the legacy implementation.
+			setError(
+				"Counter contract increment is not yet implemented with DApp Connector API. " +
+					"The legacy CIP-30 implementation exists in counter-contract.ts but requires migration.",
+			);
 		} catch (err) {
 			setError(
 				err instanceof Error ? err.message : "Failed to increment counter",
@@ -101,7 +123,10 @@ export function CounterContractPanel({ walletApi }: CounterContractPanelProps) {
 		setCounterValue(null);
 
 		try {
-			const value = await getCounterValue(contractAddress.trim(), currentNetwork);
+			const value = await getCounterValue(
+				contractAddress.trim(),
+				currentNetwork,
+			);
 			setCounterValue(value);
 		} catch (err) {
 			setError(

@@ -20,7 +20,8 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
 		rpcUrl: "https://rpc.testnet-02.midnight.network/",
 		indexerUrl: "https://indexer.testnet-02.midnight.network/api/v1/graphql",
 		indexerWS: "wss://indexer.testnet-02.midnight.network/api/v1/graphql/ws",
-		explorerUrl: "https://polkadot.js.org/apps/?rpc=wss://rpc.testnet-02.midnight.network#/explorer",
+		explorerUrl:
+			"https://polkadot.js.org/apps/?rpc=wss://rpc.testnet-02.midnight.network#/explorer",
 	},
 	"0.18-undeployed1-kitsunesh": {
 		id: "0.18-undeployed1-kitsunesh",
@@ -28,7 +29,8 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
 		rpcUrl: "https://node.kitsunesh.com",
 		indexerUrl: "https://indexer.kitsunesh.com/api/v1/graphql",
 		indexerWS: "wss://indexer.kitsunesh.com/api/v1/graphql/ws",
-		explorerUrl: "https://polkadot.js.org/apps/?rpc=wss://node.kitsunesh.com#/explorer",
+		explorerUrl:
+			"https://polkadot.js.org/apps/?rpc=wss://node.kitsunesh.com#/explorer",
 	},
 };
 
@@ -67,3 +69,14 @@ export function getCurrentNetworkConfig(): NetworkConfig {
 	return NETWORKS[networkId];
 }
 
+/**
+ * ネットワークIDをLace Walletがサポートする形式にマッピング
+ * Lace WalletがサポートするネットワークID: "mainnet", "preprod", "preview", "undeployed"
+ */
+export function mapToWalletNetworkId(networkId: NetworkId): string {
+	const mapping: Record<NetworkId, string> = {
+		"testnet-02": "preview", // testnet-02はpreviewにマッピング
+		"0.18-undeployed1-kitsunesh": "undeployed", // undeployed1はundeployedにマッピング
+	};
+	return mapping[networkId] || networkId;
+}

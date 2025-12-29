@@ -35,37 +35,11 @@ export function WalletApp() {
 		});
 	}, [walletApi, walletName, address, balance]);
 
-	const handleWalletConnected = async (
-		api: Cip30WalletApi,
-		name: WalletName,
-		addr: string,
-	) => {
-		console.log("[WalletApp] handleWalletConnected called with:", {
-			name,
-			addr,
-		});
-		setWalletApi(api);
-		setWalletName(name);
-		setAddress(addr);
-		// 残高を取得
-		try {
-			const bal = await getBalance(api);
-			setBalance(bal);
-		} catch (err) {
-			console.error("Failed to get balance:", err);
-			setBalance("0");
-		}
-	};
-
 	const handleWalletDisconnected = () => {
 		setWalletApi(null);
 		setWalletName(null);
 		setAddress(null);
 		setBalance(null);
-	};
-
-	const handleBalanceUpdate = (newBalance: string) => {
-		setBalance(newBalance);
 	};
 
 	const handleRefresh = async () => {
@@ -157,9 +131,11 @@ export function WalletApp() {
 				<div className="content">
 					{activeTab === "connection" && (
 						<WalletConnection
-							onConnected={handleWalletConnected}
+							onConnected={() => {
+								// WalletConnectionはDApp Connector APIを使用するため、
+								// レガシーのhandleWalletConnectedは不要
+							}}
 							onDisconnected={handleWalletDisconnected}
-							onBalanceUpdate={handleBalanceUpdate}
 						/>
 					)}
 					{/* Contract操作系は一旦無効化（WASM関連のビルドエラー回避のため） */}

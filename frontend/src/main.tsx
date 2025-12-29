@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { NetworkProvider } from "./contexts/NetworkContext";
+import { MidnightMeshProvider } from "./contexts/WalletContext";
 
 // Make Buffer available globally for @midnight-ntwrk/wallet-sdk-address-format
 (window as unknown as Window & { Buffer: typeof Buffer }).Buffer = Buffer;
@@ -16,7 +17,9 @@ if (rootElement) {
 	createRoot(rootElement).render(
 		<StrictMode>
 			<NetworkProvider>
-				<App />
+				<MidnightMeshProvider>
+					<App />
+				</MidnightMeshProvider>
 			</NetworkProvider>
 		</StrictMode>,
 	);
