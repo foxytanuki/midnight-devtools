@@ -2,7 +2,7 @@
  * ネットワーク設定の管理
  */
 
-export type NetworkId = "testnet-02" | "0.18-undeployed1-kitsunesh";
+export type NetworkId = "testnet-02" | "0.18-undeployed1-kitsunesh" | "midnight-preview";
 
 export interface NetworkConfig {
 	id: NetworkId;
@@ -31,6 +31,15 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
 		indexerWS: "wss://indexer.kitsunesh.com/api/v1/graphql/ws",
 		explorerUrl:
 			"https://polkadot.js.org/apps/?rpc=wss://node.kitsunesh.com#/explorer",
+	},
+	"midnight-preview": {
+		id: "midnight-preview",
+		name: "midnight-preview",
+		rpcUrl: "https://rpc.preview.midnight.network",
+		indexerUrl: "https://indexer.preview.midnight.network/api/v3/graphql",
+		indexerWS: "wss://indexer.preview.midnight.network/api/v3/graphql/ws",
+		explorerUrl:
+			"https://polkadot.js.org/apps/?rpc=wss://rpc.preview.midnight.network#/explorer",
 	},
 };
 
@@ -77,6 +86,7 @@ export function mapToWalletNetworkId(networkId: NetworkId): string {
 	const mapping: Record<NetworkId, string> = {
 		"testnet-02": "preview", // testnet-02はpreviewにマッピング
 		"0.18-undeployed1-kitsunesh": "undeployed", // undeployed1はundeployedにマッピング
+		"midnight-preview": "preview", // midnight-previewはpreviewにマッピング
 	};
 	return mapping[networkId] || networkId;
 }

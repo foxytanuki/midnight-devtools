@@ -6,7 +6,7 @@ import {
 	type ToolConfig,
 } from "./config/tools-config";
 import { useNetwork } from "./contexts/NetworkContext";
-import { type NetworkId } from "./utils/network-config";
+import { type NetworkId, NETWORKS } from "./utils/network-config";
 import "./App.css";
 
 function App() {
@@ -116,10 +116,11 @@ function App() {
 							onChange={(e) => setNetwork(e.target.value as NetworkId)}
 							className="network-select"
 						>
-							<option value="testnet-02">testnet-02</option>
-							<option value="0.18-undeployed1-kitsunesh">
-								0.18-undeployed1-kitsunesh
-							</option>
+							{Object.values(NETWORKS).map((network) => (
+								<option key={network.id} value={network.id}>
+									{network.name}
+								</option>
+							))}
 						</select>
 					</div>
 				</div>
