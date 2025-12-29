@@ -66,9 +66,8 @@ export function WalletConnection({
 		<div className="method-panel">
 			<h2>Wallet Connection</h2>
 			<p className="method-description-text">
-				Connect to Lace Wallet to interact with Midnight Network. The wallet
-				will automatically reconnect on page reload. Use the network selector in
-				the navigation bar to change networks.
+				Connect your wallet to interact with Midnight Network. The connection
+				will automatically restore on page reload.
 			</p>
 
 			<div className="params-section">
@@ -169,18 +168,11 @@ export function WalletConnection({
 			{isConnected && (
 				<>
 					<div className="params-section">
-						<h3>Connection Info</h3>
+						<h3>Wallet Information</h3>
 						<div className="connection-info">
-							<div className="info-item">
-								<label>Status:</label>
-								<span style={{ color: "var(--color-success)" }}>
-									Connected ({status.networkId})
-								</span>
-							</div>
-
 							{unshieldedAddress && (
 								<div className="info-item">
-									<label>Unshielded Address:</label>
+									<label>Unshielded Address</label>
 									<div className="address-display">
 										<span className="address-full">
 											{unshieldedAddress.unshieldedAddress}
@@ -203,7 +195,7 @@ export function WalletConnection({
 
 							{shieldedAddresses && (
 								<div className="info-item">
-									<label>Shielded Address:</label>
+									<label>Shielded Address</label>
 									<div className="address-display">
 										<span className="address-full">
 											{shieldedAddresses.shieldedAddress}
@@ -226,7 +218,7 @@ export function WalletConnection({
 
 							{dustAddress && (
 								<div className="info-item">
-									<label>Dust Address:</label>
+									<label>Dust Address</label>
 									<div className="address-display">
 										<span className="address-full">
 											{dustAddress.dustAddress}
@@ -272,7 +264,14 @@ export function WalletConnection({
 						<div className="connection-info">
 							<div className="info-item">
 								<label>Wallet Status</label>
-								<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "0.5rem",
+										marginBottom: "0.5rem",
+									}}
+								>
 									<div
 										style={{
 											width: "8px",
@@ -284,7 +283,14 @@ export function WalletConnection({
 													: "var(--color-text-muted)",
 										}}
 									/>
-									<span>
+									<span
+										style={{
+											color:
+												status?.status === "connected"
+													? "var(--color-success)"
+													: "var(--color-text)",
+										}}
+									>
 										{status?.status === "connected"
 											? "Connected"
 											: "Disconnected"}
@@ -293,73 +299,66 @@ export function WalletConnection({
 								{status?.status === "connected" && (
 									<div
 										style={{
-											marginTop: "0.5rem",
 											marginLeft: "1rem",
 											fontSize: "0.8125rem",
 											color: "var(--color-text-secondary)",
+											marginBottom: "0.25rem",
 										}}
 									>
-										Network: {status?.networkId}
+										Network: <strong>{status?.networkId}</strong>
 									</div>
 								)}
 								{initialAPI && (
 									<div
 										style={{
-											marginTop: "0.5rem",
 											marginLeft: "1rem",
 											fontSize: "0.8125rem",
 											color: "var(--color-text-secondary)",
 										}}
 									>
-										Wallet Name: {initialAPI.name || "Not connected"}
+										Wallet: <strong>{initialAPI.name || "Unknown"}</strong>
 									</div>
 								)}
 							</div>
 
 							<div className="info-item">
 								<label>Proof Server</label>
-								<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-									{proofServerOnline === undefined ? (
-										<>
-											<div
-												style={{
-													width: "8px",
-													height: "8px",
-													borderRadius: "50%",
-													backgroundColor: "var(--color-text-muted)",
-												}}
-											/>
-											<span>Unknown</span>
-										</>
-									) : proofServerOnline ? (
-										<>
-											<div
-												style={{
-													width: "8px",
-													height: "8px",
-													borderRadius: "50%",
-													backgroundColor: "var(--color-success)",
-												}}
-											/>
-											<span style={{ color: "var(--color-success)" }}>
-												Online
-											</span>
-										</>
-									) : (
-										<>
-											<div
-												style={{
-													width: "8px",
-													height: "8px",
-													borderRadius: "50%",
-													backgroundColor: "var(--color-error)",
-												}}
-											/>
-											<span style={{ color: "var(--color-error)" }}>
-												Offline
-											</span>
-										</>
-									)}
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "0.5rem",
+									}}
+								>
+									<div
+										style={{
+											width: "8px",
+											height: "8px",
+											borderRadius: "50%",
+											backgroundColor:
+												proofServerOnline === undefined
+													? "var(--color-text-muted)"
+													: proofServerOnline
+														? "var(--color-success)"
+														: "var(--color-error)",
+										}}
+									/>
+									<span
+										style={{
+											color:
+												proofServerOnline === undefined
+													? "var(--color-text)"
+													: proofServerOnline
+														? "var(--color-success)"
+														: "var(--color-error)",
+										}}
+									>
+										{proofServerOnline === undefined
+											? "Unknown"
+											: proofServerOnline
+												? "Online"
+												: "Offline"}
+									</span>
 								</div>
 							</div>
 
@@ -375,15 +374,16 @@ export function WalletConnection({
 								>
 									<div
 										style={{
-											display: "flex",
-											flexDirection: "column",
-											gap: "0.25rem",
+											padding: "0.5rem",
+											backgroundColor: "var(--color-surface)",
+											borderRadius: "2px",
 										}}
 									>
 										<div
 											style={{
 												fontSize: "0.75rem",
 												color: "var(--color-text-secondary)",
+												marginBottom: "0.25rem",
 											}}
 										>
 											Substrate Node
@@ -401,15 +401,16 @@ export function WalletConnection({
 									</div>
 									<div
 										style={{
-											display: "flex",
-											flexDirection: "column",
-											gap: "0.25rem",
+											padding: "0.5rem",
+											backgroundColor: "var(--color-surface)",
+											borderRadius: "2px",
 										}}
 									>
 										<div
 											style={{
 												fontSize: "0.75rem",
 												color: "var(--color-text-secondary)",
+												marginBottom: "0.25rem",
 											}}
 										>
 											Indexer (REST)
@@ -427,15 +428,16 @@ export function WalletConnection({
 									</div>
 									<div
 										style={{
-											display: "flex",
-											flexDirection: "column",
-											gap: "0.25rem",
+											padding: "0.5rem",
+											backgroundColor: "var(--color-surface)",
+											borderRadius: "2px",
 										}}
 									>
 										<div
 											style={{
 												fontSize: "0.75rem",
 												color: "var(--color-text-secondary)",
+												marginBottom: "0.25rem",
 											}}
 										>
 											Indexer (WebSocket)
@@ -453,15 +455,16 @@ export function WalletConnection({
 									</div>
 									<div
 										style={{
-											display: "flex",
-											flexDirection: "column",
-											gap: "0.25rem",
+											padding: "0.5rem",
+											backgroundColor: "var(--color-surface)",
+											borderRadius: "2px",
 										}}
 									>
 										<div
 											style={{
 												fontSize: "0.75rem",
 												color: "var(--color-text-secondary)",
+												marginBottom: "0.25rem",
 											}}
 										>
 											Proof Server
