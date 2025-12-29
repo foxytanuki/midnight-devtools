@@ -194,7 +194,13 @@ export class MidnightBrowserWallet {
 						if (error?.message?.includes("Network ID mismatch")) {
 							console.error("Network ID mismatch:", error);
 							throw new Error(
-								"Network ID mismatch. Please disconnect and reconnect.",
+								"Network ID mismatch detected.\n\n" +
+								"Lace Wallet's network setting cannot be changed automatically. " +
+								"You need to manually change it in Lace Wallet settings:\n\n" +
+								"1. Open Lace Wallet extension\n" +
+								"2. Go to Settings > Wallet > Midnight\n" +
+								"3. Select the network that matches the selected network in this app\n" +
+								"4. Disconnect and reconnect your wallet here",
 							);
 						}
 						// その他のエラーは通常のエラーハンドリングに委譲
