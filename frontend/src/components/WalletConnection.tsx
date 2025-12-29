@@ -21,6 +21,9 @@ export function WalletConnection({
 		unshieldedAddress,
 		shieldedAddresses,
 		dustAddress,
+		dustBalance,
+		unshieldedBalances,
+		shieldedBalances,
 		proofServerOnline,
 		initialAPI,
 		serviceUriConfig,
@@ -61,6 +64,84 @@ export function WalletConnection({
 	};
 
 	const isConnected = status?.status === "connected";
+
+	// 1 NIGHT/tNIGHT = 10^6 STAR (1,000,000 STAR)
+	// 1,000,000,000 STAR = 1,000 NIGHT/tNIGHT
+	const NIGHT_DECIMALS = 6n;
+	const NIGHT_DIVISOR = 10n ** NIGHT_DECIMALS; // 1,000,000
+	const MIN_UNIT_NAME = "STAR"; // Atomic unit of NIGHT/tNIGHT
+
+	// 1 tDUST = 10^15 SPECK (1,000,000,000,000,000 SPECK)
+	const DUST_DECIMALS = 15n;
+	const DUST_DIVISOR = 10n ** DUST_DECIMALS; // 1,000,000,000,000,000
+
+	// ネットワークに応じたトークン名を取得
+	const getNativeTokenName = (): string => {
+		const networkId = currentNetwork.id;
+		if (
+			networkId === "midnight-preview" ||
+			networkId === "testnet-02" ||
+			networkId === "0.18-undeployed1-kitsunesh" ||
+			networkId === "localhost"
+		) {
+			return "tNIGHT";
+		}
+		return "NIGHT";
+	};
+
+	// bigintを数値フォーマット（カンマ区切り）に変換
+	const formatBigInt = (value: bigint | undefined): string => {
+		if (value === undefined) return "0";
+		return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	};
+
+	// STARをNIGHT/tNIGHTに変換してフォーマット（カンマ区切り付き）
+	const formatStarToNightWithCommas = (value: bigint | undefined): string => {
+		if (value === undefined) return "0";
+		const night = Number(value) / Number(NIGHT_DIVISOR);
+		// 整数部分をカンマ区切り、小数部分は6桁まで
+		const parts = night.toFixed(6).split(".");
+		const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		const decimalPart = parts[1].replace(/0+$/, ""); // 末尾の0を削除
+		return decimalPart ? `${integerPart}.${decimalPart}` : integerPart;
+	};
+
+	// SPECKをtDUSTに変換してフォーマット（カンマ区切り付き）
+	const formatSpeckToTDustWithCommas = (value: bigint | undefined): string => {
+		if (value === undefined) return "0";
+		const tDust = Number(value) / Number(DUST_DIVISOR);
+		// 整数部分をカンマ区切り、小数部分は6桁まで
+		const parts = tDust.toFixed(6).split(".");
+		const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		const decimalPart = parts[1].replace(/0+$/, ""); // 末尾の0を削除
+		return decimalPart ? `${integerPart}.${decimalPart}` : integerPart;
+	};
+
+	// トークンタイプを表示名に変換（tNIGHTの場合は短縮表示）
+	const formatTokenType = (tokenType: string): string => {
+		// すべて0のトークンタイプはtNIGHT
+		if (/^0+$/.test(tokenType)) {
+			return "tNIGHT";
+		}
+		// 長い場合は短縮表示
+		if (tokenType.length > 16) {
+			return `${tokenType.slice(0, 8)}...`;
+		}
+		return tokenType;
+	};
+
+	// トークンバランスをフォーマット
+	const formatTokenBalances = (
+		balances: Record<string, bigint> | undefined,
+	): Array<{ tokenType: string; displayName: string; balance: string; balanceNight: string }> => {
+		if (!balances) return [];
+		return Object.entries(balances).map(([tokenType, balance]) => ({
+			tokenType,
+			displayName: formatTokenType(tokenType),
+			balance: formatBigInt(balance),
+			balanceNight: formatStarToNightWithCommas(balance),
+		}));
+	};
 
 	return (
 		<div className="method-panel">
@@ -194,26 +275,74 @@ export function WalletConnection({
 							)}
 
 							{shieldedAddresses && (
-								<div className="info-item">
-									<label>Shielded Address</label>
-									<div className="address-display">
-										<span className="address-full">
-											{shieldedAddresses.shieldedAddress}
-										</span>
-										<button
-											type="button"
-											onClick={() => {
-												navigator.clipboard.writeText(
-													shieldedAddresses.shieldedAddress,
-												);
-											}}
-											className="copy-button"
-											title="Copy address"
-										>
-											Copy
-										</button>
+								<>
+									<div className="info-item">
+										<label>Shielded Address</label>
+										<div className="address-display">
+											<span className="address-full">
+												{shieldedAddresses.shieldedAddress}
+											</span>
+											<button
+												type="button"
+												onClick={() => {
+													navigator.clipboard.writeText(
+														shieldedAddresses.shieldedAddress,
+													);
+												}}
+												className="copy-button"
+												title="Copy address"
+											>
+												Copy
+											</button>
+										</div>
 									</div>
-								</div>
+
+									{shieldedAddresses.shieldedCoinPublicKey && (
+										<div className="info-item">
+											<label>Coin Public Key</label>
+											<div className="address-display">
+												<span className="address-full">
+													{shieldedAddresses.shieldedCoinPublicKey}
+												</span>
+												<button
+													type="button"
+													onClick={() => {
+														navigator.clipboard.writeText(
+															shieldedAddresses.shieldedCoinPublicKey,
+														);
+													}}
+													className="copy-button"
+													title="Copy coin public key"
+												>
+													Copy
+												</button>
+											</div>
+										</div>
+									)}
+
+									{shieldedAddresses.shieldedEncryptionPublicKey && (
+										<div className="info-item">
+											<label>Encryption Public Key</label>
+											<div className="address-display">
+												<span className="address-full">
+													{shieldedAddresses.shieldedEncryptionPublicKey}
+												</span>
+												<button
+													type="button"
+													onClick={() => {
+														navigator.clipboard.writeText(
+															shieldedAddresses.shieldedEncryptionPublicKey,
+														);
+													}}
+													className="copy-button"
+													title="Copy encryption public key"
+												>
+													Copy
+												</button>
+											</div>
+										</div>
+									)}
+								</>
 							)}
 
 							{dustAddress && (
@@ -233,6 +362,118 @@ export function WalletConnection({
 										>
 											Copy
 										</button>
+									</div>
+								</div>
+							)}
+
+							{dustBalance && (
+								<>
+									<div className="info-item">
+										<label>Dust Balance</label>
+										<div style={{ fontSize: "0.9375rem", color: "var(--color-text)" }}>
+											{formatSpeckToTDustWithCommas(dustBalance.balance)} tDUST
+											<br />
+											<span style={{ color: "var(--color-text-secondary)", fontSize: "0.75rem" }}>
+												({formatBigInt(dustBalance.balance)} SPECK)
+											</span>
+										</div>
+									</div>
+									<div className="info-item">
+										<label>Dust Cap</label>
+										<div style={{ fontSize: "0.9375rem", color: "var(--color-text)" }}>
+											{formatSpeckToTDustWithCommas(dustBalance.cap)} tDUST
+											<br />
+											<span style={{ color: "var(--color-text-secondary)", fontSize: "0.75rem" }}>
+												({formatBigInt(dustBalance.cap)} SPECK)
+											</span>
+										</div>
+									</div>
+								</>
+							)}
+
+							{(unshieldedBalances || shieldedBalances) && (
+								<div className="info-item">
+									<label>Balances</label>
+									<div
+										style={{
+											display: "flex",
+											flexDirection: "column",
+											gap: "0.75rem",
+											marginTop: "0.5rem",
+										}}
+									>
+										{formatTokenBalances(unshieldedBalances).length > 0 && (
+											<div
+												style={{
+													padding: "0.5rem",
+													backgroundColor: "var(--color-surface)",
+													borderRadius: "2px",
+												}}
+											>
+												<div
+													style={{
+														fontSize: "0.75rem",
+														color: "var(--color-text-secondary)",
+														marginBottom: "0.25rem",
+													}}
+												>
+													Unshielded
+												</div>
+												{formatTokenBalances(unshieldedBalances).map(
+													({ tokenType, displayName, balance, balanceNight }) => (
+														<div
+															key={tokenType}
+															style={{
+																fontSize: "0.8125rem",
+																color: "var(--color-text)",
+															}}
+														>
+															{displayName}: {balanceNight} {getNativeTokenName()}
+															<br />
+															<span style={{ color: "var(--color-text-secondary)", fontSize: "0.75rem" }}>
+																({balance} <span style={{ fontSize: "0.6875rem" }}>{MIN_UNIT_NAME}</span>)
+															</span>
+														</div>
+													),
+												)}
+											</div>
+										)}
+										{formatTokenBalances(shieldedBalances).length > 0 && (
+											<div
+												style={{
+													padding: "0.5rem",
+													backgroundColor: "var(--color-surface)",
+													borderRadius: "2px",
+												}}
+											>
+												<div
+													style={{
+														fontSize: "0.75rem",
+														color: "var(--color-text-secondary)",
+														marginBottom: "0.25rem",
+													}}
+												>
+													Shielded
+												</div>
+												{formatTokenBalances(shieldedBalances).map(
+													({ tokenType, displayName, balance, balanceNight }) => (
+														<div
+															key={tokenType}
+															style={{
+																fontSize: "0.8125rem",
+																color: "var(--color-text)",
+															}}
+														>
+															{displayName}: {balanceNight} {getNativeTokenName()}
+															<br />
+															<span style={{ color: "var(--color-text-secondary)", fontSize: "0.75rem" }}>
+																({balance} <span style={{ fontSize: "0.6875rem" }}>{MIN_UNIT_NAME}</span>)
+															</span>
+														</div>
+													),
+												)}
+											</div>
+										)}
 									</div>
 								</div>
 							)}
