@@ -54,6 +54,7 @@ Thumbs.db
 
 # pnpm
 .pnpm-store/
+pnpm-lock.yaml
 
 # TypeScript
 *.tsbuildinfo
