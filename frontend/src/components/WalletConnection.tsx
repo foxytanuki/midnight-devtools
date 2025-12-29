@@ -22,6 +22,8 @@ export function WalletConnection({
 		shieldedAddresses,
 		dustAddress,
 		proofServerOnline,
+		initialAPI,
+		serviceUriConfig,
 		connectWallet,
 		disconnect,
 		refresh,
@@ -165,114 +167,321 @@ export function WalletConnection({
 			</div>
 
 			{isConnected && (
-				<div className="params-section">
-					<h3>Connection Info</h3>
-					<div className="connection-info">
-						<div className="info-item">
-							<label>Status:</label>
-							<span style={{ color: "var(--color-success)" }}>
-								Connected ({status.networkId})
-							</span>
-						</div>
-
-						{unshieldedAddress && (
+				<>
+					<div className="params-section">
+						<h3>Connection Info</h3>
+						<div className="connection-info">
 							<div className="info-item">
-								<label>Unshielded Address:</label>
-								<div className="address-display">
-									<span className="address-full">
-										{unshieldedAddress.unshieldedAddress}
-									</span>
-									<button
-										type="button"
-										onClick={() => {
-											navigator.clipboard.writeText(
-												unshieldedAddress.unshieldedAddress,
-											);
-										}}
-										className="copy-button"
-										title="Copy address"
-									>
-										Copy
-									</button>
-								</div>
+								<label>Status:</label>
+								<span style={{ color: "var(--color-success)" }}>
+									Connected ({status.networkId})
+								</span>
 							</div>
-						)}
 
-						{shieldedAddresses && (
-							<div className="info-item">
-								<label>Shielded Address:</label>
-								<div className="address-display">
-									<span className="address-full">
-										{shieldedAddresses.shieldedAddress}
-									</span>
-									<button
-										type="button"
-										onClick={() => {
-											navigator.clipboard.writeText(
-												shieldedAddresses.shieldedAddress,
-											);
-										}}
-										className="copy-button"
-										title="Copy address"
-									>
-										Copy
-									</button>
+							{unshieldedAddress && (
+								<div className="info-item">
+									<label>Unshielded Address:</label>
+									<div className="address-display">
+										<span className="address-full">
+											{unshieldedAddress.unshieldedAddress}
+										</span>
+										<button
+											type="button"
+											onClick={() => {
+												navigator.clipboard.writeText(
+													unshieldedAddress.unshieldedAddress,
+												);
+											}}
+											className="copy-button"
+											title="Copy address"
+										>
+											Copy
+										</button>
+									</div>
 								</div>
-							</div>
-						)}
+							)}
 
-						{dustAddress && (
-							<div className="info-item">
-								<label>Dust Address:</label>
-								<div className="address-display">
-									<span className="address-full">
-										{dustAddress.dustAddress}
-									</span>
-									<button
-										type="button"
-										onClick={() => {
-											navigator.clipboard.writeText(dustAddress.dustAddress);
-										}}
-										className="copy-button"
-										title="Copy address"
-									>
-										Copy
-									</button>
+							{shieldedAddresses && (
+								<div className="info-item">
+									<label>Shielded Address:</label>
+									<div className="address-display">
+										<span className="address-full">
+											{shieldedAddresses.shieldedAddress}
+										</span>
+										<button
+											type="button"
+											onClick={() => {
+												navigator.clipboard.writeText(
+													shieldedAddresses.shieldedAddress,
+												);
+											}}
+											className="copy-button"
+											title="Copy address"
+										>
+											Copy
+										</button>
+									</div>
 								</div>
+							)}
+
+							{dustAddress && (
+								<div className="info-item">
+									<label>Dust Address:</label>
+									<div className="address-display">
+										<span className="address-full">
+											{dustAddress.dustAddress}
+										</span>
+										<button
+											type="button"
+											onClick={() => {
+												navigator.clipboard.writeText(dustAddress.dustAddress);
+											}}
+											className="copy-button"
+											title="Copy address"
+										>
+											Copy
+										</button>
+									</div>
+								</div>
+							)}
+
+							<div className="connection-actions">
+								<button
+									type="button"
+									onClick={handleRefresh}
+									className="refresh-button"
+								>
+									Refresh
+								</button>
+								<button
+									type="button"
+									onClick={handleDisconnect}
+									className="disconnect-button"
+								>
+									Disconnect
+								</button>
 							</div>
-						)}
-
-						<div className="info-item">
-							<label>Proof Server:</label>
-							<span>
-								{proofServerOnline === undefined ? (
-									"Unknown"
-								) : proofServerOnline ? (
-									<span style={{ color: "var(--color-success)" }}>Online</span>
-								) : (
-									<span style={{ color: "var(--color-error)" }}>Offline</span>
-								)}
-							</span>
-						</div>
-
-						<div className="connection-actions">
-							<button
-								type="button"
-								onClick={handleRefresh}
-								className="refresh-button"
-							>
-								Refresh
-							</button>
-							<button
-								type="button"
-								onClick={handleDisconnect}
-								className="disconnect-button"
-							>
-								Disconnect
-							</button>
 						</div>
 					</div>
-				</div>
+
+					<div className="params-section">
+						<h3>Connection Details</h3>
+						<p className="method-description-text">
+							Network and connection status
+						</p>
+						<div className="connection-info">
+							<div className="info-item">
+								<label>Wallet Status</label>
+								<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+									<div
+										style={{
+											width: "8px",
+											height: "8px",
+											borderRadius: "50%",
+											backgroundColor:
+												status?.status === "connected"
+													? "var(--color-success)"
+													: "var(--color-text-muted)",
+										}}
+									/>
+									<span>
+										{status?.status === "connected"
+											? "Connected"
+											: "Disconnected"}
+									</span>
+								</div>
+								{status?.status === "connected" && (
+									<div
+										style={{
+											marginTop: "0.5rem",
+											marginLeft: "1rem",
+											fontSize: "0.8125rem",
+											color: "var(--color-text-secondary)",
+										}}
+									>
+										Network: {status?.networkId}
+									</div>
+								)}
+								{initialAPI && (
+									<div
+										style={{
+											marginTop: "0.5rem",
+											marginLeft: "1rem",
+											fontSize: "0.8125rem",
+											color: "var(--color-text-secondary)",
+										}}
+									>
+										Wallet Name: {initialAPI.name || "Not connected"}
+									</div>
+								)}
+							</div>
+
+							<div className="info-item">
+								<label>Proof Server</label>
+								<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+									{proofServerOnline === undefined ? (
+										<>
+											<div
+												style={{
+													width: "8px",
+													height: "8px",
+													borderRadius: "50%",
+													backgroundColor: "var(--color-text-muted)",
+												}}
+											/>
+											<span>Unknown</span>
+										</>
+									) : proofServerOnline ? (
+										<>
+											<div
+												style={{
+													width: "8px",
+													height: "8px",
+													borderRadius: "50%",
+													backgroundColor: "var(--color-success)",
+												}}
+											/>
+											<span style={{ color: "var(--color-success)" }}>
+												Online
+											</span>
+										</>
+									) : (
+										<>
+											<div
+												style={{
+													width: "8px",
+													height: "8px",
+													borderRadius: "50%",
+													backgroundColor: "var(--color-error)",
+												}}
+											/>
+											<span style={{ color: "var(--color-error)" }}>
+												Offline
+											</span>
+										</>
+									)}
+								</div>
+							</div>
+
+							<div className="info-item">
+								<label>Network Endpoints</label>
+								<div
+									style={{
+										display: "flex",
+										flexDirection: "column",
+										gap: "0.75rem",
+										marginTop: "0.5rem",
+									}}
+								>
+									<div
+										style={{
+											display: "flex",
+											flexDirection: "column",
+											gap: "0.25rem",
+										}}
+									>
+										<div
+											style={{
+												fontSize: "0.75rem",
+												color: "var(--color-text-secondary)",
+											}}
+										>
+											Substrate Node
+										</div>
+										<div
+											style={{
+												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+												fontSize: "0.8125rem",
+												color: "var(--color-text)",
+												wordBreak: "break-all",
+											}}
+										>
+											{serviceUriConfig?.substrateNodeUri || "Not available"}
+										</div>
+									</div>
+									<div
+										style={{
+											display: "flex",
+											flexDirection: "column",
+											gap: "0.25rem",
+										}}
+									>
+										<div
+											style={{
+												fontSize: "0.75rem",
+												color: "var(--color-text-secondary)",
+											}}
+										>
+											Indexer (REST)
+										</div>
+										<div
+											style={{
+												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+												fontSize: "0.8125rem",
+												color: "var(--color-text)",
+												wordBreak: "break-all",
+											}}
+										>
+											{serviceUriConfig?.indexerUri || "Not available"}
+										</div>
+									</div>
+									<div
+										style={{
+											display: "flex",
+											flexDirection: "column",
+											gap: "0.25rem",
+										}}
+									>
+										<div
+											style={{
+												fontSize: "0.75rem",
+												color: "var(--color-text-secondary)",
+											}}
+										>
+											Indexer (WebSocket)
+										</div>
+										<div
+											style={{
+												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+												fontSize: "0.8125rem",
+												color: "var(--color-text)",
+												wordBreak: "break-all",
+											}}
+										>
+											{serviceUriConfig?.indexerWsUri || "Not available"}
+										</div>
+									</div>
+									<div
+										style={{
+											display: "flex",
+											flexDirection: "column",
+											gap: "0.25rem",
+										}}
+									>
+										<div
+											style={{
+												fontSize: "0.75rem",
+												color: "var(--color-text-secondary)",
+											}}
+										>
+											Proof Server
+										</div>
+										<div
+											style={{
+												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+												fontSize: "0.8125rem",
+												color: "var(--color-text)",
+												wordBreak: "break-all",
+											}}
+										>
+											{serviceUriConfig?.proverServerUri || "Not available"}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</>
 			)}
 
 			{error && (
