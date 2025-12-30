@@ -139,6 +139,19 @@ export function WalletConnection({
 		return decimalPart ? `${integerPart}.${decimalPart}` : integerPart;
 	};
 
+	// SPECKをtDUSTに変換して短縮形式でフォーマット（cap用）
+	const formatSpeckToTDustShort = (value: bigint | undefined): string => {
+		if (value === undefined) return "0";
+		const tDust = Number(value) / Number(DUST_DIVISOR);
+		
+		if (tDust >= 1000000) {
+			return `${(tDust / 1000000).toFixed(1)}M`;
+		} else if (tDust >= 1000) {
+			return `${(tDust / 1000).toFixed(1)}k`;
+		}
+		return tDust.toFixed(0);
+	};
+
 	// トークンタイプを表示名に変換（tNIGHTの場合は短縮表示）
 	const formatTokenType = (tokenType: string): string => {
 		// すべて0のトークンタイプはtNIGHT
@@ -396,7 +409,9 @@ export function WalletConnection({
 											</span>
 											<div style={{ display: "flex", alignItems: "baseline", gap: "0.375rem", marginLeft: "0.375rem" }}>
 												<span style={{ fontSize: "1.5rem", fontWeight: "700" }}>{formatSpeckToTDustWithCommas(dustBalance.balance)}</span>
-												<span style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>tDUST</span>
+												<span style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>
+													/ {formatSpeckToTDustShort(dustBalance.cap)} tDUST
+												</span>
 											</div>
 										</div>
 									)}
@@ -719,12 +734,8 @@ export function WalletConnection({
 								/>
 								<span style={{ fontSize: "0.8125rem", fontWeight: "600", color: status?.status === "connected" ? "var(--color-success)" : "var(--color-text)" }}>
 									{status?.status === "connected" ? "Connected" : "Disconnected"}
+									{initialAPI && `: ${initialAPI.name || "Unknown"}`}
 								</span>
-								{initialAPI && (
-									<span style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>
-										({initialAPI.name || "Unknown"})
-									</span>
-								)}
 							</div>
 
 							{/* Network */}
