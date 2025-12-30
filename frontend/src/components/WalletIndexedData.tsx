@@ -178,7 +178,10 @@ export function WalletIndexedData() {
 				const viewingKey = await getViewingKey(connectedAPI);
 
 				// connect mutationを実行
-				const result = await graphqlClientRef.current!.mutate<{
+				if (!graphqlClientRef.current) {
+					throw new Error("GraphQL client not initialized");
+				}
+				const result = await graphqlClientRef.current.mutate<{
 					connect: string;
 				}>(CONNECT_MUTATION, {
 					viewingKey,
@@ -362,7 +365,7 @@ export function WalletIndexedData() {
 							<h3>Session Management</h3>
 							<div className="connection-info">
 								<div className="info-item">
-									<label>Session ID</label>
+									<span>Session ID</span>
 									<div className="address-display">
 										<span className="address-full">{sessionId}</span>
 										<button
@@ -458,7 +461,7 @@ export function WalletIndexedData() {
 													timestamp > 1e12 ? timestamp : timestamp * 1000;
 												const date = new Date(timestampMs);
 												// 無効な日付の場合は元の値を表示
-												if (isNaN(date.getTime())) {
+												if (Number.isNaN(date.getTime())) {
 													return `Invalid timestamp: ${timestamp}`;
 												}
 												return date.toLocaleString();
@@ -581,7 +584,7 @@ export function WalletIndexedData() {
 
 											return (
 												<div
-													key={index}
+													key={`unshielded-${item.transaction.id}-${item.transaction.block.height}-${index}`}
 													className="unshielded-transaction-card"
 												>
 													<div className="result-item-header">
@@ -695,7 +698,7 @@ export function WalletIndexedData() {
 																</div>
 																<div className="utxo-list">
 																	{item.createdUtxos.map((utxo, utxoIndex) => (
-																		<div key={utxoIndex} className="utxo-item">
+																		<div key={`created-utxo-${utxoIndex}-${utxo.value}-${utxo.tokenType}`} className="utxo-item">
 																			<div className="utxo-value">
 																				+{formatValue(utxo.value)}{" "}
 																				{isNativeToken(utxo.tokenType)
@@ -760,7 +763,7 @@ export function WalletIndexedData() {
 																</div>
 																<div className="utxo-list">
 																	{item.spentUtxos.map((utxo, utxoIndex) => (
-																		<div key={utxoIndex} className="utxo-item">
+																		<div key={`spent-utxo-${utxoIndex}-${utxo.value}-${utxo.tokenType}`} className="utxo-item">
 																			<div className="utxo-value">
 																				-{formatValue(utxo.value)}{" "}
 																				{isNativeToken(utxo.tokenType)
@@ -864,7 +867,7 @@ export function WalletIndexedData() {
 							) : (
 								<div className="transaction-list">
 									{shieldedTransactions.map((item, index) => (
-										<div key={index} className="transaction-item">
+										<div key={`shielded-${item.transaction.id}-${item.transaction.block.height}-${index}`} className="transaction-item">
 											<div className="transaction-header">
 												<span>
 													Transaction #{item.transaction.id} (Block #

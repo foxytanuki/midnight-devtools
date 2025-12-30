@@ -553,8 +553,11 @@ export function RpcExplorer() {
 								<div className="result-panel">
 									<h3>Search Results ({searchResults.length} found)</h3>
 									<div className="search-results-list">
-										{searchResults.map((result, index) => (
-											<div key={index} className="search-result-item">
+										{searchResults.map((result) => (
+											<div
+												key={`${result.blockHash}-${result.extrinsicIndex}`}
+												className="search-result-item"
+											>
 												<div className="result-item-header">
 													<span>
 														Block #{result.blockNumber} (Index:{" "}

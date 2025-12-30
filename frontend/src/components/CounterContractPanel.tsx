@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNetwork } from "../contexts/NetworkContext";
 import { useWallet } from "../hooks/useWallet";
 import { checkProofServer, getCounterValue } from "../utils/counter-contract";
@@ -21,11 +21,7 @@ export function CounterContractPanel() {
 	);
 	const [checkingProofServer, setCheckingProofServer] = useState(false);
 
-	useEffect(() => {
-		checkProofServerStatus();
-	}, []);
-
-	const checkProofServerStatus = async () => {
+	const checkProofServerStatus = useCallback(async () => {
 		setCheckingProofServer(true);
 		try {
 			const available = await checkProofServer();
@@ -35,7 +31,11 @@ export function CounterContractPanel() {
 		} finally {
 			setCheckingProofServer(false);
 		}
-	};
+	}, []);
+
+	useEffect(() => {
+		checkProofServerStatus();
+	}, [checkProofServerStatus]);
 
 	// ウォレットが接続されていない場合はエラーを表示
 	if (!connectedAPI) {
@@ -156,7 +156,7 @@ export function CounterContractPanel() {
 			<div className="params-section">
 				<h3>Proof Server Status</h3>
 				<div className="info-item">
-					<label>Status:</label>
+					<span>Status:</span>
 					<span>
 						{checkingProofServer ? (
 							"Checking..."

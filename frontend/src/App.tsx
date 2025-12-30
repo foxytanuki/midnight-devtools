@@ -94,18 +94,22 @@ function App() {
 	return (
 		<div className="app-router">
 			<nav className="app-nav">
-				<a
-					href="#"
-					onClick={(e) => {
-						e.preventDefault();
-						handleTitleClick();
-					}}
+				<button
+					type="button"
+					onClick={handleTitleClick}
 					className="app-nav-title"
-					style={{ textDecoration: "none" }}
+					style={{
+						textDecoration: "none",
+						background: "none",
+						border: "none",
+						cursor: "pointer",
+						padding: 0,
+					}}
 				>
+					{/* biome-ignore lint/performance/noImgElement: Static logo image, no optimization needed */}
 					<img src="/midnight.png" alt="Midnight" className="app-nav-logo" />
 					Midnight DevTools
-				</a>
+				</button>
 				<div className="app-nav-right">
 					<div className="app-nav-buttons">
 						{TOOLS.map((tool) => (
@@ -138,6 +142,7 @@ function App() {
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
 								className="external-link-icon"
+								aria-label="External link"
 							>
 								<path
 									d="M10.5 1.5L1.5 10.5M10.5 1.5H6.75M10.5 1.5V5.25"
@@ -165,6 +170,7 @@ function App() {
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
 								className={`network-dropdown-arrow ${isNetworkDropdownOpen ? "open" : ""}`}
+								aria-label="Dropdown arrow"
 							>
 								<path
 									d="M1 1L5 5L9 1"

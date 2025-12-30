@@ -23,7 +23,7 @@ export interface WalletContext {
 	connectingWallet: boolean;
 	open: boolean;
 	setOpen: (value: boolean) => void;
-	error?: any | undefined;
+	error?: unknown;
 	initialAPI: InitialAPI | undefined;
 	connectedAPI: ConnectedAPI | undefined;
 	serviceUriConfig: Configuration | undefined;
@@ -68,16 +68,14 @@ export const MidnightMeshProvider = ({
 }: MidnightMeshProviderProps) => {
 	const store = useWalletStore();
 	return (
-		<WalletContext.Provider value={store}>
-			<>{children}</>
-		</WalletContext.Provider>
+		<WalletContext.Provider value={store}>{children}</WalletContext.Provider>
 	);
 };
 
 export const useWalletStore = (): WalletContext => {
 	const [connectingWallet, setConnectingWallet] = useState<boolean>(false);
 	const [open, setOpen] = useState(false);
-	const [error, setError] = useState<any | undefined>(undefined);
+	const [error, setError] = useState<unknown>(undefined);
 	const [initialAPI, setInitialAPI] = useState<InitialAPI | undefined>(
 		undefined,
 	);
@@ -119,6 +117,7 @@ export const useWalletStore = (): WalletContext => {
 
 			try {
 				// ネットワークIDをLace Walletがサポートする形式にマッピング
+				// biome-ignore lint/suspicious/noExplicitAny: networkID type conversion needed for wallet compatibility
 				const walletNetworkId = mapToWalletNetworkId(networkID as any);
 				const midnightBrowserWalletInstance =
 					await MidnightBrowserWallet.connectToWallet(rdns, walletNetworkId);
@@ -166,6 +165,7 @@ export const useWalletStore = (): WalletContext => {
 					// 少し待ってから再接続を試みる
 					await new Promise((resolve) => setTimeout(resolve, 500));
 					try {
+						// biome-ignore lint/suspicious/noExplicitAny: networkID type conversion needed for wallet compatibility
 						const walletNetworkId = mapToWalletNetworkId(networkID as any);
 						const midnightBrowserWalletInstance =
 							await MidnightBrowserWallet.connectToWallet(

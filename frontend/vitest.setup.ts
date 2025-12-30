@@ -12,6 +12,12 @@ Object.defineProperty(window, "location", {
 	writable: true,
 });
 
+// Define global for TypeScript
+declare global {
+	var global: typeof globalThis;
+	var fetch: typeof window.fetch;
+}
+
 // Mock localStorage
 const localStorageMock = {
 	getItem: vi.fn(),
@@ -21,11 +27,4 @@ const localStorageMock = {
 };
 
 global.localStorage = localStorageMock as unknown as Storage;
-
-// Define global for TypeScript
-declare global {
-	var global: typeof globalThis;
-	var fetch: typeof window.fetch;
-}
-
 global.global = globalThis;

@@ -187,7 +187,7 @@ export function IndexerExplorer() {
 			});
 		}
 
-		if (searchResult && searchResult.contractActions) {
+		if (searchResult?.contractActions) {
 			allContractActions.push(...searchResult.contractActions);
 		}
 
@@ -264,7 +264,7 @@ export function IndexerExplorer() {
 					});
 			}
 		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+		// biome-ignore lint/correctness/useExhaustiveDependencies: decodedStates and decodingStates are managed internally and would cause infinite loops
 	}, [txResult, searchResult, rpcUrl]);
 
 	// Toggle between raw and decoded data
@@ -377,7 +377,7 @@ export function IndexerExplorer() {
 					<span style={{ color: colors.punctuation }}>[</span>
 					<br />
 					{obj.map((item, idx) => (
-						<span key={idx}>
+						<span key={`item-${idx}-${JSON.stringify(item).slice(0, 20)}`}>
 							{indentStr}{" "}
 							<span style={{ color: colors.punctuation }}>{idx}:</span>{" "}
 							{formatDecodedObject(item, indent + 1)}

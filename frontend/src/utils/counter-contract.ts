@@ -84,8 +84,10 @@ async function configureProviders(
 		// @ts-expect-error - FetchZkConfigProvider constructor signature may vary
 		zkConfigProvider: new FetchZkConfigProvider("increment", zkConfigBaseUrl),
 		proofProvider: httpClientProofProvider("http://localhost:6300"),
-		walletProvider: walletApi as any, // TODO: 適切な型変換
-		midnightProvider: walletApi as any, // TODO: 適切な型変換
+		// biome-ignore lint/suspicious/noExplicitAny: TODO: 適切な型変換
+		walletProvider: walletApi as any,
+		// biome-ignore lint/suspicious/noExplicitAny: TODO: 適切な型変換
+		midnightProvider: walletApi as any,
 	};
 }
 

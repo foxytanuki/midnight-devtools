@@ -63,6 +63,7 @@ export async function getViewingKey(
 			data: {
 				apiKeys,
 				hasGetViewingKey: "getViewingKey" in (connectedAPI || {}),
+				// biome-ignore lint/suspicious/noExplicitAny: Debug logging requires type checking
 				getViewingKeyType: typeof (connectedAPI as any)?.getViewingKey,
 			},
 			timestamp: Date.now(),
