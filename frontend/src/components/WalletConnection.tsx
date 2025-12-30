@@ -58,6 +58,83 @@ export function WalletConnection({
 		setTimeout(() => setCopiedKey(null), 1500);
 	};
 
+	// コピーボタンコンポーネント
+	const CopyButton = ({
+		text,
+		copyKey,
+		size = 14,
+	}: {
+		text: string;
+		copyKey: string;
+		size?: number;
+	}) => {
+		const isCopied = copiedKey === copyKey;
+		return (
+			<button
+				type="button"
+				onClick={() => handleCopy(text, copyKey)}
+				style={{
+					background: "transparent",
+					border: "none",
+					cursor: "pointer",
+					padding: "0.25rem",
+					display: "flex",
+					color: isCopied
+						? "var(--color-success)"
+						: "var(--color-text-secondary)",
+					transition: "color 0.15s ease",
+				}}
+				title={isCopied ? "Copied!" : "Copy"}
+			>
+				{isCopied ? <Check size={size} /> : <Copy size={size} />}
+			</button>
+		);
+	};
+
+	// エンドポイント行コンポーネント
+	const EndpointRow = ({
+		label,
+		value,
+		copyKey,
+	}: {
+		label: string;
+		value: string | undefined;
+		copyKey: string;
+	}) => (
+		<div
+			style={{
+				display: "flex",
+				alignItems: "center",
+				gap: "0.5rem",
+				background: "var(--color-bg)",
+				padding: "0.375rem 0.5rem",
+				borderRadius: "2px",
+			}}
+		>
+			<span
+				style={{
+					fontSize: "0.75rem",
+					color: "var(--color-text-secondary)",
+					minWidth: "75px",
+				}}
+			>
+				{label}
+			</span>
+			<span
+				style={{
+					fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+					fontSize: "0.6875rem",
+					color: value ? "var(--color-text)" : "var(--color-text-muted)",
+					wordBreak: "break-all",
+					flex: 1,
+				}}
+			>
+				{value || "N/A"}
+			</span>
+			{value && <CopyButton text={value} copyKey={copyKey} size={12} />}
+		</div>
+	);
+
 	// ウォレットリストを更新
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -91,7 +168,6 @@ export function WalletConnection({
 	// 1,000,000,000 STAR = 1,000 NIGHT/tNIGHT
 	const NIGHT_DECIMALS = 6n;
 	const NIGHT_DIVISOR = 10n ** NIGHT_DECIMALS; // 1,000,000
-	const MIN_UNIT_NAME = "STAR"; // Atomic unit of NIGHT/tNIGHT
 
 	// 1 tDUST = 10^15 SPECK (1,000,000,000,000,000 SPECK)
 	const DUST_DECIMALS = 15n;
@@ -143,7 +219,7 @@ export function WalletConnection({
 	const formatSpeckToTDustShort = (value: bigint | undefined): string => {
 		if (value === undefined) return "0";
 		const tDust = Number(value) / Number(DUST_DIVISOR);
-		
+
 		if (tDust >= 1000000) {
 			return `${(tDust / 1000000).toFixed(1)}M`;
 		} else if (tDust >= 1000) {
@@ -298,7 +374,14 @@ export function WalletConnection({
 								marginBottom: "0.75rem",
 							}}
 						>
-							<h3 style={{ display: "flex", alignItems: "center", gap: "0.5rem", margin: 0 }}>
+							<h3
+								style={{
+									display: "flex",
+									alignItems: "center",
+									gap: "0.5rem",
+									margin: 0,
+								}}
+							>
 								<Wallet size={18} />
 								Wallet Information
 							</h3>
@@ -354,7 +437,8 @@ export function WalletConnection({
 						{(unshieldedBalances || shieldedBalances || dustBalance) && (
 							<div
 								style={{
-									background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+									background:
+										"linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
 									borderRadius: "2px",
 									padding: "0.875rem 1rem",
 									marginBottom: "0.75rem",
@@ -370,46 +454,141 @@ export function WalletConnection({
 								>
 									{/* Unshielded Balance */}
 									{formatTokenBalances(unshieldedBalances).length > 0 && (
-										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+										<div
+											style={{
+												display: "flex",
+												alignItems: "center",
+												gap: "0.5rem",
+											}}
+										>
 											<Eye size={16} color="#00cc66" />
-											<span style={{ fontSize: "0.8125rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+											<span
+												style={{
+													fontSize: "0.8125rem",
+													color: "rgba(255,255,255,0.6)",
+													textTransform: "uppercase",
+													letterSpacing: "0.5px",
+												}}
+											>
 												Unshielded
 											</span>
-											{formatTokenBalances(unshieldedBalances).map(({ tokenType, balanceNight }) => (
-												<div key={tokenType} style={{ display: "flex", alignItems: "baseline", gap: "0.375rem", marginLeft: "0.375rem" }}>
-													<span style={{ fontSize: "1.5rem", fontWeight: "700" }}>{balanceNight}</span>
-													<span style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>{getNativeTokenName()}</span>
-												</div>
-											))}
+											{formatTokenBalances(unshieldedBalances).map(
+												({ tokenType, balanceNight }) => (
+													<div
+														key={tokenType}
+														style={{
+															display: "flex",
+															alignItems: "baseline",
+															gap: "0.375rem",
+															marginLeft: "0.375rem",
+														}}
+													>
+														<span
+															style={{ fontSize: "1.5rem", fontWeight: "700" }}
+														>
+															{balanceNight}
+														</span>
+														<span
+															style={{
+																fontSize: "0.875rem",
+																color: "rgba(255,255,255,0.5)",
+															}}
+														>
+															{getNativeTokenName()}
+														</span>
+													</div>
+												),
+											)}
 										</div>
 									)}
 
 									{/* Shielded Balance */}
 									{formatTokenBalances(shieldedBalances).length > 0 && (
-										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+										<div
+											style={{
+												display: "flex",
+												alignItems: "center",
+												gap: "0.5rem",
+											}}
+										>
 											<Shield size={16} color="#0000fe" />
-											<span style={{ fontSize: "0.8125rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+											<span
+												style={{
+													fontSize: "0.8125rem",
+													color: "rgba(255,255,255,0.6)",
+													textTransform: "uppercase",
+													letterSpacing: "0.5px",
+												}}
+											>
 												Shielded
 											</span>
-											{formatTokenBalances(shieldedBalances).map(({ tokenType, balanceNight }) => (
-												<div key={tokenType} style={{ display: "flex", alignItems: "baseline", gap: "0.375rem", marginLeft: "0.375rem" }}>
-													<span style={{ fontSize: "1.5rem", fontWeight: "700" }}>{balanceNight}</span>
-													<span style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>{getNativeTokenName()}</span>
-												</div>
-											))}
+											{formatTokenBalances(shieldedBalances).map(
+												({ tokenType, balanceNight }) => (
+													<div
+														key={tokenType}
+														style={{
+															display: "flex",
+															alignItems: "baseline",
+															gap: "0.375rem",
+															marginLeft: "0.375rem",
+														}}
+													>
+														<span
+															style={{ fontSize: "1.5rem", fontWeight: "700" }}
+														>
+															{balanceNight}
+														</span>
+														<span
+															style={{
+																fontSize: "0.875rem",
+																color: "rgba(255,255,255,0.5)",
+															}}
+														>
+															{getNativeTokenName()}
+														</span>
+													</div>
+												),
+											)}
 										</div>
 									)}
 
 									{/* Dust Balance */}
 									{dustBalance && (
-										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+										<div
+											style={{
+												display: "flex",
+												alignItems: "center",
+												gap: "0.5rem",
+											}}
+										>
 											<Fuel size={16} color="#ff9900" />
-											<span style={{ fontSize: "0.8125rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+											<span
+												style={{
+													fontSize: "0.8125rem",
+													color: "rgba(255,255,255,0.6)",
+													textTransform: "uppercase",
+													letterSpacing: "0.5px",
+												}}
+											>
 												Dust
 											</span>
-											<div style={{ display: "flex", alignItems: "baseline", gap: "0.375rem", marginLeft: "0.375rem" }}>
-												<span style={{ fontSize: "1.5rem", fontWeight: "700" }}>{formatSpeckToTDustWithCommas(dustBalance.balance)}</span>
-												<span style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>
+											<div
+												style={{
+													display: "flex",
+													alignItems: "baseline",
+													gap: "0.375rem",
+													marginLeft: "0.375rem",
+												}}
+											>
+												<span style={{ fontSize: "1.5rem", fontWeight: "700" }}>
+													{formatSpeckToTDustWithCommas(dustBalance.balance)}
+												</span>
+												<span
+													style={{
+														fontSize: "0.875rem",
+														color: "rgba(255,255,255,0.5)",
+													}}
+												>
 													/ {formatSpeckToTDustShort(dustBalance.cap)} tDUST
 												</span>
 											</div>
@@ -446,27 +625,33 @@ export function WalletConnection({
 											marginBottom: "0.5rem",
 										}}
 									>
-										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-											<Eye size={14} color="#00cc66" />
-											<span style={{ fontWeight: "600", fontSize: "0.8125rem" }}>Unshielded</span>
-											<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Public</span>
-										</div>
-										<button
-											type="button"
-											onClick={() => handleCopy(unshieldedAddress.unshieldedAddress, "unshielded")}
+										<div
 											style={{
-												background: "transparent",
-												border: "none",
-												cursor: "pointer",
-												padding: "0.25rem",
 												display: "flex",
-												color: copiedKey === "unshielded" ? "var(--color-success)" : "var(--color-text-secondary)",
-												transition: "color 0.15s ease",
+												alignItems: "center",
+												gap: "0.5rem",
 											}}
-											title={copiedKey === "unshielded" ? "Copied!" : "Copy address"}
 										>
-											{copiedKey === "unshielded" ? <Check size={14} /> : <Copy size={14} />}
-										</button>
+											<Eye size={14} color="#00cc66" />
+											<span
+												style={{ fontWeight: "600", fontSize: "0.8125rem" }}
+											>
+												Unshielded
+											</span>
+											<span
+												style={{
+													fontSize: "0.75rem",
+													color: "var(--color-text-secondary)",
+												}}
+											>
+												Public
+											</span>
+										</div>
+										<CopyButton
+											text={unshieldedAddress.unshieldedAddress}
+											copyKey="unshielded"
+											size={14}
+										/>
 									</div>
 									<div
 										style={{
@@ -503,27 +688,33 @@ export function WalletConnection({
 											marginBottom: "0.5rem",
 										}}
 									>
-										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-											<Shield size={14} color="#0000fe" />
-											<span style={{ fontWeight: "600", fontSize: "0.8125rem" }}>Shielded</span>
-											<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Private</span>
-										</div>
-										<button
-											type="button"
-											onClick={() => handleCopy(shieldedAddresses.shieldedAddress, "shielded")}
+										<div
 											style={{
-												background: "transparent",
-												border: "none",
-												cursor: "pointer",
-												padding: "0.25rem",
 												display: "flex",
-												color: copiedKey === "shielded" ? "var(--color-success)" : "var(--color-text-secondary)",
-												transition: "color 0.15s ease",
+												alignItems: "center",
+												gap: "0.5rem",
 											}}
-											title={copiedKey === "shielded" ? "Copied!" : "Copy address"}
 										>
-											{copiedKey === "shielded" ? <Check size={14} /> : <Copy size={14} />}
-										</button>
+											<Shield size={14} color="#0000fe" />
+											<span
+												style={{ fontWeight: "600", fontSize: "0.8125rem" }}
+											>
+												Shielded
+											</span>
+											<span
+												style={{
+													fontSize: "0.75rem",
+													color: "var(--color-text-secondary)",
+												}}
+											>
+												Private
+											</span>
+										</div>
+										<CopyButton
+											text={shieldedAddresses.shieldedAddress}
+											copyKey="shielded"
+											size={14}
+										/>
 									</div>
 									<div
 										style={{
@@ -560,27 +751,33 @@ export function WalletConnection({
 											marginBottom: "0.5rem",
 										}}
 									>
-										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-											<Fuel size={14} color="#ff9900" />
-											<span style={{ fontWeight: "600", fontSize: "0.8125rem" }}>Dust</span>
-											<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Gas</span>
-										</div>
-										<button
-											type="button"
-											onClick={() => handleCopy(dustAddress.dustAddress, "dust")}
+										<div
 											style={{
-												background: "transparent",
-												border: "none",
-												cursor: "pointer",
-												padding: "0.25rem",
 												display: "flex",
-												color: copiedKey === "dust" ? "var(--color-success)" : "var(--color-text-secondary)",
-												transition: "color 0.15s ease",
+												alignItems: "center",
+												gap: "0.5rem",
 											}}
-											title={copiedKey === "dust" ? "Copied!" : "Copy address"}
 										>
-											{copiedKey === "dust" ? <Check size={14} /> : <Copy size={14} />}
-										</button>
+											<Fuel size={14} color="#ff9900" />
+											<span
+												style={{ fontWeight: "600", fontSize: "0.8125rem" }}
+											>
+												Dust
+											</span>
+											<span
+												style={{
+													fontSize: "0.75rem",
+													color: "var(--color-text-secondary)",
+												}}
+											>
+												Gas
+											</span>
+										</div>
+										<CopyButton
+											text={dustAddress.dustAddress}
+											copyKey="dust"
+											size={14}
+										/>
 									</div>
 									<div
 										style={{
@@ -610,11 +807,26 @@ export function WalletConnection({
 									padding: "0.625rem 0.75rem",
 								}}
 							>
-								<div style={{ fontWeight: "600", fontSize: "0.8125rem", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+								<div
+									style={{
+										fontWeight: "600",
+										fontSize: "0.8125rem",
+										marginBottom: "0.5rem",
+										display: "flex",
+										alignItems: "center",
+										gap: "0.5rem",
+									}}
+								>
 									<Key size={14} />
 									Public Keys
 								</div>
-								<div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+								<div
+									style={{
+										display: "flex",
+										flexDirection: "column",
+										gap: "0.375rem",
+									}}
+								>
 									<div
 										style={{
 											display: "flex",
@@ -625,7 +837,15 @@ export function WalletConnection({
 											borderRadius: "2px",
 										}}
 									>
-										<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "75px" }}>Coin</span>
+										<span
+											style={{
+												fontSize: "0.75rem",
+												color: "var(--color-text-secondary)",
+												minWidth: "75px",
+											}}
+										>
+											Coin
+										</span>
 										<span
 											style={{
 												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
@@ -637,22 +857,11 @@ export function WalletConnection({
 										>
 											{shieldedAddresses.shieldedCoinPublicKey}
 										</span>
-										<button
-											type="button"
-											onClick={() => handleCopy(shieldedAddresses.shieldedCoinPublicKey, "coinPubKey")}
-											style={{
-												background: "transparent",
-												border: "none",
-												cursor: "pointer",
-												padding: "0.25rem",
-												display: "flex",
-												color: copiedKey === "coinPubKey" ? "var(--color-success)" : "var(--color-text-secondary)",
-												transition: "color 0.15s ease",
-											}}
-											title={copiedKey === "coinPubKey" ? "Copied!" : "Copy"}
-										>
-											{copiedKey === "coinPubKey" ? <Check size={12} /> : <Copy size={12} />}
-										</button>
+										<CopyButton
+											text={shieldedAddresses.shieldedCoinPublicKey}
+											copyKey="coinPubKey"
+											size={12}
+										/>
 									</div>
 									{shieldedAddresses.shieldedEncryptionPublicKey && (
 										<div
@@ -665,7 +874,15 @@ export function WalletConnection({
 												borderRadius: "2px",
 											}}
 										>
-											<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "75px" }}>Encryption</span>
+											<span
+												style={{
+													fontSize: "0.75rem",
+													color: "var(--color-text-secondary)",
+													minWidth: "75px",
+												}}
+											>
+												Encryption
+											</span>
 											<span
 												style={{
 													fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
@@ -677,33 +894,23 @@ export function WalletConnection({
 											>
 												{shieldedAddresses.shieldedEncryptionPublicKey}
 											</span>
-											<button
-												type="button"
-												onClick={() => handleCopy(shieldedAddresses.shieldedEncryptionPublicKey, "encPubKey")}
-												style={{
-													background: "transparent",
-													border: "none",
-													cursor: "pointer",
-													padding: "0.25rem",
-													display: "flex",
-													color: copiedKey === "encPubKey" ? "var(--color-success)" : "var(--color-text-secondary)",
-													transition: "color 0.15s ease",
-												}}
-												title={copiedKey === "encPubKey" ? "Copied!" : "Copy"}
-											>
-												{copiedKey === "encPubKey" ? <Check size={12} /> : <Copy size={12} />}
-											</button>
+											<CopyButton
+												text={shieldedAddresses.shieldedEncryptionPublicKey}
+												copyKey="encPubKey"
+												size={12}
+											/>
 										</div>
 									)}
 								</div>
 							</div>
 						)}
-
 					</div>
 
 					{/* Connection Details Section */}
 					<div className="params-section">
-						<h3 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+						<h3
+							style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+						>
 							<Activity size={18} />
 							Connection Details
 						</h3>
@@ -722,19 +929,36 @@ export function WalletConnection({
 							}}
 						>
 							{/* Wallet Status */}
-							<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+							<div
+								style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+							>
 								<div
 									style={{
 										width: "10px",
 										height: "10px",
 										borderRadius: "50%",
-										backgroundColor: status?.status === "connected" ? "var(--color-success)" : "var(--color-text-muted)",
-										boxShadow: status?.status === "connected" ? "0 0 6px rgba(0, 204, 102, 0.5)" : "none",
+										backgroundColor:
+											status?.status === "connected"
+												? "var(--color-success)"
+												: "var(--color-text-muted)",
+										boxShadow:
+											status?.status === "connected"
+												? "0 0 6px rgba(0, 204, 102, 0.5)"
+												: "none",
 									}}
 								/>
 								<span style={{ fontSize: "0.8125rem", fontWeight: "600" }}>
-									<span style={{ color: status?.status === "connected" ? "var(--color-success)" : "var(--color-text)" }}>
-										{status?.status === "connected" ? "Connected" : "Disconnected"}
+									<span
+										style={{
+											color:
+												status?.status === "connected"
+													? "var(--color-success)"
+													: "var(--color-text)",
+										}}
+									>
+										{status?.status === "connected"
+											? "Connected"
+											: "Disconnected"}
 									</span>
 									{initialAPI && (
 										<span style={{ color: "var(--color-text)" }}>
@@ -746,15 +970,32 @@ export function WalletConnection({
 
 							{/* Network */}
 							{status?.status === "connected" && (
-								<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "0.5rem",
+									}}
+								>
 									<Globe size={14} color="var(--color-text-secondary)" />
-									<span style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>Network:</span>
-									<span style={{ fontSize: "0.8125rem", fontWeight: "600" }}>{status?.networkId}</span>
+									<span
+										style={{
+											fontSize: "0.8125rem",
+											color: "var(--color-text-secondary)",
+										}}
+									>
+										Network:
+									</span>
+									<span style={{ fontSize: "0.8125rem", fontWeight: "600" }}>
+										{status?.networkId}
+									</span>
 								</div>
 							)}
 
 							{/* Proof Server */}
-							<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+							<div
+								style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+							>
 								<div
 									style={{
 										width: "10px",
@@ -774,7 +1015,14 @@ export function WalletConnection({
 													: "none",
 									}}
 								/>
-								<span style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>Proof Server:</span>
+								<span
+									style={{
+										fontSize: "0.8125rem",
+										color: "var(--color-text-secondary)",
+									}}
+								>
+									Proof Server:
+								</span>
 								<span
 									style={{
 										fontSize: "0.8125rem",
@@ -787,7 +1035,11 @@ export function WalletConnection({
 													: "var(--color-error)",
 									}}
 								>
-									{proofServerOnline === undefined ? "Unknown" : proofServerOnline ? "Online" : "Offline"}
+									{proofServerOnline === undefined
+										? "Unknown"
+										: proofServerOnline
+											? "Online"
+											: "Offline"}
 								</span>
 							</div>
 						</div>
@@ -814,171 +1066,33 @@ export function WalletConnection({
 								<Server size={14} />
 								Network Endpoints
 							</div>
-							<div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
-								<div
-									style={{
-										display: "flex",
-										alignItems: "center",
-										gap: "0.5rem",
-										background: "var(--color-bg)",
-										padding: "0.375rem 0.5rem",
-										borderRadius: "2px",
-									}}
-								>
-									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "75px" }}>Node</span>
-									<span
-										style={{
-											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-											fontSize: "0.6875rem",
-											color: serviceUriConfig?.substrateNodeUri ? "var(--color-text)" : "var(--color-text-muted)",
-											wordBreak: "break-all",
-											flex: 1,
-										}}
-									>
-										{serviceUriConfig?.substrateNodeUri || "N/A"}
-									</span>
-									{serviceUriConfig?.substrateNodeUri && (
-										<button
-											type="button"
-											onClick={() => handleCopy(serviceUriConfig.substrateNodeUri, "node")}
-											style={{
-												background: "transparent",
-												border: "none",
-												cursor: "pointer",
-												padding: "0.25rem",
-												display: "flex",
-												color: copiedKey === "node" ? "var(--color-success)" : "var(--color-text-secondary)",
-												transition: "color 0.15s ease",
-											}}
-											title={copiedKey === "node" ? "Copied!" : "Copy"}
-										>
-											{copiedKey === "node" ? <Check size={12} /> : <Copy size={12} />}
-										</button>
-									)}
-								</div>
-								<div
-									style={{
-										display: "flex",
-										alignItems: "center",
-										gap: "0.5rem",
-										background: "var(--color-bg)",
-										padding: "0.375rem 0.5rem",
-										borderRadius: "2px",
-									}}
-								>
-									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "75px" }}>Prover</span>
-									<span
-										style={{
-											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-											fontSize: "0.6875rem",
-											color: serviceUriConfig?.proverServerUri ? "var(--color-text)" : "var(--color-text-muted)",
-											wordBreak: "break-all",
-											flex: 1,
-										}}
-									>
-										{serviceUriConfig?.proverServerUri || "N/A"}
-									</span>
-									{serviceUriConfig?.proverServerUri && (
-										<button
-											type="button"
-											onClick={() => handleCopy(serviceUriConfig.proverServerUri, "prover")}
-											style={{
-												background: "transparent",
-												border: "none",
-												cursor: "pointer",
-												padding: "0.25rem",
-												display: "flex",
-												color: copiedKey === "prover" ? "var(--color-success)" : "var(--color-text-secondary)",
-												transition: "color 0.15s ease",
-											}}
-											title={copiedKey === "prover" ? "Copied!" : "Copy"}
-										>
-											{copiedKey === "prover" ? <Check size={12} /> : <Copy size={12} />}
-										</button>
-									)}
-								</div>
-								<div
-									style={{
-										display: "flex",
-										alignItems: "center",
-										gap: "0.5rem",
-										background: "var(--color-bg)",
-										padding: "0.375rem 0.5rem",
-										borderRadius: "2px",
-									}}
-								>
-									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "75px" }}>Indexer</span>
-									<span
-										style={{
-											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-											fontSize: "0.6875rem",
-											color: serviceUriConfig?.indexerUri ? "var(--color-text)" : "var(--color-text-muted)",
-											wordBreak: "break-all",
-											flex: 1,
-										}}
-									>
-										{serviceUriConfig?.indexerUri || "N/A"}
-									</span>
-									{serviceUriConfig?.indexerUri && (
-										<button
-											type="button"
-											onClick={() => handleCopy(serviceUriConfig.indexerUri, "indexer")}
-											style={{
-												background: "transparent",
-												border: "none",
-												cursor: "pointer",
-												padding: "0.25rem",
-												display: "flex",
-												color: copiedKey === "indexer" ? "var(--color-success)" : "var(--color-text-secondary)",
-												transition: "color 0.15s ease",
-											}}
-											title={copiedKey === "indexer" ? "Copied!" : "Copy"}
-										>
-											{copiedKey === "indexer" ? <Check size={12} /> : <Copy size={12} />}
-										</button>
-									)}
-								</div>
-								<div
-									style={{
-										display: "flex",
-										alignItems: "center",
-										gap: "0.5rem",
-										background: "var(--color-bg)",
-										padding: "0.375rem 0.5rem",
-										borderRadius: "2px",
-									}}
-								>
-									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "75px" }}>Indexer WS</span>
-									<span
-										style={{
-											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-											fontSize: "0.6875rem",
-											color: serviceUriConfig?.indexerWsUri ? "var(--color-text)" : "var(--color-text-muted)",
-											wordBreak: "break-all",
-											flex: 1,
-										}}
-									>
-										{serviceUriConfig?.indexerWsUri || "N/A"}
-									</span>
-									{serviceUriConfig?.indexerWsUri && (
-										<button
-											type="button"
-											onClick={() => handleCopy(serviceUriConfig.indexerWsUri, "indexerWs")}
-											style={{
-												background: "transparent",
-												border: "none",
-												cursor: "pointer",
-												padding: "0.25rem",
-												display: "flex",
-												color: copiedKey === "indexerWs" ? "var(--color-success)" : "var(--color-text-secondary)",
-												transition: "color 0.15s ease",
-											}}
-											title={copiedKey === "indexerWs" ? "Copied!" : "Copy"}
-										>
-											{copiedKey === "indexerWs" ? <Check size={12} /> : <Copy size={12} />}
-										</button>
-									)}
-								</div>
+							<div
+								style={{
+									display: "flex",
+									flexDirection: "column",
+									gap: "0.375rem",
+								}}
+							>
+								<EndpointRow
+									label="Node"
+									value={serviceUriConfig?.substrateNodeUri}
+									copyKey="node"
+								/>
+								<EndpointRow
+									label="Prover"
+									value={serviceUriConfig?.proverServerUri}
+									copyKey="prover"
+								/>
+								<EndpointRow
+									label="Indexer"
+									value={serviceUriConfig?.indexerUri}
+									copyKey="indexer"
+								/>
+								<EndpointRow
+									label="Indexer WS"
+									value={serviceUriConfig?.indexerWsUri}
+									copyKey="indexerWs"
+								/>
 							</div>
 						</div>
 					</div>
