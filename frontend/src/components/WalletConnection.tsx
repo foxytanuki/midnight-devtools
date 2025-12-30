@@ -3,6 +3,22 @@ import { useNetwork } from "../contexts/NetworkContext";
 import { useWallet } from "../hooks/useWallet";
 import { mapToWalletNetworkId } from "../utils/network-config";
 import { MidnightBrowserWallet } from "../utils/wallet-controller";
+import {
+	Wallet,
+	Eye,
+	Shield,
+	Fuel,
+	Key,
+	RefreshCw,
+	LogOut,
+	Copy,
+	Globe,
+	Server,
+	Radio,
+	Plug,
+	Lock,
+	Activity,
+} from "lucide-react";
 import "../App.css";
 
 interface WalletConnectionProps {
@@ -255,14 +271,65 @@ export function WalletConnection({
 				<>
 					{/* Wallet Information Section */}
 					<div className="params-section">
-						<h3 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-								<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
-								<path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
-								<path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
-							</svg>
-							Wallet Information
-						</h3>
+						<div
+							style={{
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "space-between",
+								marginBottom: "0.75rem",
+							}}
+						>
+							<h3 style={{ display: "flex", alignItems: "center", gap: "0.5rem", margin: 0 }}>
+								<Wallet size={18} />
+								Wallet Information
+							</h3>
+							<div style={{ display: "flex", gap: "0.5rem" }}>
+								<button
+									type="button"
+									onClick={handleRefresh}
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "0.375rem",
+										padding: "0.375rem 0.75rem",
+										background: "var(--color-surface)",
+										color: "var(--color-text)",
+										border: "1px solid var(--color-border)",
+										borderRadius: "2px",
+										fontSize: "0.8125rem",
+										fontWeight: "500",
+										cursor: "pointer",
+										transition: "all 0.15s ease",
+									}}
+									title="Refresh wallet data"
+								>
+									<RefreshCw size={14} />
+									Refresh
+								</button>
+								<button
+									type="button"
+									onClick={handleDisconnect}
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "0.375rem",
+										padding: "0.375rem 0.75rem",
+										background: "transparent",
+										color: "var(--color-error)",
+										border: "1px solid var(--color-error)",
+										borderRadius: "2px",
+										fontSize: "0.8125rem",
+										fontWeight: "500",
+										cursor: "pointer",
+										transition: "all 0.15s ease",
+									}}
+									title="Disconnect wallet"
+								>
+									<LogOut size={14} />
+									Disconnect
+								</button>
+							</div>
+						</div>
 
 						{/* Balances Overview Card */}
 						{(unshieldedBalances || shieldedBalances || dustBalance) && (
@@ -293,10 +360,7 @@ export function WalletConnection({
 													marginBottom: "0.5rem",
 												}}
 											>
-												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00cc66" strokeWidth="2">
-													<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-													<circle cx="12" cy="12" r="3" />
-												</svg>
+												<Eye size={16} color="#00cc66" />
 												<span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
 													Unshielded
 												</span>
@@ -325,9 +389,7 @@ export function WalletConnection({
 													marginBottom: "0.5rem",
 												}}
 											>
-												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0000fe" strokeWidth="2">
-													<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-												</svg>
+												<Shield size={16} color="#0000fe" />
 												<span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
 													Shielded
 												</span>
@@ -356,10 +418,7 @@ export function WalletConnection({
 													marginBottom: "0.5rem",
 												}}
 											>
-												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff9900" strokeWidth="2">
-													<path d="M12 2v20M2 12h20" />
-													<circle cx="12" cy="12" r="4" />
-												</svg>
+												<Fuel size={16} color="#ff9900" />
 												<span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
 													Dust
 												</span>
@@ -416,10 +475,7 @@ export function WalletConnection({
 													justifyContent: "center",
 												}}
 											>
-												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
-													<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-													<circle cx="12" cy="12" r="3" />
-												</svg>
+												<Eye size={16} color="#fff" />
 											</div>
 											<div>
 												<div style={{ fontWeight: "600", fontSize: "0.875rem" }}>Unshielded</div>
@@ -443,10 +499,7 @@ export function WalletConnection({
 											}}
 											title="Copy address"
 										>
-											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-												<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-												<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-											</svg>
+											<Copy size={14} />
 											Copy
 										</button>
 									</div>
@@ -498,9 +551,7 @@ export function WalletConnection({
 													justifyContent: "center",
 												}}
 											>
-												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
-													<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-												</svg>
+												<Shield size={16} color="#fff" />
 											</div>
 											<div>
 												<div style={{ fontWeight: "600", fontSize: "0.875rem" }}>Shielded</div>
@@ -524,10 +575,7 @@ export function WalletConnection({
 											}}
 											title="Copy address"
 										>
-											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-												<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-												<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-											</svg>
+											<Copy size={14} />
 											Copy
 										</button>
 									</div>
@@ -579,10 +627,7 @@ export function WalletConnection({
 													justifyContent: "center",
 												}}
 											>
-												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
-													<path d="M12 2v20M2 12h20" />
-													<circle cx="12" cy="12" r="4" />
-												</svg>
+												<Fuel size={16} color="#fff" />
 											</div>
 											<div>
 												<div style={{ fontWeight: "600", fontSize: "0.875rem" }}>Dust</div>
@@ -606,10 +651,7 @@ export function WalletConnection({
 											}}
 											title="Copy address"
 										>
-											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-												<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-												<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-											</svg>
+											<Copy size={14} />
 											Copy
 										</button>
 									</div>
@@ -643,9 +685,7 @@ export function WalletConnection({
 								}}
 							>
 								<div style={{ fontWeight: "600", fontSize: "0.875rem", marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-									<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-										<path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
-									</svg>
+									<Key size={16} />
 									Public Keys
 								</div>
 								<div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
@@ -687,10 +727,7 @@ export function WalletConnection({
 												}}
 												title="Copy"
 											>
-												<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-													<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-													<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-												</svg>
+												<Copy size={14} />
 											</button>
 										</div>
 									</div>
@@ -733,10 +770,7 @@ export function WalletConnection({
 													}}
 													title="Copy"
 												>
-													<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-														<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-														<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-													</svg>
+													<Copy size={14} />
 												</button>
 											</div>
 										</div>
@@ -745,77 +779,12 @@ export function WalletConnection({
 							</div>
 						)}
 
-						{/* Action Buttons */}
-						<div style={{ display: "flex", gap: "0.75rem" }}>
-							<button
-								type="button"
-								onClick={handleRefresh}
-								style={{
-									flex: 1,
-									display: "flex",
-									alignItems: "center",
-									justifyContent: "center",
-									gap: "0.5rem",
-									padding: "0.75rem 1.5rem",
-									background: "var(--color-text)",
-									color: "var(--color-bg)",
-									border: "none",
-									borderRadius: "2px",
-									fontSize: "0.875rem",
-									fontWeight: "500",
-									cursor: "pointer",
-									transition: "all 0.15s ease",
-								}}
-							>
-								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-									<path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-									<path d="M3 3v5h5" />
-									<path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-									<path d="M16 21h5v-5" />
-								</svg>
-								Refresh
-							</button>
-							<button
-								type="button"
-								onClick={handleDisconnect}
-								style={{
-									flex: 1,
-									display: "flex",
-									alignItems: "center",
-									justifyContent: "center",
-									gap: "0.5rem",
-									padding: "0.75rem 1.5rem",
-									background: "transparent",
-									color: "var(--color-error)",
-									border: "2px solid var(--color-error)",
-									borderRadius: "2px",
-									fontSize: "0.875rem",
-									fontWeight: "500",
-									cursor: "pointer",
-									transition: "all 0.15s ease",
-								}}
-							>
-								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-									<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-									<polyline points="16 17 21 12 16 7" />
-									<line x1="21" y1="12" x2="9" y2="12" />
-								</svg>
-								Disconnect
-							</button>
-						</div>
 					</div>
 
 					{/* Connection Details Section */}
 					<div className="params-section">
 						<h3 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-								<path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5" />
-								<path d="M8.5 8.5v.01" />
-								<path d="M16 15.5v.01" />
-								<path d="M12 12v.01" />
-								<path d="M11 17v.01" />
-								<path d="M7 14v.01" />
-							</svg>
+							<Activity size={18} />
 							Connection Details
 						</h3>
 
@@ -888,11 +857,7 @@ export function WalletConnection({
 												justifyContent: "center",
 											}}
 										>
-											<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
-												<circle cx="12" cy="12" r="10" />
-												<line x1="2" y1="12" x2="22" y2="12" />
-												<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-											</svg>
+											<Globe size={16} color="#fff" />
 										</div>
 										<div style={{ fontWeight: "600", fontSize: "0.9375rem" }}>
 											{status?.networkId}
@@ -970,50 +935,118 @@ export function WalletConnection({
 									gap: "0.5rem",
 								}}
 							>
-								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-									<rect x="2" y="2" width="20" height="8" rx="2" ry="2" />
-									<rect x="2" y="14" width="20" height="8" rx="2" ry="2" />
-									<line x1="6" y1="6" x2="6.01" y2="6" />
-									<line x1="6" y1="18" x2="6.01" y2="18" />
-								</svg>
+								<Server size={16} />
 								Network Endpoints
 							</div>
 							<div style={{ display: "grid", gap: "0.75rem" }}>
-								{[
-									{ label: "Substrate Node", value: serviceUriConfig?.substrateNodeUri, icon: "🔗" },
-									{ label: "Indexer (REST)", value: serviceUriConfig?.indexerUri, icon: "📡" },
-									{ label: "Indexer (WebSocket)", value: serviceUriConfig?.indexerWsUri, icon: "🔌" },
-									{ label: "Proof Server", value: serviceUriConfig?.proverServerUri, icon: "🔐" },
-								].map((endpoint, index) => (
-									<div
-										key={endpoint.label}
-										style={{
-											display: "flex",
-											alignItems: "flex-start",
-											gap: "0.75rem",
-											padding: "0.75rem",
-											background: "var(--color-bg)",
-											borderRadius: "2px",
-										}}
-									>
-										<span style={{ fontSize: "1rem" }}>{endpoint.icon}</span>
-										<div style={{ flex: 1, minWidth: 0 }}>
-											<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.25rem" }}>
-												{endpoint.label}
-											</div>
-											<div
-												style={{
-													fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-													fontSize: "0.8125rem",
-													color: endpoint.value ? "var(--color-text)" : "var(--color-text-muted)",
-													wordBreak: "break-all",
-												}}
-											>
-												{endpoint.value || "Not available"}
-											</div>
+								<div
+									style={{
+										display: "flex",
+										alignItems: "flex-start",
+										gap: "0.75rem",
+										padding: "0.75rem",
+										background: "var(--color-bg)",
+										borderRadius: "2px",
+									}}
+								>
+									<Globe size={16} style={{ marginTop: "2px", flexShrink: 0, color: "var(--color-text-secondary)" }} />
+									<div style={{ flex: 1, minWidth: 0 }}>
+										<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.25rem" }}>
+											Substrate Node
+										</div>
+										<div
+											style={{
+												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+												fontSize: "0.8125rem",
+												color: serviceUriConfig?.substrateNodeUri ? "var(--color-text)" : "var(--color-text-muted)",
+												wordBreak: "break-all",
+											}}
+										>
+											{serviceUriConfig?.substrateNodeUri || "Not available"}
 										</div>
 									</div>
-								))}
+								</div>
+								<div
+									style={{
+										display: "flex",
+										alignItems: "flex-start",
+										gap: "0.75rem",
+										padding: "0.75rem",
+										background: "var(--color-bg)",
+										borderRadius: "2px",
+									}}
+								>
+									<Radio size={16} style={{ marginTop: "2px", flexShrink: 0, color: "var(--color-text-secondary)" }} />
+									<div style={{ flex: 1, minWidth: 0 }}>
+										<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.25rem" }}>
+											Indexer (REST)
+										</div>
+										<div
+											style={{
+												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+												fontSize: "0.8125rem",
+												color: serviceUriConfig?.indexerUri ? "var(--color-text)" : "var(--color-text-muted)",
+												wordBreak: "break-all",
+											}}
+										>
+											{serviceUriConfig?.indexerUri || "Not available"}
+										</div>
+									</div>
+								</div>
+								<div
+									style={{
+										display: "flex",
+										alignItems: "flex-start",
+										gap: "0.75rem",
+										padding: "0.75rem",
+										background: "var(--color-bg)",
+										borderRadius: "2px",
+									}}
+								>
+									<Plug size={16} style={{ marginTop: "2px", flexShrink: 0, color: "var(--color-text-secondary)" }} />
+									<div style={{ flex: 1, minWidth: 0 }}>
+										<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.25rem" }}>
+											Indexer (WebSocket)
+										</div>
+										<div
+											style={{
+												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+												fontSize: "0.8125rem",
+												color: serviceUriConfig?.indexerWsUri ? "var(--color-text)" : "var(--color-text-muted)",
+												wordBreak: "break-all",
+											}}
+										>
+											{serviceUriConfig?.indexerWsUri || "Not available"}
+										</div>
+									</div>
+								</div>
+								<div
+									style={{
+										display: "flex",
+										alignItems: "flex-start",
+										gap: "0.75rem",
+										padding: "0.75rem",
+										background: "var(--color-bg)",
+										borderRadius: "2px",
+									}}
+								>
+									<Lock size={16} style={{ marginTop: "2px", flexShrink: 0, color: "var(--color-text-secondary)" }} />
+									<div style={{ flex: 1, minWidth: 0 }}>
+										<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.25rem" }}>
+											Proof Server
+										</div>
+										<div
+											style={{
+												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+												fontSize: "0.8125rem",
+												color: serviceUriConfig?.proverServerUri ? "var(--color-text)" : "var(--color-text-muted)",
+												wordBreak: "break-all",
+											}}
+										>
+											{serviceUriConfig?.proverServerUri || "Not available"}
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
