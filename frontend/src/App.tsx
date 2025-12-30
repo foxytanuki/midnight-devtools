@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
 	getDefaultTool,
 	getToolById,
@@ -6,12 +6,19 @@ import {
 	type ToolConfig,
 } from "./config/tools-config";
 import { useNetwork } from "./contexts/NetworkContext";
-import { NETWORKS, type NetworkId } from "./utils/network-config";
+import {
+	NETWORKS,
+	NETWORK_ORDER,
+	type NetworkId,
+	VERSION_GROUPS,
+} from "./utils/network-config";
 import "./App.css";
 
 function App() {
 	const [currentTool, setCurrentTool] = useState<ToolConfig>(getDefaultTool());
 	const { currentNetwork, setNetwork } = useNetwork();
+	const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
+	const dropdownRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		// Determine tool from URL hash
@@ -39,6 +46,34 @@ function App() {
 		window.addEventListener("hashchange", handleHashChange);
 		return () => window.removeEventListener("hashchange", handleHashChange);
 	}, []);
+
+	// ドロップダウン外クリックで閉じる
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node)
+			) {
+				setIsNetworkDropdownOpen(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, []);
+
+	const handleNetworkSelect = (networkId: NetworkId) => {
+		setNetwork(networkId);
+		setIsNetworkDropdownOpen(false);
+	};
+
+	// バージョングループごとにネットワークをグループ化
+	const groupedNetworks = VERSION_GROUPS.map((group) => ({
+		...group,
+		networks: NETWORK_ORDER.filter(
+			(id) => NETWORKS[id].version === group.version,
+		).map((id) => NETWORKS[id]),
+	}));
 
 	const handleToolChange = (tool: ToolConfig) => {
 		setCurrentTool(tool);
@@ -110,18 +145,56 @@ function App() {
 							</svg>
 						</a>
 					)}
-					<div className="network-selector">
-						<select
-							value={currentNetwork.id}
-							onChange={(e) => setNetwork(e.target.value as NetworkId)}
-							className="network-select"
+					<div className="network-selector" ref={dropdownRef}>
+						<button
+							type="button"
+							className="network-dropdown-trigger"
+							onClick={() => setIsNetworkDropdownOpen(!isNetworkDropdownOpen)}
 						>
-							{Object.values(NETWORKS).map((network) => (
-								<option key={network.id} value={network.id}>
-									{network.name}
-								</option>
-							))}
-						</select>
+							<span className="network-dropdown-value">
+								{currentNetwork.name}
+							</span>
+							<svg
+								width="10"
+								height="6"
+								viewBox="0 0 10 6"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								className={`network-dropdown-arrow ${isNetworkDropdownOpen ? "open" : ""}`}
+							>
+								<path
+									d="M1 1L5 5L9 1"
+									stroke="currentColor"
+									strokeWidth="1.5"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								/>
+							</svg>
+						</button>
+						{isNetworkDropdownOpen && (
+							<div className="network-dropdown-menu">
+								{groupedNetworks.map((group, groupIndex) => (
+									<div key={group.version} className="network-dropdown-group">
+										{groupIndex > 0 && (
+											<div className="network-dropdown-separator" />
+										)}
+										<div className="network-dropdown-group-label">
+											{group.label}
+										</div>
+										{group.networks.map((network) => (
+											<button
+												key={network.id}
+												type="button"
+												className={`network-dropdown-item ${currentNetwork.id === network.id ? "active" : ""}`}
+												onClick={() => handleNetworkSelect(network.id)}
+											>
+												{network.name}
+											</button>
+										))}
+									</div>
+								))}
+							</div>
+						)}
 					</div>
 				</div>
 			</nav>
