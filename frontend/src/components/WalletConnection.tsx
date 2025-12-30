@@ -269,7 +269,7 @@ export function WalletConnection({
 							<div
 								style={{
 									background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
-									borderRadius: "12px",
+									borderRadius: "2px",
 									padding: "1.5rem",
 									marginBottom: "1rem",
 									color: "#fff",
@@ -294,8 +294,8 @@ export function WalletConnection({
 												}}
 											>
 												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00cc66" strokeWidth="2">
-													<circle cx="12" cy="12" r="10" />
-													<path d="M12 6v6l4 2" />
+													<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+													<circle cx="12" cy="12" r="3" />
 												</svg>
 												<span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
 													Unshielded
@@ -391,7 +391,7 @@ export function WalletConnection({
 									style={{
 										background: "var(--color-surface)",
 										border: "1px solid var(--color-border)",
-										borderRadius: "8px",
+										borderRadius: "2px",
 										padding: "1rem",
 										transition: "all 0.2s ease",
 									}}
@@ -409,7 +409,7 @@ export function WalletConnection({
 												style={{
 													width: "32px",
 													height: "32px",
-													borderRadius: "8px",
+													borderRadius: "2px",
 													background: "linear-gradient(135deg, #00cc66 0%, #00994d 100%)",
 													display: "flex",
 													alignItems: "center",
@@ -417,8 +417,8 @@ export function WalletConnection({
 												}}
 											>
 												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
-													<circle cx="12" cy="12" r="10" />
-													<path d="M12 6v6l4 2" />
+													<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+													<circle cx="12" cy="12" r="3" />
 												</svg>
 											</div>
 											<div>
@@ -432,7 +432,7 @@ export function WalletConnection({
 											style={{
 												background: "var(--color-bg)",
 												border: "1px solid var(--color-border)",
-												borderRadius: "6px",
+												borderRadius: "2px",
 												padding: "0.375rem 0.75rem",
 												cursor: "pointer",
 												display: "flex",
@@ -458,7 +458,7 @@ export function WalletConnection({
 											wordBreak: "break-all",
 											background: "var(--color-bg)",
 											padding: "0.75rem",
-											borderRadius: "6px",
+											borderRadius: "2px",
 											lineHeight: "1.5",
 										}}
 									>
@@ -473,7 +473,7 @@ export function WalletConnection({
 									style={{
 										background: "var(--color-surface)",
 										border: "1px solid var(--color-border)",
-										borderRadius: "8px",
+										borderRadius: "2px",
 										padding: "1rem",
 										transition: "all 0.2s ease",
 									}}
@@ -491,7 +491,7 @@ export function WalletConnection({
 												style={{
 													width: "32px",
 													height: "32px",
-													borderRadius: "8px",
+													borderRadius: "2px",
 													background: "linear-gradient(135deg, #0000fe 0%, #0000cb 100%)",
 													display: "flex",
 													alignItems: "center",
@@ -513,7 +513,7 @@ export function WalletConnection({
 											style={{
 												background: "var(--color-bg)",
 												border: "1px solid var(--color-border)",
-												borderRadius: "6px",
+												borderRadius: "2px",
 												padding: "0.375rem 0.75rem",
 												cursor: "pointer",
 												display: "flex",
@@ -539,7 +539,7 @@ export function WalletConnection({
 											wordBreak: "break-all",
 											background: "var(--color-bg)",
 											padding: "0.75rem",
-											borderRadius: "6px",
+											borderRadius: "2px",
 											lineHeight: "1.5",
 										}}
 									>
@@ -554,7 +554,7 @@ export function WalletConnection({
 									style={{
 										background: "var(--color-surface)",
 										border: "1px solid var(--color-border)",
-										borderRadius: "8px",
+										borderRadius: "2px",
 										padding: "1rem",
 										transition: "all 0.2s ease",
 									}}
@@ -572,7 +572,7 @@ export function WalletConnection({
 												style={{
 													width: "32px",
 													height: "32px",
-													borderRadius: "8px",
+													borderRadius: "2px",
 													background: "linear-gradient(135deg, #ff9900 0%, #cc7a00 100%)",
 													display: "flex",
 													alignItems: "center",
@@ -595,7 +595,7 @@ export function WalletConnection({
 											style={{
 												background: "var(--color-bg)",
 												border: "1px solid var(--color-border)",
-												borderRadius: "6px",
+												borderRadius: "2px",
 												padding: "0.375rem 0.75rem",
 												cursor: "pointer",
 												display: "flex",
@@ -621,7 +621,7 @@ export function WalletConnection({
 											wordBreak: "break-all",
 											background: "var(--color-bg)",
 											padding: "0.75rem",
-											borderRadius: "6px",
+											borderRadius: "2px",
 											lineHeight: "1.5",
 										}}
 									>
@@ -637,7 +637,7 @@ export function WalletConnection({
 								style={{
 									background: "var(--color-surface)",
 									border: "1px solid var(--color-border)",
-									borderRadius: "8px",
+									borderRadius: "2px",
 									padding: "1rem",
 									marginBottom: "1rem",
 								}}
@@ -660,7 +660,7 @@ export function WalletConnection({
 												gap: "0.5rem",
 												background: "var(--color-bg)",
 												padding: "0.625rem 0.75rem",
-												borderRadius: "6px",
+												borderRadius: "2px",
 											}}
 										>
 											<span
@@ -706,7 +706,7 @@ export function WalletConnection({
 													gap: "0.5rem",
 													background: "var(--color-bg)",
 													padding: "0.625rem 0.75rem",
-													borderRadius: "6px",
+													borderRadius: "2px",
 												}}
 											>
 												<span
@@ -760,7 +760,7 @@ export function WalletConnection({
 									background: "var(--color-text)",
 									color: "var(--color-bg)",
 									border: "none",
-									borderRadius: "8px",
+									borderRadius: "2px",
 									fontSize: "0.875rem",
 									fontWeight: "500",
 									cursor: "pointer",
@@ -788,7 +788,7 @@ export function WalletConnection({
 									background: "transparent",
 									color: "var(--color-error)",
 									border: "2px solid var(--color-error)",
-									borderRadius: "8px",
+									borderRadius: "2px",
 									fontSize: "0.875rem",
 									fontWeight: "500",
 									cursor: "pointer",
@@ -833,7 +833,7 @@ export function WalletConnection({
 								style={{
 									background: "var(--color-surface)",
 									border: "1px solid var(--color-border)",
-									borderRadius: "8px",
+									borderRadius: "2px",
 									padding: "1rem",
 								}}
 							>
@@ -869,7 +869,7 @@ export function WalletConnection({
 									style={{
 										background: "var(--color-surface)",
 										border: "1px solid var(--color-border)",
-										borderRadius: "8px",
+										borderRadius: "2px",
 										padding: "1rem",
 									}}
 								>
@@ -881,7 +881,7 @@ export function WalletConnection({
 											style={{
 												width: "32px",
 												height: "32px",
-												borderRadius: "8px",
+												borderRadius: "2px",
 												background: "linear-gradient(135deg, #1a1a1a 0%, #333 100%)",
 												display: "flex",
 												alignItems: "center",
@@ -906,7 +906,7 @@ export function WalletConnection({
 								style={{
 									background: "var(--color-surface)",
 									border: "1px solid var(--color-border)",
-									borderRadius: "8px",
+									borderRadius: "2px",
 									padding: "1rem",
 								}}
 							>
@@ -956,7 +956,7 @@ export function WalletConnection({
 							style={{
 								background: "var(--color-surface)",
 								border: "1px solid var(--color-border)",
-								borderRadius: "8px",
+								borderRadius: "2px",
 								padding: "1rem",
 							}}
 						>
@@ -993,7 +993,7 @@ export function WalletConnection({
 											gap: "0.75rem",
 											padding: "0.75rem",
 											background: "var(--color-bg)",
-											borderRadius: "6px",
+											borderRadius: "2px",
 										}}
 									>
 										<span style={{ fontSize: "1rem" }}>{endpoint.icon}</span>
