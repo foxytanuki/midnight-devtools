@@ -732,9 +732,15 @@ export function WalletConnection({
 										boxShadow: status?.status === "connected" ? "0 0 6px rgba(0, 204, 102, 0.5)" : "none",
 									}}
 								/>
-								<span style={{ fontSize: "0.8125rem", fontWeight: "600", color: status?.status === "connected" ? "var(--color-success)" : "var(--color-text)" }}>
-									{status?.status === "connected" ? "Connected" : "Disconnected"}
-									{initialAPI && `: ${initialAPI.name || "Unknown"}`}
+								<span style={{ fontSize: "0.8125rem", fontWeight: "600" }}>
+									<span style={{ color: status?.status === "connected" ? "var(--color-success)" : "var(--color-text)" }}>
+										{status?.status === "connected" ? "Connected" : "Disconnected"}
+									</span>
+									{initialAPI && (
+										<span style={{ color: "var(--color-text)" }}>
+											{`: ${initialAPI.name || "Unknown"}`}
+										</span>
+									)}
 								</span>
 							</div>
 
