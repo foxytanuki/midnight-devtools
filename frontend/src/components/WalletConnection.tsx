@@ -253,383 +253,671 @@ export function WalletConnection({
 
 			{isConnected && (
 				<>
+					{/* Wallet Information Section */}
 					<div className="params-section">
-						<h3>Wallet Information</h3>
-						<div className="connection-info">
+						<h3 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+								<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+								<path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+								<path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+							</svg>
+							Wallet Information
+						</h3>
+
+						{/* Balances Overview Card */}
+						{(unshieldedBalances || shieldedBalances || dustBalance) && (
+							<div
+								style={{
+									background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+									borderRadius: "12px",
+									padding: "1.5rem",
+									marginBottom: "1rem",
+									color: "#fff",
+								}}
+							>
+								<div
+									style={{
+										display: "grid",
+										gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+										gap: "1.5rem",
+									}}
+								>
+									{/* Unshielded Balance */}
+									{formatTokenBalances(unshieldedBalances).length > 0 && (
+										<div>
+											<div
+												style={{
+													display: "flex",
+													alignItems: "center",
+													gap: "0.5rem",
+													marginBottom: "0.5rem",
+												}}
+											>
+												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00cc66" strokeWidth="2">
+													<circle cx="12" cy="12" r="10" />
+													<path d="M12 6v6l4 2" />
+												</svg>
+												<span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+													Unshielded
+												</span>
+											</div>
+											{formatTokenBalances(unshieldedBalances).map(({ tokenType, balanceNight }) => (
+												<div key={tokenType}>
+													<div style={{ fontSize: "1.75rem", fontWeight: "700", letterSpacing: "-0.5px" }}>
+														{balanceNight}
+													</div>
+													<div style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>
+														{getNativeTokenName()}
+													</div>
+												</div>
+											))}
+										</div>
+									)}
+
+									{/* Shielded Balance */}
+									{formatTokenBalances(shieldedBalances).length > 0 && (
+										<div>
+											<div
+												style={{
+													display: "flex",
+													alignItems: "center",
+													gap: "0.5rem",
+													marginBottom: "0.5rem",
+												}}
+											>
+												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0000fe" strokeWidth="2">
+													<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+												</svg>
+												<span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+													Shielded
+												</span>
+											</div>
+											{formatTokenBalances(shieldedBalances).map(({ tokenType, balanceNight }) => (
+												<div key={tokenType}>
+													<div style={{ fontSize: "1.75rem", fontWeight: "700", letterSpacing: "-0.5px" }}>
+														{balanceNight}
+													</div>
+													<div style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>
+														{getNativeTokenName()}
+													</div>
+												</div>
+											))}
+										</div>
+									)}
+
+									{/* Dust Balance */}
+									{dustBalance && (
+										<div>
+											<div
+												style={{
+													display: "flex",
+													alignItems: "center",
+													gap: "0.5rem",
+													marginBottom: "0.5rem",
+												}}
+											>
+												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff9900" strokeWidth="2">
+													<path d="M12 2v20M2 12h20" />
+													<circle cx="12" cy="12" r="4" />
+												</svg>
+												<span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+													Dust
+												</span>
+											</div>
+											<div style={{ fontSize: "1.75rem", fontWeight: "700", letterSpacing: "-0.5px" }}>
+												{formatSpeckToTDustWithCommas(dustBalance.balance)}
+											</div>
+											<div style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>
+												tDUST
+											</div>
+										</div>
+									)}
+								</div>
+							</div>
+						)}
+
+						{/* Address Cards Grid */}
+						<div
+							style={{
+								display: "grid",
+								gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+								gap: "1rem",
+								marginBottom: "1rem",
+							}}
+						>
+							{/* Unshielded Address Card */}
 							{unshieldedAddress && (
-								<div className="info-item">
-									<label>Unshielded Address</label>
-									<div className="address-display">
-										<span className="address-full">
-											{unshieldedAddress.unshieldedAddress}
-										</span>
+								<div
+									style={{
+										background: "var(--color-surface)",
+										border: "1px solid var(--color-border)",
+										borderRadius: "8px",
+										padding: "1rem",
+										transition: "all 0.2s ease",
+									}}
+								>
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "space-between",
+											marginBottom: "0.75rem",
+										}}
+									>
+										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+											<div
+												style={{
+													width: "32px",
+													height: "32px",
+													borderRadius: "8px",
+													background: "linear-gradient(135deg, #00cc66 0%, #00994d 100%)",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+												}}
+											>
+												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
+													<circle cx="12" cy="12" r="10" />
+													<path d="M12 6v6l4 2" />
+												</svg>
+											</div>
+											<div>
+												<div style={{ fontWeight: "600", fontSize: "0.875rem" }}>Unshielded</div>
+												<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Public Address</div>
+											</div>
+										</div>
 										<button
 											type="button"
-											onClick={() => {
-												navigator.clipboard.writeText(
-													unshieldedAddress.unshieldedAddress,
-												);
+											onClick={() => navigator.clipboard.writeText(unshieldedAddress.unshieldedAddress)}
+											style={{
+												background: "var(--color-bg)",
+												border: "1px solid var(--color-border)",
+												borderRadius: "6px",
+												padding: "0.375rem 0.75rem",
+												cursor: "pointer",
+												display: "flex",
+												alignItems: "center",
+												gap: "0.25rem",
+												fontSize: "0.8125rem",
+												transition: "all 0.15s ease",
 											}}
-											className="copy-button"
 											title="Copy address"
 										>
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+												<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+												<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+											</svg>
 											Copy
 										</button>
+									</div>
+									<div
+										style={{
+											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+											fontSize: "0.75rem",
+											color: "var(--color-text)",
+											wordBreak: "break-all",
+											background: "var(--color-bg)",
+											padding: "0.75rem",
+											borderRadius: "6px",
+											lineHeight: "1.5",
+										}}
+									>
+										{unshieldedAddress.unshieldedAddress}
 									</div>
 								</div>
 							)}
 
+							{/* Shielded Address Card */}
 							{shieldedAddresses && (
-								<>
-									<div className="info-item">
-										<label>Shielded Address</label>
-										<div className="address-display">
-											<span className="address-full">
-												{shieldedAddresses.shieldedAddress}
+								<div
+									style={{
+										background: "var(--color-surface)",
+										border: "1px solid var(--color-border)",
+										borderRadius: "8px",
+										padding: "1rem",
+										transition: "all 0.2s ease",
+									}}
+								>
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "space-between",
+											marginBottom: "0.75rem",
+										}}
+									>
+										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+											<div
+												style={{
+													width: "32px",
+													height: "32px",
+													borderRadius: "8px",
+													background: "linear-gradient(135deg, #0000fe 0%, #0000cb 100%)",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+												}}
+											>
+												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
+													<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+												</svg>
+											</div>
+											<div>
+												<div style={{ fontWeight: "600", fontSize: "0.875rem" }}>Shielded</div>
+												<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Private Address</div>
+											</div>
+										</div>
+										<button
+											type="button"
+											onClick={() => navigator.clipboard.writeText(shieldedAddresses.shieldedAddress)}
+											style={{
+												background: "var(--color-bg)",
+												border: "1px solid var(--color-border)",
+												borderRadius: "6px",
+												padding: "0.375rem 0.75rem",
+												cursor: "pointer",
+												display: "flex",
+												alignItems: "center",
+												gap: "0.25rem",
+												fontSize: "0.8125rem",
+												transition: "all 0.15s ease",
+											}}
+											title="Copy address"
+										>
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+												<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+												<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+											</svg>
+											Copy
+										</button>
+									</div>
+									<div
+										style={{
+											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+											fontSize: "0.75rem",
+											color: "var(--color-text)",
+											wordBreak: "break-all",
+											background: "var(--color-bg)",
+											padding: "0.75rem",
+											borderRadius: "6px",
+											lineHeight: "1.5",
+										}}
+									>
+										{shieldedAddresses.shieldedAddress}
+									</div>
+								</div>
+							)}
+
+							{/* Dust Address Card */}
+							{dustAddress && (
+								<div
+									style={{
+										background: "var(--color-surface)",
+										border: "1px solid var(--color-border)",
+										borderRadius: "8px",
+										padding: "1rem",
+										transition: "all 0.2s ease",
+									}}
+								>
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "space-between",
+											marginBottom: "0.75rem",
+										}}
+									>
+										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+											<div
+												style={{
+													width: "32px",
+													height: "32px",
+													borderRadius: "8px",
+													background: "linear-gradient(135deg, #ff9900 0%, #cc7a00 100%)",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+												}}
+											>
+												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
+													<path d="M12 2v20M2 12h20" />
+													<circle cx="12" cy="12" r="4" />
+												</svg>
+											</div>
+											<div>
+												<div style={{ fontWeight: "600", fontSize: "0.875rem" }}>Dust</div>
+												<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Gas Address</div>
+											</div>
+										</div>
+										<button
+											type="button"
+											onClick={() => navigator.clipboard.writeText(dustAddress.dustAddress)}
+											style={{
+												background: "var(--color-bg)",
+												border: "1px solid var(--color-border)",
+												borderRadius: "6px",
+												padding: "0.375rem 0.75rem",
+												cursor: "pointer",
+												display: "flex",
+												alignItems: "center",
+												gap: "0.25rem",
+												fontSize: "0.8125rem",
+												transition: "all 0.15s ease",
+											}}
+											title="Copy address"
+										>
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+												<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+												<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+											</svg>
+											Copy
+										</button>
+									</div>
+									<div
+										style={{
+											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+											fontSize: "0.75rem",
+											color: "var(--color-text)",
+											wordBreak: "break-all",
+											background: "var(--color-bg)",
+											padding: "0.75rem",
+											borderRadius: "6px",
+											lineHeight: "1.5",
+										}}
+									>
+										{dustAddress.dustAddress}
+									</div>
+								</div>
+							)}
+						</div>
+
+						{/* Public Keys Section (Collapsible style) */}
+						{shieldedAddresses?.shieldedCoinPublicKey && (
+							<div
+								style={{
+									background: "var(--color-surface)",
+									border: "1px solid var(--color-border)",
+									borderRadius: "8px",
+									padding: "1rem",
+									marginBottom: "1rem",
+								}}
+							>
+								<div style={{ fontWeight: "600", fontSize: "0.875rem", marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+									<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+										<path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+									</svg>
+									Public Keys
+								</div>
+								<div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+									<div>
+										<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.375rem" }}>
+											Coin Public Key
+										</div>
+										<div
+											style={{
+												display: "flex",
+												alignItems: "center",
+												gap: "0.5rem",
+												background: "var(--color-bg)",
+												padding: "0.625rem 0.75rem",
+												borderRadius: "6px",
+											}}
+										>
+											<span
+												style={{
+													fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+													fontSize: "0.75rem",
+													color: "var(--color-text)",
+													wordBreak: "break-all",
+													flex: 1,
+												}}
+											>
+												{shieldedAddresses.shieldedCoinPublicKey}
 											</span>
 											<button
 												type="button"
-												onClick={() => {
-													navigator.clipboard.writeText(
-														shieldedAddresses.shieldedAddress,
-													);
+												onClick={() => navigator.clipboard.writeText(shieldedAddresses.shieldedCoinPublicKey)}
+												style={{
+													background: "transparent",
+													border: "none",
+													cursor: "pointer",
+													padding: "0.25rem",
+													display: "flex",
+													color: "var(--color-text-secondary)",
 												}}
-												className="copy-button"
-												title="Copy address"
+												title="Copy"
 											>
-												Copy
+												<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+													<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+													<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+												</svg>
 											</button>
 										</div>
 									</div>
-
-									{shieldedAddresses.shieldedCoinPublicKey && (
-										<div className="info-item">
-											<label>Coin Public Key</label>
-											<div className="address-display">
-												<span className="address-full">
-													{shieldedAddresses.shieldedCoinPublicKey}
-												</span>
-												<button
-													type="button"
-													onClick={() => {
-														navigator.clipboard.writeText(
-															shieldedAddresses.shieldedCoinPublicKey,
-														);
-													}}
-													className="copy-button"
-													title="Copy coin public key"
-												>
-													Copy
-												</button>
-											</div>
-										</div>
-									)}
-
 									{shieldedAddresses.shieldedEncryptionPublicKey && (
-										<div className="info-item">
-											<label>Encryption Public Key</label>
-											<div className="address-display">
-												<span className="address-full">
+										<div>
+											<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.375rem" }}>
+												Encryption Public Key
+											</div>
+											<div
+												style={{
+													display: "flex",
+													alignItems: "center",
+													gap: "0.5rem",
+													background: "var(--color-bg)",
+													padding: "0.625rem 0.75rem",
+													borderRadius: "6px",
+												}}
+											>
+												<span
+													style={{
+														fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+														fontSize: "0.75rem",
+														color: "var(--color-text)",
+														wordBreak: "break-all",
+														flex: 1,
+													}}
+												>
 													{shieldedAddresses.shieldedEncryptionPublicKey}
 												</span>
 												<button
 													type="button"
-													onClick={() => {
-														navigator.clipboard.writeText(
-															shieldedAddresses.shieldedEncryptionPublicKey,
-														);
+													onClick={() => navigator.clipboard.writeText(shieldedAddresses.shieldedEncryptionPublicKey)}
+													style={{
+														background: "transparent",
+														border: "none",
+														cursor: "pointer",
+														padding: "0.25rem",
+														display: "flex",
+														color: "var(--color-text-secondary)",
 													}}
-													className="copy-button"
-													title="Copy encryption public key"
+													title="Copy"
 												>
-													Copy
+													<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+														<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+														<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+													</svg>
 												</button>
 											</div>
 										</div>
 									)}
-								</>
-							)}
-
-							{dustAddress && (
-								<div className="info-item">
-									<label>Dust Address</label>
-									<div className="address-display">
-										<span className="address-full">
-											{dustAddress.dustAddress}
-										</span>
-										<button
-											type="button"
-											onClick={() => {
-												navigator.clipboard.writeText(dustAddress.dustAddress);
-											}}
-											className="copy-button"
-											title="Copy address"
-										>
-											Copy
-										</button>
-									</div>
 								</div>
-							)}
-
-							{dustBalance && (
-								<>
-									<div className="info-item">
-										<label>Dust Balance</label>
-										<div
-											style={{
-												fontSize: "0.9375rem",
-												color: "var(--color-text)",
-											}}
-										>
-											{formatSpeckToTDustWithCommas(dustBalance.balance)} tDUST
-											<br />
-											<span
-												style={{
-													color: "var(--color-text-secondary)",
-													fontSize: "0.75rem",
-												}}
-											>
-												({formatBigInt(dustBalance.balance)} SPECK)
-											</span>
-										</div>
-									</div>
-									<div className="info-item">
-										<label>Dust Cap</label>
-										<div
-											style={{
-												fontSize: "0.9375rem",
-												color: "var(--color-text)",
-											}}
-										>
-											{formatSpeckToTDustWithCommas(dustBalance.cap)} tDUST
-											<br />
-											<span
-												style={{
-													color: "var(--color-text-secondary)",
-													fontSize: "0.75rem",
-												}}
-											>
-												({formatBigInt(dustBalance.cap)} SPECK)
-											</span>
-										</div>
-									</div>
-								</>
-							)}
-
-							{(unshieldedBalances || shieldedBalances) && (
-								<div className="info-item">
-									<label>Balances</label>
-									<div
-										style={{
-											display: "flex",
-											flexDirection: "column",
-											gap: "0.75rem",
-											marginTop: "0.5rem",
-										}}
-									>
-										{formatTokenBalances(unshieldedBalances).length > 0 && (
-											<div
-												style={{
-													padding: "0.5rem",
-													backgroundColor: "var(--color-surface)",
-													borderRadius: "2px",
-												}}
-											>
-												<div
-													style={{
-														fontSize: "0.75rem",
-														color: "var(--color-text-secondary)",
-														marginBottom: "0.25rem",
-													}}
-												>
-													Unshielded
-												</div>
-												{formatTokenBalances(unshieldedBalances).map(
-													({
-														tokenType,
-														displayName,
-														balance,
-														balanceNight,
-													}) => (
-														<div
-															key={tokenType}
-															style={{
-																fontSize: "0.8125rem",
-																color: "var(--color-text)",
-															}}
-														>
-															{displayName}: {balanceNight}{" "}
-															{getNativeTokenName()}
-															<br />
-															<span
-																style={{
-																	color: "var(--color-text-secondary)",
-																	fontSize: "0.75rem",
-																}}
-															>
-																({balance}{" "}
-																<span style={{ fontSize: "0.6875rem" }}>
-																	{MIN_UNIT_NAME}
-																</span>
-																)
-															</span>
-														</div>
-													),
-												)}
-											</div>
-										)}
-										{formatTokenBalances(shieldedBalances).length > 0 && (
-											<div
-												style={{
-													padding: "0.5rem",
-													backgroundColor: "var(--color-surface)",
-													borderRadius: "2px",
-												}}
-											>
-												<div
-													style={{
-														fontSize: "0.75rem",
-														color: "var(--color-text-secondary)",
-														marginBottom: "0.25rem",
-													}}
-												>
-													Shielded
-												</div>
-												{formatTokenBalances(shieldedBalances).map(
-													({
-														tokenType,
-														displayName,
-														balance,
-														balanceNight,
-													}) => (
-														<div
-															key={tokenType}
-															style={{
-																fontSize: "0.8125rem",
-																color: "var(--color-text)",
-															}}
-														>
-															{displayName}: {balanceNight}{" "}
-															{getNativeTokenName()}
-															<br />
-															<span
-																style={{
-																	color: "var(--color-text-secondary)",
-																	fontSize: "0.75rem",
-																}}
-															>
-																({balance}{" "}
-																<span style={{ fontSize: "0.6875rem" }}>
-																	{MIN_UNIT_NAME}
-																</span>
-																)
-															</span>
-														</div>
-													),
-												)}
-											</div>
-										)}
-									</div>
-								</div>
-							)}
-
-							<div className="connection-actions">
-								<button
-									type="button"
-									onClick={handleRefresh}
-									className="refresh-button"
-								>
-									Refresh
-								</button>
-								<button
-									type="button"
-									onClick={handleDisconnect}
-									className="disconnect-button"
-								>
-									Disconnect
-								</button>
 							</div>
+						)}
+
+						{/* Action Buttons */}
+						<div style={{ display: "flex", gap: "0.75rem" }}>
+							<button
+								type="button"
+								onClick={handleRefresh}
+								style={{
+									flex: 1,
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									gap: "0.5rem",
+									padding: "0.75rem 1.5rem",
+									background: "var(--color-text)",
+									color: "var(--color-bg)",
+									border: "none",
+									borderRadius: "8px",
+									fontSize: "0.875rem",
+									fontWeight: "500",
+									cursor: "pointer",
+									transition: "all 0.15s ease",
+								}}
+							>
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+									<path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+									<path d="M3 3v5h5" />
+									<path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+									<path d="M16 21h5v-5" />
+								</svg>
+								Refresh
+							</button>
+							<button
+								type="button"
+								onClick={handleDisconnect}
+								style={{
+									flex: 1,
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									gap: "0.5rem",
+									padding: "0.75rem 1.5rem",
+									background: "transparent",
+									color: "var(--color-error)",
+									border: "2px solid var(--color-error)",
+									borderRadius: "8px",
+									fontSize: "0.875rem",
+									fontWeight: "500",
+									cursor: "pointer",
+									transition: "all 0.15s ease",
+								}}
+							>
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+									<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+									<polyline points="16 17 21 12 16 7" />
+									<line x1="21" y1="12" x2="9" y2="12" />
+								</svg>
+								Disconnect
+							</button>
 						</div>
 					</div>
 
+					{/* Connection Details Section */}
 					<div className="params-section">
-						<h3>Connection Details</h3>
-						<p className="method-description-text">
-							Network and connection status
-						</p>
-						<div className="connection-info">
-							<div className="info-item">
-								<label>Wallet Status</label>
-								<div
-									style={{
-										display: "flex",
-										alignItems: "center",
-										gap: "0.5rem",
-										marginBottom: "0.5rem",
-									}}
-								>
+						<h3 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+								<path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5" />
+								<path d="M8.5 8.5v.01" />
+								<path d="M16 15.5v.01" />
+								<path d="M12 12v.01" />
+								<path d="M11 17v.01" />
+								<path d="M7 14v.01" />
+							</svg>
+							Connection Details
+						</h3>
+
+						{/* Status Cards Row */}
+						<div
+							style={{
+								display: "grid",
+								gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+								gap: "1rem",
+								marginBottom: "1rem",
+							}}
+						>
+							{/* Wallet Status Card */}
+							<div
+								style={{
+									background: "var(--color-surface)",
+									border: "1px solid var(--color-border)",
+									borderRadius: "8px",
+									padding: "1rem",
+								}}
+							>
+								<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+									Wallet Status
+								</div>
+								<div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
 									<div
 										style={{
-											width: "8px",
-											height: "8px",
+											width: "12px",
+											height: "12px",
 											borderRadius: "50%",
-											backgroundColor:
-												status?.status === "connected"
-													? "var(--color-success)"
-													: "var(--color-text-muted)",
+											backgroundColor: status?.status === "connected" ? "var(--color-success)" : "var(--color-text-muted)",
+											boxShadow: status?.status === "connected" ? "0 0 8px rgba(0, 204, 102, 0.5)" : "none",
 										}}
 									/>
-									<span
-										style={{
-											color:
-												status?.status === "connected"
-													? "var(--color-success)"
-													: "var(--color-text)",
-										}}
-									>
-										{status?.status === "connected"
-											? "Connected"
-											: "Disconnected"}
-									</span>
+									<div>
+										<div style={{ fontWeight: "600", fontSize: "0.9375rem", color: status?.status === "connected" ? "var(--color-success)" : "var(--color-text)" }}>
+											{status?.status === "connected" ? "Connected" : "Disconnected"}
+										</div>
+										{initialAPI && (
+											<div style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>
+												{initialAPI.name || "Unknown Wallet"}
+											</div>
+										)}
+									</div>
 								</div>
-								{status?.status === "connected" && (
-									<div
-										style={{
-											marginLeft: "1rem",
-											fontSize: "0.8125rem",
-											color: "var(--color-text-secondary)",
-											marginBottom: "0.25rem",
-										}}
-									>
-										Network: <strong>{status?.networkId}</strong>
-									</div>
-								)}
-								{initialAPI && (
-									<div
-										style={{
-											marginLeft: "1rem",
-											fontSize: "0.8125rem",
-											color: "var(--color-text-secondary)",
-										}}
-									>
-										Wallet: <strong>{initialAPI.name || "Unknown"}</strong>
-									</div>
-								)}
 							</div>
 
-							<div className="info-item">
-								<label>Proof Server</label>
+							{/* Network Card */}
+							{status?.status === "connected" && (
 								<div
 									style={{
-										display: "flex",
-										alignItems: "center",
-										gap: "0.5rem",
+										background: "var(--color-surface)",
+										border: "1px solid var(--color-border)",
+										borderRadius: "8px",
+										padding: "1rem",
 									}}
 								>
+									<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+										Network
+									</div>
+									<div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+										<div
+											style={{
+												width: "32px",
+												height: "32px",
+												borderRadius: "8px",
+												background: "linear-gradient(135deg, #1a1a1a 0%, #333 100%)",
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "center",
+											}}
+										>
+											<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
+												<circle cx="12" cy="12" r="10" />
+												<line x1="2" y1="12" x2="22" y2="12" />
+												<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+											</svg>
+										</div>
+										<div style={{ fontWeight: "600", fontSize: "0.9375rem" }}>
+											{status?.networkId}
+										</div>
+									</div>
+								</div>
+							)}
+
+							{/* Proof Server Card */}
+							<div
+								style={{
+									background: "var(--color-surface)",
+									border: "1px solid var(--color-border)",
+									borderRadius: "8px",
+									padding: "1rem",
+								}}
+							>
+								<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+									Proof Server
+								</div>
+								<div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
 									<div
 										style={{
-											width: "8px",
-											height: "8px",
+											width: "12px",
+											height: "12px",
 											borderRadius: "50%",
 											backgroundColor:
 												proofServerOnline === undefined
@@ -637,10 +925,18 @@ export function WalletConnection({
 													: proofServerOnline
 														? "var(--color-success)"
 														: "var(--color-error)",
+											boxShadow:
+												proofServerOnline === true
+													? "0 0 8px rgba(0, 204, 102, 0.5)"
+													: proofServerOnline === false
+														? "0 0 8px rgba(204, 0, 0, 0.5)"
+														: "none",
 										}}
 									/>
-									<span
+									<div
 										style={{
+											fontWeight: "600",
+											fontSize: "0.9375rem",
 											color:
 												proofServerOnline === undefined
 													? "var(--color-text)"
@@ -649,134 +945,75 @@ export function WalletConnection({
 														: "var(--color-error)",
 										}}
 									>
-										{proofServerOnline === undefined
-											? "Unknown"
-											: proofServerOnline
-												? "Online"
-												: "Offline"}
-									</span>
+										{proofServerOnline === undefined ? "Unknown" : proofServerOnline ? "Online" : "Offline"}
+									</div>
 								</div>
 							</div>
+						</div>
 
-							<div className="info-item">
-								<label>Network Endpoints</label>
-								<div
-									style={{
-										display: "flex",
-										flexDirection: "column",
-										gap: "0.75rem",
-										marginTop: "0.5rem",
-									}}
-								>
+						{/* Network Endpoints */}
+						<div
+							style={{
+								background: "var(--color-surface)",
+								border: "1px solid var(--color-border)",
+								borderRadius: "8px",
+								padding: "1rem",
+							}}
+						>
+							<div
+								style={{
+									fontSize: "0.875rem",
+									fontWeight: "600",
+									marginBottom: "1rem",
+									display: "flex",
+									alignItems: "center",
+									gap: "0.5rem",
+								}}
+							>
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+									<rect x="2" y="2" width="20" height="8" rx="2" ry="2" />
+									<rect x="2" y="14" width="20" height="8" rx="2" ry="2" />
+									<line x1="6" y1="6" x2="6.01" y2="6" />
+									<line x1="6" y1="18" x2="6.01" y2="18" />
+								</svg>
+								Network Endpoints
+							</div>
+							<div style={{ display: "grid", gap: "0.75rem" }}>
+								{[
+									{ label: "Substrate Node", value: serviceUriConfig?.substrateNodeUri, icon: "🔗" },
+									{ label: "Indexer (REST)", value: serviceUriConfig?.indexerUri, icon: "📡" },
+									{ label: "Indexer (WebSocket)", value: serviceUriConfig?.indexerWsUri, icon: "🔌" },
+									{ label: "Proof Server", value: serviceUriConfig?.proverServerUri, icon: "🔐" },
+								].map((endpoint, index) => (
 									<div
+										key={endpoint.label}
 										style={{
-											padding: "0.5rem",
-											backgroundColor: "var(--color-surface)",
-											borderRadius: "2px",
+											display: "flex",
+											alignItems: "flex-start",
+											gap: "0.75rem",
+											padding: "0.75rem",
+											background: "var(--color-bg)",
+											borderRadius: "6px",
 										}}
 									>
-										<div
-											style={{
-												fontSize: "0.75rem",
-												color: "var(--color-text-secondary)",
-												marginBottom: "0.25rem",
-											}}
-										>
-											Substrate Node
-										</div>
-										<div
-											style={{
-												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-												fontSize: "0.8125rem",
-												color: "var(--color-text)",
-												wordBreak: "break-all",
-											}}
-										>
-											{serviceUriConfig?.substrateNodeUri || "Not available"}
+										<span style={{ fontSize: "1rem" }}>{endpoint.icon}</span>
+										<div style={{ flex: 1, minWidth: 0 }}>
+											<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.25rem" }}>
+												{endpoint.label}
+											</div>
+											<div
+												style={{
+													fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+													fontSize: "0.8125rem",
+													color: endpoint.value ? "var(--color-text)" : "var(--color-text-muted)",
+													wordBreak: "break-all",
+												}}
+											>
+												{endpoint.value || "Not available"}
+											</div>
 										</div>
 									</div>
-									<div
-										style={{
-											padding: "0.5rem",
-											backgroundColor: "var(--color-surface)",
-											borderRadius: "2px",
-										}}
-									>
-										<div
-											style={{
-												fontSize: "0.75rem",
-												color: "var(--color-text-secondary)",
-												marginBottom: "0.25rem",
-											}}
-										>
-											Indexer (REST)
-										</div>
-										<div
-											style={{
-												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-												fontSize: "0.8125rem",
-												color: "var(--color-text)",
-												wordBreak: "break-all",
-											}}
-										>
-											{serviceUriConfig?.indexerUri || "Not available"}
-										</div>
-									</div>
-									<div
-										style={{
-											padding: "0.5rem",
-											backgroundColor: "var(--color-surface)",
-											borderRadius: "2px",
-										}}
-									>
-										<div
-											style={{
-												fontSize: "0.75rem",
-												color: "var(--color-text-secondary)",
-												marginBottom: "0.25rem",
-											}}
-										>
-											Indexer (WebSocket)
-										</div>
-										<div
-											style={{
-												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-												fontSize: "0.8125rem",
-												color: "var(--color-text)",
-												wordBreak: "break-all",
-											}}
-										>
-											{serviceUriConfig?.indexerWsUri || "Not available"}
-										</div>
-									</div>
-									<div
-										style={{
-											padding: "0.5rem",
-											backgroundColor: "var(--color-surface)",
-											borderRadius: "2px",
-										}}
-									>
-										<div
-											style={{
-												fontSize: "0.75rem",
-												color: "var(--color-text-secondary)",
-												marginBottom: "0.25rem",
-											}}
-										>
-											Proof Server
-										</div>
-										<div
-											style={{
-												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-												fontSize: "0.8125rem",
-												color: "var(--color-text)",
-												wordBreak: "break-all",
-											}}
-										>
-											{serviceUriConfig?.proverServerUri || "Not available"}
-										</div>
-									</div>
-								</div>
+								))}
 							</div>
 						</div>
 					</div>
