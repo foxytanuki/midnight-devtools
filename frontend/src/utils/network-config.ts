@@ -15,7 +15,22 @@ export interface NetworkConfig {
 	indexerUrl: string;
 	indexerWS?: string;
 	explorerUrl?: string;
+	version: "0.18.x" | "0.12.x";
 }
+
+// バージョングループの順序定義
+export const VERSION_GROUPS: Array<{ version: "0.18.x" | "0.12.x"; label: string }> = [
+	{ version: "0.18.x", label: "0.18.x" },
+	{ version: "0.12.x", label: "0.12.x" },
+];
+
+// 各バージョン内でのネットワーク表示順序
+export const NETWORK_ORDER: NetworkId[] = [
+	"midnight-preview",
+	"localhost",
+	"0.18-undeployed1-kitsunesh",
+	"testnet-02",
+];
 
 export const NETWORKS: Record<NetworkId, NetworkConfig> = {
 	"testnet-02": {
@@ -26,6 +41,7 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
 		indexerWS: "wss://indexer.testnet-02.midnight.network/api/v1/graphql/ws",
 		explorerUrl:
 			"https://polkadot.js.org/apps/?rpc=wss://rpc.testnet-02.midnight.network#/explorer",
+		version: "0.12.x",
 	},
 	"0.18-undeployed1-kitsunesh": {
 		id: "0.18-undeployed1-kitsunesh",
@@ -35,6 +51,7 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
 		indexerWS: "wss://indexer.kitsunesh.com/api/v1/graphql/ws",
 		explorerUrl:
 			"https://polkadot.js.org/apps/?rpc=wss://node.kitsunesh.com#/explorer",
+		version: "0.18.x",
 	},
 	"midnight-preview": {
 		id: "midnight-preview",
@@ -44,6 +61,7 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
 		indexerWS: "wss://indexer.preview.midnight.network/api/v3/graphql/ws",
 		explorerUrl:
 			"https://polkadot.js.org/apps/?rpc=wss://rpc.preview.midnight.network#/explorer",
+		version: "0.18.x",
 	},
 	localhost: {
 		id: "localhost",
@@ -53,6 +71,7 @@ export const NETWORKS: Record<NetworkId, NetworkConfig> = {
 		indexerWS: "ws://localhost:8088/api/v1/graphql/ws",
 		explorerUrl:
 			"https://polkadot.js.org/apps/?rpc=ws://localhost:9944#/explorer",
+		version: "0.18.x",
 	},
 };
 
@@ -61,16 +80,18 @@ const STORAGE_KEY = "midnight-devtools-network";
 /**
  * 保存されたネットワークIDを取得
  */
+const DEFAULT_NETWORK: NetworkId = "midnight-preview";
+
 export function getStoredNetworkId(): NetworkId {
 	if (typeof window === "undefined") {
-		return "testnet-02";
+		return DEFAULT_NETWORK;
 	}
 
 	const stored = localStorage.getItem(STORAGE_KEY);
 	if (stored && stored in NETWORKS) {
 		return stored as NetworkId;
 	}
-	return "testnet-02";
+	return DEFAULT_NETWORK;
 }
 
 /**
