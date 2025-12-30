@@ -13,7 +13,7 @@ export function numberToHexEncoded(value: number | string): string {
 	}
 
 	const num = typeof value === "string" ? parseInt(value.trim(), 10) : value;
-	if (isNaN(num) || num < 0) {
+	if (Number.isNaN(num) || num < 0) {
 		return "0x0000000000000000000000000000000000000000000000000000000000000000";
 	}
 

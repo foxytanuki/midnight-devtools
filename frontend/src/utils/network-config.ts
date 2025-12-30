@@ -19,7 +19,10 @@ export interface NetworkConfig {
 }
 
 // バージョングループの順序定義
-export const VERSION_GROUPS: Array<{ version: "0.18.x" | "0.12.x"; label: string }> = [
+export const VERSION_GROUPS: Array<{
+	version: "0.18.x" | "0.12.x";
+	label: string;
+}> = [
 	{ version: "0.18.x", label: "0.18.x" },
 	{ version: "0.12.x", label: "0.12.x" },
 ];

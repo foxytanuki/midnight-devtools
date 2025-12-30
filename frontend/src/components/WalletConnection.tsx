@@ -1,22 +1,22 @@
+import {
+	Activity,
+	Check,
+	Copy,
+	Eye,
+	Fuel,
+	Globe,
+	Key,
+	LogOut,
+	RefreshCw,
+	Server,
+	Shield,
+	Wallet,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNetwork } from "../contexts/NetworkContext";
 import { useWallet } from "../hooks/useWallet";
 import { mapToWalletNetworkId } from "../utils/network-config";
 import { MidnightBrowserWallet } from "../utils/wallet-controller";
-import {
-	Wallet,
-	Eye,
-	Shield,
-	Fuel,
-	Key,
-	RefreshCw,
-	LogOut,
-	Copy,
-	Check,
-	Globe,
-	Server,
-	Activity,
-} from "lucide-react";
 import "../App.css";
 
 interface WalletConnectionProps {
