@@ -1,8 +1,26 @@
-import type { ComponentType } from "react";
-import { About } from "../components/About";
-import { IndexerExplorer } from "../components/IndexerExplorer";
-import { RpcExplorer } from "../components/RpcExplorer";
-import { WalletApp } from "../components/WalletApp";
+import { lazy, type ComponentType } from "react";
+
+// 動的インポートでコード分割
+const RpcExplorer = lazy(() =>
+	import("../components/RpcExplorer").then((module) => ({
+		default: module.RpcExplorer,
+	})),
+);
+const IndexerExplorer = lazy(() =>
+	import("../components/IndexerExplorer").then((module) => ({
+		default: module.IndexerExplorer,
+	})),
+);
+const WalletApp = lazy(() =>
+	import("../components/WalletApp").then((module) => ({
+		default: module.WalletApp,
+	})),
+);
+const About = lazy(() =>
+	import("../components/About").then((module) => ({
+		default: module.About,
+	})),
+);
 
 export interface ToolConfig {
 	/**

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import {
 	getDefaultTool,
 	getToolById,
@@ -198,7 +198,24 @@ function App() {
 					</div>
 				</div>
 			</nav>
-			<CurrentToolComponent />
+			<Suspense
+				fallback={
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+							minHeight: "400px",
+							fontSize: "1.2rem",
+							color: "var(--color-text-secondary)",
+						}}
+					>
+						Loading...
+					</div>
+				}
+			>
+				<CurrentToolComponent />
+			</Suspense>
 		</div>
 	);
 }
