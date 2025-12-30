@@ -12,11 +12,9 @@ import {
 	RefreshCw,
 	LogOut,
 	Copy,
+	Check,
 	Globe,
 	Server,
-	Radio,
-	Plug,
-	Lock,
 	Activity,
 } from "lucide-react";
 import "../App.css";
@@ -51,6 +49,14 @@ export function WalletConnection({
 	const [wallets, setWallets] = useState(
 		MidnightBrowserWallet.getAvailableWallets(),
 	);
+	const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+	// コピー関数（フィードバック付き）
+	const handleCopy = (text: string, key: string) => {
+		navigator.clipboard.writeText(text);
+		setCopiedKey(key);
+		setTimeout(() => setCopiedKey(null), 1500);
+	};
 
 	// ウォレットリストを更新
 	useEffect(() => {
@@ -432,18 +438,19 @@ export function WalletConnection({
 										</div>
 										<button
 											type="button"
-											onClick={() => navigator.clipboard.writeText(unshieldedAddress.unshieldedAddress)}
+											onClick={() => handleCopy(unshieldedAddress.unshieldedAddress, "unshielded")}
 											style={{
 												background: "transparent",
 												border: "none",
 												cursor: "pointer",
 												padding: "0.25rem",
 												display: "flex",
-												color: "var(--color-text-secondary)",
+												color: copiedKey === "unshielded" ? "var(--color-success)" : "var(--color-text-secondary)",
+												transition: "color 0.15s ease",
 											}}
-											title="Copy address"
+											title={copiedKey === "unshielded" ? "Copied!" : "Copy address"}
 										>
-											<Copy size={14} />
+											{copiedKey === "unshielded" ? <Check size={14} /> : <Copy size={14} />}
 										</button>
 									</div>
 									<div
@@ -488,18 +495,19 @@ export function WalletConnection({
 										</div>
 										<button
 											type="button"
-											onClick={() => navigator.clipboard.writeText(shieldedAddresses.shieldedAddress)}
+											onClick={() => handleCopy(shieldedAddresses.shieldedAddress, "shielded")}
 											style={{
 												background: "transparent",
 												border: "none",
 												cursor: "pointer",
 												padding: "0.25rem",
 												display: "flex",
-												color: "var(--color-text-secondary)",
+												color: copiedKey === "shielded" ? "var(--color-success)" : "var(--color-text-secondary)",
+												transition: "color 0.15s ease",
 											}}
-											title="Copy address"
+											title={copiedKey === "shielded" ? "Copied!" : "Copy address"}
 										>
-											<Copy size={14} />
+											{copiedKey === "shielded" ? <Check size={14} /> : <Copy size={14} />}
 										</button>
 									</div>
 									<div
@@ -544,18 +552,19 @@ export function WalletConnection({
 										</div>
 										<button
 											type="button"
-											onClick={() => navigator.clipboard.writeText(dustAddress.dustAddress)}
+											onClick={() => handleCopy(dustAddress.dustAddress, "dust")}
 											style={{
 												background: "transparent",
 												border: "none",
 												cursor: "pointer",
 												padding: "0.25rem",
 												display: "flex",
-												color: "var(--color-text-secondary)",
+												color: copiedKey === "dust" ? "var(--color-success)" : "var(--color-text-secondary)",
+												transition: "color 0.15s ease",
 											}}
-											title="Copy address"
+											title={copiedKey === "dust" ? "Copied!" : "Copy address"}
 										>
-											<Copy size={14} />
+											{copiedKey === "dust" ? <Check size={14} /> : <Copy size={14} />}
 										</button>
 									</div>
 									<div
@@ -615,18 +624,19 @@ export function WalletConnection({
 										</span>
 										<button
 											type="button"
-											onClick={() => navigator.clipboard.writeText(shieldedAddresses.shieldedCoinPublicKey)}
+											onClick={() => handleCopy(shieldedAddresses.shieldedCoinPublicKey, "coinPubKey")}
 											style={{
 												background: "transparent",
 												border: "none",
 												cursor: "pointer",
 												padding: "0.25rem",
 												display: "flex",
-												color: "var(--color-text-secondary)",
+												color: copiedKey === "coinPubKey" ? "var(--color-success)" : "var(--color-text-secondary)",
+												transition: "color 0.15s ease",
 											}}
-											title="Copy"
+											title={copiedKey === "coinPubKey" ? "Copied!" : "Copy"}
 										>
-											<Copy size={12} />
+											{copiedKey === "coinPubKey" ? <Check size={12} /> : <Copy size={12} />}
 										</button>
 									</div>
 									{shieldedAddresses.shieldedEncryptionPublicKey && (
@@ -654,18 +664,19 @@ export function WalletConnection({
 											</span>
 											<button
 												type="button"
-												onClick={() => navigator.clipboard.writeText(shieldedAddresses.shieldedEncryptionPublicKey)}
+												onClick={() => handleCopy(shieldedAddresses.shieldedEncryptionPublicKey, "encPubKey")}
 												style={{
 													background: "transparent",
 													border: "none",
 													cursor: "pointer",
 													padding: "0.25rem",
 													display: "flex",
-													color: "var(--color-text-secondary)",
+													color: copiedKey === "encPubKey" ? "var(--color-success)" : "var(--color-text-secondary)",
+													transition: "color 0.15s ease",
 												}}
-												title="Copy"
+												title={copiedKey === "encPubKey" ? "Copied!" : "Copy"}
 											>
-												<Copy size={12} />
+												{copiedKey === "encPubKey" ? <Check size={12} /> : <Copy size={12} />}
 											</button>
 										</div>
 									)}
@@ -786,24 +797,22 @@ export function WalletConnection({
 								<Server size={14} />
 								Network Endpoints
 							</div>
-							<div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0.5rem" }}>
-								{/* Row 1: Node | Prover */}
+							<div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
 								<div
 									style={{
 										display: "flex",
 										alignItems: "center",
 										gap: "0.5rem",
-										padding: "0.375rem 0.5rem",
 										background: "var(--color-bg)",
+										padding: "0.375rem 0.5rem",
 										borderRadius: "2px",
 									}}
 								>
-									<Globe size={14} style={{ flexShrink: 0, color: "var(--color-text-secondary)" }} />
-									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "55px" }}>Node</span>
+									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "75px" }}>Node</span>
 									<span
 										style={{
 											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-											fontSize: "0.75rem",
+											fontSize: "0.6875rem",
 											color: serviceUriConfig?.substrateNodeUri ? "var(--color-text)" : "var(--color-text-muted)",
 											wordBreak: "break-all",
 											flex: 1,
@@ -811,23 +820,40 @@ export function WalletConnection({
 									>
 										{serviceUriConfig?.substrateNodeUri || "N/A"}
 									</span>
+									{serviceUriConfig?.substrateNodeUri && (
+										<button
+											type="button"
+											onClick={() => handleCopy(serviceUriConfig.substrateNodeUri, "node")}
+											style={{
+												background: "transparent",
+												border: "none",
+												cursor: "pointer",
+												padding: "0.25rem",
+												display: "flex",
+												color: copiedKey === "node" ? "var(--color-success)" : "var(--color-text-secondary)",
+												transition: "color 0.15s ease",
+											}}
+											title={copiedKey === "node" ? "Copied!" : "Copy"}
+										>
+											{copiedKey === "node" ? <Check size={12} /> : <Copy size={12} />}
+										</button>
+									)}
 								</div>
 								<div
 									style={{
 										display: "flex",
 										alignItems: "center",
 										gap: "0.5rem",
-										padding: "0.375rem 0.5rem",
 										background: "var(--color-bg)",
+										padding: "0.375rem 0.5rem",
 										borderRadius: "2px",
 									}}
 								>
-									<Lock size={14} style={{ flexShrink: 0, color: "var(--color-text-secondary)" }} />
-									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "55px" }}>Prover</span>
+									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "75px" }}>Prover</span>
 									<span
 										style={{
 											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-											fontSize: "0.75rem",
+											fontSize: "0.6875rem",
 											color: serviceUriConfig?.proverServerUri ? "var(--color-text)" : "var(--color-text-muted)",
 											wordBreak: "break-all",
 											flex: 1,
@@ -835,24 +861,40 @@ export function WalletConnection({
 									>
 										{serviceUriConfig?.proverServerUri || "N/A"}
 									</span>
+									{serviceUriConfig?.proverServerUri && (
+										<button
+											type="button"
+											onClick={() => handleCopy(serviceUriConfig.proverServerUri, "prover")}
+											style={{
+												background: "transparent",
+												border: "none",
+												cursor: "pointer",
+												padding: "0.25rem",
+												display: "flex",
+												color: copiedKey === "prover" ? "var(--color-success)" : "var(--color-text-secondary)",
+												transition: "color 0.15s ease",
+											}}
+											title={copiedKey === "prover" ? "Copied!" : "Copy"}
+										>
+											{copiedKey === "prover" ? <Check size={12} /> : <Copy size={12} />}
+										</button>
+									)}
 								</div>
-								{/* Row 2: Indexer | WebSocket */}
 								<div
 									style={{
 										display: "flex",
 										alignItems: "center",
 										gap: "0.5rem",
-										padding: "0.375rem 0.5rem",
 										background: "var(--color-bg)",
+										padding: "0.375rem 0.5rem",
 										borderRadius: "2px",
 									}}
 								>
-									<Radio size={14} style={{ flexShrink: 0, color: "var(--color-text-secondary)" }} />
-									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "55px" }}>Indexer</span>
+									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "75px" }}>Indexer</span>
 									<span
 										style={{
 											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-											fontSize: "0.75rem",
+											fontSize: "0.6875rem",
 											color: serviceUriConfig?.indexerUri ? "var(--color-text)" : "var(--color-text-muted)",
 											wordBreak: "break-all",
 											flex: 1,
@@ -860,23 +902,40 @@ export function WalletConnection({
 									>
 										{serviceUriConfig?.indexerUri || "N/A"}
 									</span>
+									{serviceUriConfig?.indexerUri && (
+										<button
+											type="button"
+											onClick={() => handleCopy(serviceUriConfig.indexerUri, "indexer")}
+											style={{
+												background: "transparent",
+												border: "none",
+												cursor: "pointer",
+												padding: "0.25rem",
+												display: "flex",
+												color: copiedKey === "indexer" ? "var(--color-success)" : "var(--color-text-secondary)",
+												transition: "color 0.15s ease",
+											}}
+											title={copiedKey === "indexer" ? "Copied!" : "Copy"}
+										>
+											{copiedKey === "indexer" ? <Check size={12} /> : <Copy size={12} />}
+										</button>
+									)}
 								</div>
 								<div
 									style={{
 										display: "flex",
 										alignItems: "center",
 										gap: "0.5rem",
-										padding: "0.375rem 0.5rem",
 										background: "var(--color-bg)",
+										padding: "0.375rem 0.5rem",
 										borderRadius: "2px",
 									}}
 								>
-									<Plug size={14} style={{ flexShrink: 0, color: "var(--color-text-secondary)" }} />
-									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "55px" }}>WS</span>
+									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "75px" }}>Indexer WS</span>
 									<span
 										style={{
 											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-											fontSize: "0.75rem",
+											fontSize: "0.6875rem",
 											color: serviceUriConfig?.indexerWsUri ? "var(--color-text)" : "var(--color-text-muted)",
 											wordBreak: "break-all",
 											flex: 1,
@@ -884,6 +943,24 @@ export function WalletConnection({
 									>
 										{serviceUriConfig?.indexerWsUri || "N/A"}
 									</span>
+									{serviceUriConfig?.indexerWsUri && (
+										<button
+											type="button"
+											onClick={() => handleCopy(serviceUriConfig.indexerWsUri, "indexerWs")}
+											style={{
+												background: "transparent",
+												border: "none",
+												cursor: "pointer",
+												padding: "0.25rem",
+												display: "flex",
+												color: copiedKey === "indexerWs" ? "var(--color-success)" : "var(--color-text-secondary)",
+												transition: "color 0.15s ease",
+											}}
+											title={copiedKey === "indexerWs" ? "Copied!" : "Copy"}
+										>
+											{copiedKey === "indexerWs" ? <Check size={12} /> : <Copy size={12} />}
+										</button>
+									)}
 								</div>
 							</div>
 						</div>
