@@ -366,43 +366,16 @@ export function WalletConnection({
 				<>
 					{/* Wallet Information Section */}
 					<div className="params-section">
-						<div
-							style={{
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "space-between",
-								marginBottom: "0.75rem",
-							}}
-						>
-							<h3
-								style={{
-									display: "flex",
-									alignItems: "center",
-									gap: "0.5rem",
-									margin: 0,
-								}}
-							>
+						<div className="wallet-section-header">
+							<h3 className="wallet-section-title">
 								<Wallet size={18} />
 								Wallet Information
 							</h3>
-							<div style={{ display: "flex", gap: "0.5rem" }}>
+							<div className="wallet-section-actions">
 								<button
 									type="button"
 									onClick={handleRefresh}
-									style={{
-										display: "flex",
-										alignItems: "center",
-										gap: "0.375rem",
-										padding: "0.375rem 0.75rem",
-										background: "var(--color-surface)",
-										color: "var(--color-text)",
-										border: "1px solid var(--color-border)",
-										borderRadius: "2px",
-										fontSize: "0.8125rem",
-										fontWeight: "500",
-										cursor: "pointer",
-										transition: "all 0.15s ease",
-									}}
+									className="wallet-action-button"
 									title="Refresh wallet data"
 								>
 									<RefreshCw size={14} />
@@ -411,20 +384,7 @@ export function WalletConnection({
 								<button
 									type="button"
 									onClick={handleDisconnect}
-									style={{
-										display: "flex",
-										alignItems: "center",
-										gap: "0.375rem",
-										padding: "0.375rem 0.75rem",
-										background: "transparent",
-										color: "var(--color-error)",
-										border: "1px solid var(--color-error)",
-										borderRadius: "2px",
-										fontSize: "0.8125rem",
-										fontWeight: "500",
-										cursor: "pointer",
-										transition: "all 0.15s ease",
-									}}
+									className="wallet-action-button wallet-action-disconnect"
 									title="Disconnect wallet"
 								>
 									<LogOut size={14} />
@@ -435,65 +395,18 @@ export function WalletConnection({
 
 						{/* Balances Overview Card */}
 						{(unshieldedBalances || shieldedBalances || dustBalance) && (
-							<div
-								style={{
-									background:
-										"linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
-									borderRadius: "2px",
-									padding: "0.875rem 1rem",
-									marginBottom: "0.75rem",
-									color: "#fff",
-								}}
-							>
-								<div
-									style={{
-										display: "flex",
-										flexWrap: "wrap",
-										gap: "2rem",
-									}}
-								>
+							<div className="balances-overview-card">
+								<div className="balances-overview-content">
 									{/* Unshielded Balance */}
 									{formatTokenBalances(unshieldedBalances).length > 0 && (
-										<div
-											style={{
-												display: "flex",
-												alignItems: "center",
-												gap: "0.5rem",
-											}}
-										>
+										<div className="balance-item">
 											<Eye size={16} color="#00cc66" />
-											<span
-												style={{
-													fontSize: "0.8125rem",
-													color: "rgba(255,255,255,0.6)",
-													textTransform: "uppercase",
-													letterSpacing: "0.5px",
-												}}
-											>
-												Unshielded
-											</span>
+											<span className="balance-label">Unshielded</span>
 											{formatTokenBalances(unshieldedBalances).map(
 												({ tokenType, balanceNight }) => (
-													<div
-														key={tokenType}
-														style={{
-															display: "flex",
-															alignItems: "baseline",
-															gap: "0.375rem",
-															marginLeft: "0.375rem",
-														}}
-													>
-														<span
-															style={{ fontSize: "1.5rem", fontWeight: "700" }}
-														>
-															{balanceNight}
-														</span>
-														<span
-															style={{
-																fontSize: "0.875rem",
-																color: "rgba(255,255,255,0.5)",
-															}}
-														>
+													<div key={tokenType} className="balance-value-container">
+														<span className="balance-value">{balanceNight}</span>
+														<span className="balance-unit">
 															{getNativeTokenName()}
 														</span>
 													</div>
@@ -504,46 +417,14 @@ export function WalletConnection({
 
 									{/* Shielded Balance */}
 									{formatTokenBalances(shieldedBalances).length > 0 && (
-										<div
-											style={{
-												display: "flex",
-												alignItems: "center",
-												gap: "0.5rem",
-											}}
-										>
+										<div className="balance-item">
 											<Shield size={16} color="#0000fe" />
-											<span
-												style={{
-													fontSize: "0.8125rem",
-													color: "rgba(255,255,255,0.6)",
-													textTransform: "uppercase",
-													letterSpacing: "0.5px",
-												}}
-											>
-												Shielded
-											</span>
+											<span className="balance-label">Shielded</span>
 											{formatTokenBalances(shieldedBalances).map(
 												({ tokenType, balanceNight }) => (
-													<div
-														key={tokenType}
-														style={{
-															display: "flex",
-															alignItems: "baseline",
-															gap: "0.375rem",
-															marginLeft: "0.375rem",
-														}}
-													>
-														<span
-															style={{ fontSize: "1.5rem", fontWeight: "700" }}
-														>
-															{balanceNight}
-														</span>
-														<span
-															style={{
-																fontSize: "0.875rem",
-																color: "rgba(255,255,255,0.5)",
-															}}
-														>
+													<div key={tokenType} className="balance-value-container">
+														<span className="balance-value">{balanceNight}</span>
+														<span className="balance-unit">
 															{getNativeTokenName()}
 														</span>
 													</div>
@@ -554,41 +435,14 @@ export function WalletConnection({
 
 									{/* Dust Balance */}
 									{dustBalance && (
-										<div
-											style={{
-												display: "flex",
-												alignItems: "center",
-												gap: "0.5rem",
-											}}
-										>
+										<div className="balance-item">
 											<Fuel size={16} color="#ff9900" />
-											<span
-												style={{
-													fontSize: "0.8125rem",
-													color: "rgba(255,255,255,0.6)",
-													textTransform: "uppercase",
-													letterSpacing: "0.5px",
-												}}
-											>
-												Dust
-											</span>
-											<div
-												style={{
-													display: "flex",
-													alignItems: "baseline",
-													gap: "0.375rem",
-													marginLeft: "0.375rem",
-												}}
-											>
-												<span style={{ fontSize: "1.5rem", fontWeight: "700" }}>
+											<span className="balance-label">Dust</span>
+											<div className="balance-value-container">
+												<span className="balance-value">
 													{formatSpeckToTDustWithCommas(dustBalance.balance)}
 												</span>
-												<span
-													style={{
-														fontSize: "0.875rem",
-														color: "rgba(255,255,255,0.5)",
-													}}
-												>
+												<span className="balance-unit">
 													/ {formatSpeckToTDustShort(dustBalance.cap)} tDUST
 												</span>
 											</div>
