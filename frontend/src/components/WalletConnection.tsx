@@ -600,6 +600,7 @@ export function WalletConnection({
 
 						{/* Address Cards Grid */}
 						<div
+							className="address-cards-grid"
 							style={{
 								display: "grid",
 								gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
