@@ -189,7 +189,10 @@ export class MidnightBrowserWallet {
 						};
 					} catch (error: unknown) {
 						// Network ID mismatchエラーの場合は、より具体的なエラーメッセージを返す
-						if (error?.message?.includes("Network ID mismatch")) {
+						if (
+							error instanceof Error &&
+							error.message?.includes("Network ID mismatch")
+						) {
 							console.error("Network ID mismatch:", error);
 							throw new Error(
 								"Network ID mismatch detected.\n\n" +

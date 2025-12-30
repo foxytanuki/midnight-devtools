@@ -1099,7 +1099,7 @@ export function WalletConnection({
 				</>
 			)}
 
-			{error && (
+			{error !== undefined && (
 				<div className="error-panel">
 					<h3>Error</h3>
 					<pre>{error instanceof Error ? error.message : String(error)}</pre>
