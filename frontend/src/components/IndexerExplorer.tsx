@@ -67,27 +67,56 @@ export function IndexerExplorer() {
 		setRpcUrl(currentNetwork.rpcUrl);
 	}, [currentNetwork.indexerUrl, currentNetwork.rpcUrl]);
 
-	// Get initial tab from URL search params, default to "blocks"
+	// Get initial tab from URL hash query params, default to "blocks"
 	const getInitialTab = (): TabType => {
-		const params = new URLSearchParams(window.location.search);
-		const tab = params.get("tab") as TabType | null;
-		if (
-			tab &&
-			["blocks", "transactions", "search", "custom", "schema"].includes(tab)
-		) {
-			return tab;
+		const hash = window.location.hash.slice(1);
+		if (hash.includes("?")) {
+			const queryString = hash.split("?")[1];
+			const params = new URLSearchParams(queryString);
+			const tab = params.get("tab") as TabType | null;
+			if (
+				tab &&
+				["blocks", "transactions", "search", "custom", "schema"].includes(tab)
+			) {
+				return tab;
+			}
 		}
 		return "blocks";
 	};
 
 	const [activeTab, setActiveTab] = useState<TabType>(getInitialTab());
 
-	// Update URL search params when tab changes
+	// Watch for hash changes to update tab state
+	useEffect(() => {
+		const handleHashChange = () => {
+			const hash = window.location.hash.slice(1);
+			let newTab: TabType = "blocks";
+			if (hash.includes("?")) {
+				const queryString = hash.split("?")[1];
+				const params = new URLSearchParams(queryString);
+				const tab = params.get("tab") as TabType | null;
+				if (
+					tab &&
+					["blocks", "transactions", "search", "custom", "schema"].includes(tab)
+				) {
+					newTab = tab;
+				}
+			}
+			setActiveTab(newTab);
+		};
+
+		window.addEventListener("hashchange", handleHashChange);
+		return () => window.removeEventListener("hashchange", handleHashChange);
+	}, []);
+
+	// Update URL hash query params when tab changes
 	const handleTabChange = (tab: TabType) => {
 		setActiveTab(tab);
-		const url = new URL(window.location.href);
-		url.searchParams.set("tab", tab);
-		window.history.replaceState({}, "", url.toString());
+		const hash = window.location.hash.slice(1);
+		const toolId = hash.split("?")[0] || "indexer";
+		const params = new URLSearchParams();
+		params.set("tab", tab);
+		window.location.hash = `${toolId}?${params.toString()}`;
 	};
 
 	const [loading, setLoading] = useState(false);

@@ -7,8 +7,8 @@ import {
 } from "./config/tools-config";
 import { useNetwork } from "./contexts/NetworkContext";
 import {
-	NETWORKS,
 	NETWORK_ORDER,
+	NETWORKS,
 	type NetworkId,
 	VERSION_GROUPS,
 } from "./utils/network-config";
@@ -22,8 +22,10 @@ function App() {
 
 	useEffect(() => {
 		// Determine tool from URL hash
+		// Hash format: #toolId or #toolId?param=value
 		const hash = window.location.hash.slice(1);
-		const tool = hash ? getToolById(hash) : null;
+		const toolId = hash.split("?")[0]; // Extract tool ID (before query params)
+		const tool = toolId ? getToolById(toolId) : null;
 
 		if (tool) {
 			setCurrentTool(tool);
@@ -34,7 +36,8 @@ function App() {
 		// Watch for hash changes
 		const handleHashChange = () => {
 			const newHash = window.location.hash.slice(1);
-			const newTool = newHash ? getToolById(newHash) : null;
+			const newToolId = newHash.split("?")[0]; // Extract tool ID (before query params)
+			const newTool = newToolId ? getToolById(newToolId) : null;
 
 			if (newTool) {
 				setCurrentTool(newTool);
@@ -77,6 +80,7 @@ function App() {
 
 	const handleToolChange = (tool: ToolConfig) => {
 		setCurrentTool(tool);
+		// Clear query params when switching tools (each tool manages its own params)
 		window.location.hash = tool.id;
 	};
 
