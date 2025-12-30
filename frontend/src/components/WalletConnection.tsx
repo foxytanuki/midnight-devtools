@@ -337,42 +337,29 @@ export function WalletConnection({
 								style={{
 									background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
 									borderRadius: "2px",
-									padding: "1.5rem",
-									marginBottom: "1rem",
+									padding: "0.875rem 1rem",
+									marginBottom: "0.75rem",
 									color: "#fff",
 								}}
 							>
 								<div
 									style={{
-										display: "grid",
-										gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-										gap: "1.5rem",
+										display: "flex",
+										flexWrap: "wrap",
+										gap: "2rem",
 									}}
 								>
 									{/* Unshielded Balance */}
 									{formatTokenBalances(unshieldedBalances).length > 0 && (
-										<div>
-											<div
-												style={{
-													display: "flex",
-													alignItems: "center",
-													gap: "0.5rem",
-													marginBottom: "0.5rem",
-												}}
-											>
-												<Eye size={16} color="#00cc66" />
-												<span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-													Unshielded
-												</span>
-											</div>
+										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+											<Eye size={16} color="#00cc66" />
+											<span style={{ fontSize: "0.8125rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+												Unshielded
+											</span>
 											{formatTokenBalances(unshieldedBalances).map(({ tokenType, balanceNight }) => (
-												<div key={tokenType}>
-													<div style={{ fontSize: "1.75rem", fontWeight: "700", letterSpacing: "-0.5px" }}>
-														{balanceNight}
-													</div>
-													<div style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>
-														{getNativeTokenName()}
-													</div>
+												<div key={tokenType} style={{ display: "flex", alignItems: "baseline", gap: "0.375rem", marginLeft: "0.375rem" }}>
+													<span style={{ fontSize: "1.5rem", fontWeight: "700" }}>{balanceNight}</span>
+													<span style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>{getNativeTokenName()}</span>
 												</div>
 											))}
 										</div>
@@ -380,28 +367,15 @@ export function WalletConnection({
 
 									{/* Shielded Balance */}
 									{formatTokenBalances(shieldedBalances).length > 0 && (
-										<div>
-											<div
-												style={{
-													display: "flex",
-													alignItems: "center",
-													gap: "0.5rem",
-													marginBottom: "0.5rem",
-												}}
-											>
-												<Shield size={16} color="#0000fe" />
-												<span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-													Shielded
-												</span>
-											</div>
+										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+											<Shield size={16} color="#0000fe" />
+											<span style={{ fontSize: "0.8125rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+												Shielded
+											</span>
 											{formatTokenBalances(shieldedBalances).map(({ tokenType, balanceNight }) => (
-												<div key={tokenType}>
-													<div style={{ fontSize: "1.75rem", fontWeight: "700", letterSpacing: "-0.5px" }}>
-														{balanceNight}
-													</div>
-													<div style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>
-														{getNativeTokenName()}
-													</div>
+												<div key={tokenType} style={{ display: "flex", alignItems: "baseline", gap: "0.375rem", marginLeft: "0.375rem" }}>
+													<span style={{ fontSize: "1.5rem", fontWeight: "700" }}>{balanceNight}</span>
+													<span style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>{getNativeTokenName()}</span>
 												</div>
 											))}
 										</div>
@@ -409,25 +383,14 @@ export function WalletConnection({
 
 									{/* Dust Balance */}
 									{dustBalance && (
-										<div>
-											<div
-												style={{
-													display: "flex",
-													alignItems: "center",
-													gap: "0.5rem",
-													marginBottom: "0.5rem",
-												}}
-											>
-												<Fuel size={16} color="#ff9900" />
-												<span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-													Dust
-												</span>
-											</div>
-											<div style={{ fontSize: "1.75rem", fontWeight: "700", letterSpacing: "-0.5px" }}>
-												{formatSpeckToTDustWithCommas(dustBalance.balance)}
-											</div>
-											<div style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>
-												tDUST
+										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+											<Fuel size={16} color="#ff9900" />
+											<span style={{ fontSize: "0.8125rem", color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+												Dust
+											</span>
+											<div style={{ display: "flex", alignItems: "baseline", gap: "0.375rem", marginLeft: "0.375rem" }}>
+												<span style={{ fontSize: "1.5rem", fontWeight: "700" }}>{formatSpeckToTDustWithCommas(dustBalance.balance)}</span>
+												<span style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.5)" }}>tDUST</span>
 											</div>
 										</div>
 									)}
@@ -440,8 +403,8 @@ export function WalletConnection({
 							style={{
 								display: "grid",
 								gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-								gap: "1rem",
-								marginBottom: "1rem",
+								gap: "0.625rem",
+								marginBottom: "0.625rem",
 							}}
 						>
 							{/* Unshielded Address Card */}
@@ -451,8 +414,7 @@ export function WalletConnection({
 										background: "var(--color-surface)",
 										border: "1px solid var(--color-border)",
 										borderRadius: "2px",
-										padding: "1rem",
-										transition: "all 0.2s ease",
+										padding: "0.625rem 0.75rem",
 									}}
 								>
 									<div
@@ -460,47 +422,28 @@ export function WalletConnection({
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "space-between",
-											marginBottom: "0.75rem",
+											marginBottom: "0.5rem",
 										}}
 									>
 										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-											<div
-												style={{
-													width: "32px",
-													height: "32px",
-													borderRadius: "2px",
-													background: "linear-gradient(135deg, #00cc66 0%, #00994d 100%)",
-													display: "flex",
-													alignItems: "center",
-													justifyContent: "center",
-												}}
-											>
-												<Eye size={16} color="#fff" />
-											</div>
-											<div>
-												<div style={{ fontWeight: "600", fontSize: "0.875rem" }}>Unshielded</div>
-												<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Public Address</div>
-											</div>
+											<Eye size={14} color="#00cc66" />
+											<span style={{ fontWeight: "600", fontSize: "0.8125rem" }}>Unshielded</span>
+											<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Public</span>
 										</div>
 										<button
 											type="button"
 											onClick={() => navigator.clipboard.writeText(unshieldedAddress.unshieldedAddress)}
 											style={{
-												background: "var(--color-bg)",
-												border: "1px solid var(--color-border)",
-												borderRadius: "2px",
-												padding: "0.375rem 0.75rem",
+												background: "transparent",
+												border: "none",
 												cursor: "pointer",
+												padding: "0.25rem",
 												display: "flex",
-												alignItems: "center",
-												gap: "0.25rem",
-												fontSize: "0.8125rem",
-												transition: "all 0.15s ease",
+												color: "var(--color-text-secondary)",
 											}}
 											title="Copy address"
 										>
 											<Copy size={14} />
-											Copy
 										</button>
 									</div>
 									<div
@@ -510,7 +453,7 @@ export function WalletConnection({
 											color: "var(--color-text)",
 											wordBreak: "break-all",
 											background: "var(--color-bg)",
-											padding: "0.75rem",
+											padding: "0.5rem",
 											borderRadius: "2px",
 											lineHeight: "1.5",
 										}}
@@ -527,8 +470,7 @@ export function WalletConnection({
 										background: "var(--color-surface)",
 										border: "1px solid var(--color-border)",
 										borderRadius: "2px",
-										padding: "1rem",
-										transition: "all 0.2s ease",
+										padding: "0.625rem 0.75rem",
 									}}
 								>
 									<div
@@ -536,47 +478,28 @@ export function WalletConnection({
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "space-between",
-											marginBottom: "0.75rem",
+											marginBottom: "0.5rem",
 										}}
 									>
 										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-											<div
-												style={{
-													width: "32px",
-													height: "32px",
-													borderRadius: "2px",
-													background: "linear-gradient(135deg, #0000fe 0%, #0000cb 100%)",
-													display: "flex",
-													alignItems: "center",
-													justifyContent: "center",
-												}}
-											>
-												<Shield size={16} color="#fff" />
-											</div>
-											<div>
-												<div style={{ fontWeight: "600", fontSize: "0.875rem" }}>Shielded</div>
-												<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Private Address</div>
-											</div>
+											<Shield size={14} color="#0000fe" />
+											<span style={{ fontWeight: "600", fontSize: "0.8125rem" }}>Shielded</span>
+											<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Private</span>
 										</div>
 										<button
 											type="button"
 											onClick={() => navigator.clipboard.writeText(shieldedAddresses.shieldedAddress)}
 											style={{
-												background: "var(--color-bg)",
-												border: "1px solid var(--color-border)",
-												borderRadius: "2px",
-												padding: "0.375rem 0.75rem",
+												background: "transparent",
+												border: "none",
 												cursor: "pointer",
+												padding: "0.25rem",
 												display: "flex",
-												alignItems: "center",
-												gap: "0.25rem",
-												fontSize: "0.8125rem",
-												transition: "all 0.15s ease",
+												color: "var(--color-text-secondary)",
 											}}
 											title="Copy address"
 										>
 											<Copy size={14} />
-											Copy
 										</button>
 									</div>
 									<div
@@ -586,7 +509,7 @@ export function WalletConnection({
 											color: "var(--color-text)",
 											wordBreak: "break-all",
 											background: "var(--color-bg)",
-											padding: "0.75rem",
+											padding: "0.5rem",
 											borderRadius: "2px",
 											lineHeight: "1.5",
 										}}
@@ -603,8 +526,7 @@ export function WalletConnection({
 										background: "var(--color-surface)",
 										border: "1px solid var(--color-border)",
 										borderRadius: "2px",
-										padding: "1rem",
-										transition: "all 0.2s ease",
+										padding: "0.625rem 0.75rem",
 									}}
 								>
 									<div
@@ -612,47 +534,28 @@ export function WalletConnection({
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "space-between",
-											marginBottom: "0.75rem",
+											marginBottom: "0.5rem",
 										}}
 									>
 										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-											<div
-												style={{
-													width: "32px",
-													height: "32px",
-													borderRadius: "2px",
-													background: "linear-gradient(135deg, #ff9900 0%, #cc7a00 100%)",
-													display: "flex",
-													alignItems: "center",
-													justifyContent: "center",
-												}}
-											>
-												<Fuel size={16} color="#fff" />
-											</div>
-											<div>
-												<div style={{ fontWeight: "600", fontSize: "0.875rem" }}>Dust</div>
-												<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Gas Address</div>
-											</div>
+											<Fuel size={14} color="#ff9900" />
+											<span style={{ fontWeight: "600", fontSize: "0.8125rem" }}>Dust</span>
+											<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)" }}>Gas</span>
 										</div>
 										<button
 											type="button"
 											onClick={() => navigator.clipboard.writeText(dustAddress.dustAddress)}
 											style={{
-												background: "var(--color-bg)",
-												border: "1px solid var(--color-border)",
-												borderRadius: "2px",
-												padding: "0.375rem 0.75rem",
+												background: "transparent",
+												border: "none",
 												cursor: "pointer",
+												padding: "0.25rem",
 												display: "flex",
-												alignItems: "center",
-												gap: "0.25rem",
-												fontSize: "0.8125rem",
-												transition: "all 0.15s ease",
+												color: "var(--color-text-secondary)",
 											}}
 											title="Copy address"
 										>
 											<Copy size={14} />
-											Copy
 										</button>
 									</div>
 									<div
@@ -662,7 +565,7 @@ export function WalletConnection({
 											color: "var(--color-text)",
 											wordBreak: "break-all",
 											background: "var(--color-bg)",
-											padding: "0.75rem",
+											padding: "0.5rem",
 											borderRadius: "2px",
 											lineHeight: "1.5",
 										}}
@@ -673,50 +576,85 @@ export function WalletConnection({
 							)}
 						</div>
 
-						{/* Public Keys Section (Collapsible style) */}
+						{/* Public Keys Section */}
 						{shieldedAddresses?.shieldedCoinPublicKey && (
 							<div
 								style={{
 									background: "var(--color-surface)",
 									border: "1px solid var(--color-border)",
 									borderRadius: "2px",
-									padding: "1rem",
-									marginBottom: "1rem",
+									padding: "0.625rem 0.75rem",
 								}}
 							>
-								<div style={{ fontWeight: "600", fontSize: "0.875rem", marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-									<Key size={16} />
+								<div style={{ fontWeight: "600", fontSize: "0.8125rem", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+									<Key size={14} />
 									Public Keys
 								</div>
-								<div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-									<div>
-										<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.375rem" }}>
-											Coin Public Key
-										</div>
+								<div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											gap: "0.5rem",
+											background: "var(--color-bg)",
+											padding: "0.375rem 0.5rem",
+											borderRadius: "2px",
+										}}
+									>
+										<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "75px" }}>Coin</span>
+										<span
+											style={{
+												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+												fontSize: "0.6875rem",
+												color: "var(--color-text)",
+												wordBreak: "break-all",
+												flex: 1,
+											}}
+										>
+											{shieldedAddresses.shieldedCoinPublicKey}
+										</span>
+										<button
+											type="button"
+											onClick={() => navigator.clipboard.writeText(shieldedAddresses.shieldedCoinPublicKey)}
+											style={{
+												background: "transparent",
+												border: "none",
+												cursor: "pointer",
+												padding: "0.25rem",
+												display: "flex",
+												color: "var(--color-text-secondary)",
+											}}
+											title="Copy"
+										>
+											<Copy size={12} />
+										</button>
+									</div>
+									{shieldedAddresses.shieldedEncryptionPublicKey && (
 										<div
 											style={{
 												display: "flex",
 												alignItems: "center",
 												gap: "0.5rem",
 												background: "var(--color-bg)",
-												padding: "0.625rem 0.75rem",
+												padding: "0.375rem 0.5rem",
 												borderRadius: "2px",
 											}}
 										>
+											<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "75px" }}>Encryption</span>
 											<span
 												style={{
 													fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-													fontSize: "0.75rem",
+													fontSize: "0.6875rem",
 													color: "var(--color-text)",
 													wordBreak: "break-all",
 													flex: 1,
 												}}
 											>
-												{shieldedAddresses.shieldedCoinPublicKey}
+												{shieldedAddresses.shieldedEncryptionPublicKey}
 											</span>
 											<button
 												type="button"
-												onClick={() => navigator.clipboard.writeText(shieldedAddresses.shieldedCoinPublicKey)}
+												onClick={() => navigator.clipboard.writeText(shieldedAddresses.shieldedEncryptionPublicKey)}
 												style={{
 													background: "transparent",
 													border: "none",
@@ -727,52 +665,8 @@ export function WalletConnection({
 												}}
 												title="Copy"
 											>
-												<Copy size={14} />
+												<Copy size={12} />
 											</button>
-										</div>
-									</div>
-									{shieldedAddresses.shieldedEncryptionPublicKey && (
-										<div>
-											<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.375rem" }}>
-												Encryption Public Key
-											</div>
-											<div
-												style={{
-													display: "flex",
-													alignItems: "center",
-													gap: "0.5rem",
-													background: "var(--color-bg)",
-													padding: "0.625rem 0.75rem",
-													borderRadius: "2px",
-												}}
-											>
-												<span
-													style={{
-														fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-														fontSize: "0.75rem",
-														color: "var(--color-text)",
-														wordBreak: "break-all",
-														flex: 1,
-													}}
-												>
-													{shieldedAddresses.shieldedEncryptionPublicKey}
-												</span>
-												<button
-													type="button"
-													onClick={() => navigator.clipboard.writeText(shieldedAddresses.shieldedEncryptionPublicKey)}
-													style={{
-														background: "transparent",
-														border: "none",
-														cursor: "pointer",
-														padding: "0.25rem",
-														display: "flex",
-														color: "var(--color-text-secondary)",
-													}}
-													title="Copy"
-												>
-													<Copy size={14} />
-												</button>
-											</div>
 										</div>
 									)}
 								</div>
@@ -788,131 +682,85 @@ export function WalletConnection({
 							Connection Details
 						</h3>
 
-						{/* Status Cards Row */}
+						{/* Status Row - Inline */}
 						<div
 							style={{
-								display: "grid",
-								gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-								gap: "1rem",
-								marginBottom: "1rem",
+								display: "flex",
+								flexWrap: "wrap",
+								gap: "1.5rem",
+								marginBottom: "0.75rem",
+								padding: "0.625rem 0.75rem",
+								background: "var(--color-surface)",
+								border: "1px solid var(--color-border)",
+								borderRadius: "2px",
 							}}
 						>
-							{/* Wallet Status Card */}
-							<div
-								style={{
-									background: "var(--color-surface)",
-									border: "1px solid var(--color-border)",
-									borderRadius: "2px",
-									padding: "1rem",
-								}}
-							>
-								<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-									Wallet Status
-								</div>
-								<div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-									<div
-										style={{
-											width: "12px",
-											height: "12px",
-											borderRadius: "50%",
-											backgroundColor: status?.status === "connected" ? "var(--color-success)" : "var(--color-text-muted)",
-											boxShadow: status?.status === "connected" ? "0 0 8px rgba(0, 204, 102, 0.5)" : "none",
-										}}
-									/>
-									<div>
-										<div style={{ fontWeight: "600", fontSize: "0.9375rem", color: status?.status === "connected" ? "var(--color-success)" : "var(--color-text)" }}>
-											{status?.status === "connected" ? "Connected" : "Disconnected"}
-										</div>
-										{initialAPI && (
-											<div style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>
-												{initialAPI.name || "Unknown Wallet"}
-											</div>
-										)}
-									</div>
-								</div>
-							</div>
-
-							{/* Network Card */}
-							{status?.status === "connected" && (
+							{/* Wallet Status */}
+							<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
 								<div
 									style={{
-										background: "var(--color-surface)",
-										border: "1px solid var(--color-border)",
-										borderRadius: "2px",
-										padding: "1rem",
+										width: "10px",
+										height: "10px",
+										borderRadius: "50%",
+										backgroundColor: status?.status === "connected" ? "var(--color-success)" : "var(--color-text-muted)",
+										boxShadow: status?.status === "connected" ? "0 0 6px rgba(0, 204, 102, 0.5)" : "none",
 									}}
-								>
-									<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-										Network
-									</div>
-									<div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-										<div
-											style={{
-												width: "32px",
-												height: "32px",
-												borderRadius: "2px",
-												background: "linear-gradient(135deg, #1a1a1a 0%, #333 100%)",
-												display: "flex",
-												alignItems: "center",
-												justifyContent: "center",
-											}}
-										>
-											<Globe size={16} color="#fff" />
-										</div>
-										<div style={{ fontWeight: "600", fontSize: "0.9375rem" }}>
-											{status?.networkId}
-										</div>
-									</div>
+								/>
+								<span style={{ fontSize: "0.8125rem", fontWeight: "600", color: status?.status === "connected" ? "var(--color-success)" : "var(--color-text)" }}>
+									{status?.status === "connected" ? "Connected" : "Disconnected"}
+								</span>
+								{initialAPI && (
+									<span style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>
+										({initialAPI.name || "Unknown"})
+									</span>
+								)}
+							</div>
+
+							{/* Network */}
+							{status?.status === "connected" && (
+								<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+									<Globe size={14} color="var(--color-text-secondary)" />
+									<span style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>Network:</span>
+									<span style={{ fontSize: "0.8125rem", fontWeight: "600" }}>{status?.networkId}</span>
 								</div>
 							)}
 
-							{/* Proof Server Card */}
-							<div
-								style={{
-									background: "var(--color-surface)",
-									border: "1px solid var(--color-border)",
-									borderRadius: "2px",
-									padding: "1rem",
-								}}
-							>
-								<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-									Proof Server
-								</div>
-								<div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-									<div
-										style={{
-											width: "12px",
-											height: "12px",
-											borderRadius: "50%",
-											backgroundColor:
-												proofServerOnline === undefined
-													? "var(--color-text-muted)"
-													: proofServerOnline
-														? "var(--color-success)"
-														: "var(--color-error)",
-											boxShadow:
-												proofServerOnline === true
-													? "0 0 8px rgba(0, 204, 102, 0.5)"
-													: proofServerOnline === false
-														? "0 0 8px rgba(204, 0, 0, 0.5)"
-														: "none",
-										}}
-									/>
-									<div
-										style={{
-											fontWeight: "600",
-											fontSize: "0.9375rem",
-											color:
-												proofServerOnline === undefined
-													? "var(--color-text)"
-													: proofServerOnline
-														? "var(--color-success)"
-														: "var(--color-error)",
-										}}
-									>
-										{proofServerOnline === undefined ? "Unknown" : proofServerOnline ? "Online" : "Offline"}
-									</div>
-								</div>
+							{/* Proof Server */}
+							<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+								<div
+									style={{
+										width: "10px",
+										height: "10px",
+										borderRadius: "50%",
+										backgroundColor:
+											proofServerOnline === undefined
+												? "var(--color-text-muted)"
+												: proofServerOnline
+													? "var(--color-success)"
+													: "var(--color-error)",
+										boxShadow:
+											proofServerOnline === true
+												? "0 0 6px rgba(0, 204, 102, 0.5)"
+												: proofServerOnline === false
+													? "0 0 6px rgba(204, 0, 0, 0.5)"
+													: "none",
+									}}
+								/>
+								<span style={{ fontSize: "0.8125rem", color: "var(--color-text-secondary)" }}>Proof Server:</span>
+								<span
+									style={{
+										fontSize: "0.8125rem",
+										fontWeight: "600",
+										color:
+											proofServerOnline === undefined
+												? "var(--color-text)"
+												: proofServerOnline
+													? "var(--color-success)"
+													: "var(--color-error)",
+									}}
+								>
+									{proofServerOnline === undefined ? "Unknown" : proofServerOnline ? "Online" : "Offline"}
+								</span>
 							</div>
 						</div>
 
@@ -922,130 +770,120 @@ export function WalletConnection({
 								background: "var(--color-surface)",
 								border: "1px solid var(--color-border)",
 								borderRadius: "2px",
-								padding: "1rem",
+								padding: "0.625rem 0.75rem",
 							}}
 						>
 							<div
 								style={{
-									fontSize: "0.875rem",
+									fontSize: "0.8125rem",
 									fontWeight: "600",
-									marginBottom: "1rem",
+									marginBottom: "0.5rem",
 									display: "flex",
 									alignItems: "center",
 									gap: "0.5rem",
 								}}
 							>
-								<Server size={16} />
+								<Server size={14} />
 								Network Endpoints
 							</div>
-							<div style={{ display: "grid", gap: "0.75rem" }}>
+							<div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0.5rem" }}>
+								{/* Row 1: Node | Prover */}
 								<div
 									style={{
 										display: "flex",
-										alignItems: "flex-start",
-										gap: "0.75rem",
-										padding: "0.75rem",
+										alignItems: "center",
+										gap: "0.5rem",
+										padding: "0.375rem 0.5rem",
 										background: "var(--color-bg)",
 										borderRadius: "2px",
 									}}
 								>
-									<Globe size={16} style={{ marginTop: "2px", flexShrink: 0, color: "var(--color-text-secondary)" }} />
-									<div style={{ flex: 1, minWidth: 0 }}>
-										<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.25rem" }}>
-											Substrate Node
-										</div>
-										<div
-											style={{
-												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-												fontSize: "0.8125rem",
-												color: serviceUriConfig?.substrateNodeUri ? "var(--color-text)" : "var(--color-text-muted)",
-												wordBreak: "break-all",
-											}}
-										>
-											{serviceUriConfig?.substrateNodeUri || "Not available"}
-										</div>
-									</div>
+									<Globe size={14} style={{ flexShrink: 0, color: "var(--color-text-secondary)" }} />
+									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "55px" }}>Node</span>
+									<span
+										style={{
+											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+											fontSize: "0.75rem",
+											color: serviceUriConfig?.substrateNodeUri ? "var(--color-text)" : "var(--color-text-muted)",
+											wordBreak: "break-all",
+											flex: 1,
+										}}
+									>
+										{serviceUriConfig?.substrateNodeUri || "N/A"}
+									</span>
 								</div>
 								<div
 									style={{
 										display: "flex",
-										alignItems: "flex-start",
-										gap: "0.75rem",
-										padding: "0.75rem",
+										alignItems: "center",
+										gap: "0.5rem",
+										padding: "0.375rem 0.5rem",
 										background: "var(--color-bg)",
 										borderRadius: "2px",
 									}}
 								>
-									<Radio size={16} style={{ marginTop: "2px", flexShrink: 0, color: "var(--color-text-secondary)" }} />
-									<div style={{ flex: 1, minWidth: 0 }}>
-										<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.25rem" }}>
-											Indexer (REST)
-										</div>
-										<div
-											style={{
-												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-												fontSize: "0.8125rem",
-												color: serviceUriConfig?.indexerUri ? "var(--color-text)" : "var(--color-text-muted)",
-												wordBreak: "break-all",
-											}}
-										>
-											{serviceUriConfig?.indexerUri || "Not available"}
-										</div>
-									</div>
+									<Lock size={14} style={{ flexShrink: 0, color: "var(--color-text-secondary)" }} />
+									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "55px" }}>Prover</span>
+									<span
+										style={{
+											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+											fontSize: "0.75rem",
+											color: serviceUriConfig?.proverServerUri ? "var(--color-text)" : "var(--color-text-muted)",
+											wordBreak: "break-all",
+											flex: 1,
+										}}
+									>
+										{serviceUriConfig?.proverServerUri || "N/A"}
+									</span>
+								</div>
+								{/* Row 2: Indexer | WebSocket */}
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "0.5rem",
+										padding: "0.375rem 0.5rem",
+										background: "var(--color-bg)",
+										borderRadius: "2px",
+									}}
+								>
+									<Radio size={14} style={{ flexShrink: 0, color: "var(--color-text-secondary)" }} />
+									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "55px" }}>Indexer</span>
+									<span
+										style={{
+											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+											fontSize: "0.75rem",
+											color: serviceUriConfig?.indexerUri ? "var(--color-text)" : "var(--color-text-muted)",
+											wordBreak: "break-all",
+											flex: 1,
+										}}
+									>
+										{serviceUriConfig?.indexerUri || "N/A"}
+									</span>
 								</div>
 								<div
 									style={{
 										display: "flex",
-										alignItems: "flex-start",
-										gap: "0.75rem",
-										padding: "0.75rem",
+										alignItems: "center",
+										gap: "0.5rem",
+										padding: "0.375rem 0.5rem",
 										background: "var(--color-bg)",
 										borderRadius: "2px",
 									}}
 								>
-									<Plug size={16} style={{ marginTop: "2px", flexShrink: 0, color: "var(--color-text-secondary)" }} />
-									<div style={{ flex: 1, minWidth: 0 }}>
-										<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.25rem" }}>
-											Indexer (WebSocket)
-										</div>
-										<div
-											style={{
-												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-												fontSize: "0.8125rem",
-												color: serviceUriConfig?.indexerWsUri ? "var(--color-text)" : "var(--color-text-muted)",
-												wordBreak: "break-all",
-											}}
-										>
-											{serviceUriConfig?.indexerWsUri || "Not available"}
-										</div>
-									</div>
-								</div>
-								<div
-									style={{
-										display: "flex",
-										alignItems: "flex-start",
-										gap: "0.75rem",
-										padding: "0.75rem",
-										background: "var(--color-bg)",
-										borderRadius: "2px",
-									}}
-								>
-									<Lock size={16} style={{ marginTop: "2px", flexShrink: 0, color: "var(--color-text-secondary)" }} />
-									<div style={{ flex: 1, minWidth: 0 }}>
-										<div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginBottom: "0.25rem" }}>
-											Proof Server
-										</div>
-										<div
-											style={{
-												fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
-												fontSize: "0.8125rem",
-												color: serviceUriConfig?.proverServerUri ? "var(--color-text)" : "var(--color-text-muted)",
-												wordBreak: "break-all",
-											}}
-										>
-											{serviceUriConfig?.proverServerUri || "Not available"}
-										</div>
-									</div>
+									<Plug size={14} style={{ flexShrink: 0, color: "var(--color-text-secondary)" }} />
+									<span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", minWidth: "55px" }}>WS</span>
+									<span
+										style={{
+											fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
+											fontSize: "0.75rem",
+											color: serviceUriConfig?.indexerWsUri ? "var(--color-text)" : "var(--color-text-muted)",
+											wordBreak: "break-all",
+											flex: 1,
+										}}
+									>
+										{serviceUriConfig?.indexerWsUri || "N/A"}
+									</span>
 								</div>
 							</div>
 						</div>
